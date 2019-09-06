@@ -68,11 +68,11 @@ public class Tag<T: Hashable> {
     }
     
     open func valueString(maxDepth: Int) -> String {
-        fatalError()
+        return value.map{"\($0)"} ?? "nil"
     }
 
     open func tagString() -> String {
-        fatalError()
+        valueString(maxDepth: Tag.defaultMaxDepth)
     }
     
     // =========================== //

@@ -22,6 +22,8 @@
 		B6AF1B80232275AE0099EBAE /* DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B72232275AE0099EBAE /* DataStream.swift */; };
 		B6AF1B82232275AE0099EBAE /* NBTTagFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B74232275AE0099EBAE /* NBTTagFactory.swift */; };
 		B6AF1B86232276F40099EBAE /* ArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B85232276F40099EBAE /* ArrayTag.swift */; };
+		B6AF1B88232278410099EBAE /* IntArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B87232278410099EBAE /* IntArrayTag.swift */; };
+		B6AF1B8A23227A2A0099EBAE /* LongArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +55,8 @@
 		B6AF1B72232275AE0099EBAE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
 		B6AF1B74232275AE0099EBAE /* NBTTagFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NBTTagFactory.swift; sourceTree = "<group>"; };
 		B6AF1B85232276F40099EBAE /* ArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTag.swift; sourceTree = "<group>"; };
+		B6AF1B87232278410099EBAE /* IntArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntArrayTag.swift; sourceTree = "<group>"; };
+		B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongArrayTag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +120,8 @@
 				B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */,
 				B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */,
 				B6AF1B85232276F40099EBAE /* ArrayTag.swift */,
+				B6AF1B87232278410099EBAE /* IntArrayTag.swift */,
+				B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */,
 			);
 			path = Tags;
 			sourceTree = "<group>";
@@ -180,6 +186,7 @@
 			files = (
 				B6AF1B7D232275AE0099EBAE /* FloatingTag.swift in Sources */,
 				B6AF1B7A232275AE0099EBAE /* ByteTag.swift in Sources */,
+				B6AF1B88232278410099EBAE /* IntArrayTag.swift in Sources */,
 				B6AF1B75232275AE0099EBAE /* EndTag.swift in Sources */,
 				B6AF1B79232275AE0099EBAE /* ShortTag.swift in Sources */,
 				B6AF1B7F232275AE0099EBAE /* Ex+DataStream.swift in Sources */,
@@ -187,6 +194,7 @@
 				B6AF1B77232275AE0099EBAE /* IntegerTag.swift in Sources */,
 				B6AF1B7E232275AE0099EBAE /* Tag.swift in Sources */,
 				B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */,
+				B6AF1B8A23227A2A0099EBAE /* LongArrayTag.swift in Sources */,
 				B6AF1B76232275AE0099EBAE /* LongTag.swift in Sources */,
 				B6AF1B7C232275AE0099EBAE /* DoubleTag.swift in Sources */,
 				B6AF1B86232276F40099EBAE /* ArrayTag.swift in Sources */,
