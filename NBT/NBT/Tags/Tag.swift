@@ -14,12 +14,12 @@ public class Tag<T: Hashable> {
     public var value: T!
     
     public var id:UInt8 {
-        return TagFactory.idFromClass(self)
+        return TagFactory.idFromValue(self)
     }
 
     // ====================================================== //
     // MARK: - Construcotr -
-    init(value:T?) {
+    required init(value:T? = nil) {
         self.value = value
     }
 
