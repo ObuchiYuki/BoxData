@@ -20,13 +20,13 @@ public class StringTag: ArrayTag<String> {
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
         let length:UInt32 = try dis.uInt32()
-        var _value = [Int32]()
+        var _value = [UInt8]()
         
         for _ in 0..<length {
-            _value.append(try dis.readBytes())
+            _value.append(try dis.uInt8())
         }
         
-        self.value = _value
+        self.value = String(bytes: _value, encoding: .utf8)
     }
     
     override public func valueString(maxDepth: Int) -> String {
