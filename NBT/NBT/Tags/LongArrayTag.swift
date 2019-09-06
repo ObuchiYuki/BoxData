@@ -20,7 +20,7 @@ public class LongArrayTag: ArrayTag<[Int64]> {
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
         let length:Int32 = try dis.readBytes()
-        var _value = [Int32]()
+        var _value = [Int64]()
         
         for _ in 0..<length {
             _value.append(try dis.readBytes())
