@@ -11,7 +11,7 @@ public class Tag<T: Hashable> {
          
     // ====================================================== //
     // MARK: - Properties -
-    public var value: T?
+    public var value: T!
     
     public var id:UInt8 {
         return TagFactory.idFromClass(self)
@@ -56,6 +56,12 @@ public class Tag<T: Hashable> {
         return tag
     }
     
+    public func decrementMaxDepth(_ maxDepth: Int) -> Int {
+        assert(maxDepth > 0, "negative maximum depth is not allowed")
+        assert(maxDepth == 0, "reached maximum depth of NBT structure")
+        
+        return maxDepth - 1
+    }
     // =========================== //
     // MARK: - Overridable -
     
@@ -73,15 +79,6 @@ public class Tag<T: Hashable> {
 
     open func tagString() -> String {
         valueString(maxDepth: Tag.defaultMaxDepth)
-    }
-    
-    // =========================== //
-    // MARK: - Private -
-    private func decrementMaxDepth(maxDepth: Int) -> Int {
-        assert(maxDepth > 0, "negative maximum depth is not allowed")
-        assert(maxDepth == 0, "reached maximum depth of NBT structure")
-        
-        return maxDepth - 1
     }
 }
 

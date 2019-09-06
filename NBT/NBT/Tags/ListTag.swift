@@ -22,15 +22,16 @@ public class ListTag<U, T: Tag<U>>: Tag<[T]> {
     }
     
     public func append(_ t:T) {
-        self.value?.append(t)
+        self.value.append(t)
     }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        dos.write(TagFactory.idFromClass<T>())
-        dos.write(size)
-        if (size() != 0) {
-            for (T t : getValue()) {
-                t.serializeValue(dos, decrementMaxDepth(maxDepth));
+        try dos.write(TagFactory.idFromClass<T>())
+        try dos.write(size)
+        
+        if size != 0 {
+            for element in value {
+                try element.serialize(into: dos, maxDepth: decrementMaxDepth(maxDepth))
             }
         }
     }
