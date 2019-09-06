@@ -26,6 +26,7 @@ extension DataWriteStream {
 
 extension DataReadStream {
     public func string(count:Int) throws -> String {
+        
         guard let string = String(bytes: try self.data(count: count), encoding: .utf8) else {
             throw ReadStreamStringReadingError()
         }

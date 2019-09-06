@@ -24,6 +24,7 @@
 		B6AF1B86232276F40099EBAE /* ArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B85232276F40099EBAE /* ArrayTag.swift */; };
 		B6AF1B88232278410099EBAE /* IntArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B87232278410099EBAE /* IntArrayTag.swift */; };
 		B6AF1B8A23227A2A0099EBAE /* LongArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */; };
+		B6AF1B8C23227A7B0099EBAE /* StringTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B8B23227A7B0099EBAE /* StringTag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +58,7 @@
 		B6AF1B85232276F40099EBAE /* ArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayTag.swift; sourceTree = "<group>"; };
 		B6AF1B87232278410099EBAE /* IntArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntArrayTag.swift; sourceTree = "<group>"; };
 		B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongArrayTag.swift; sourceTree = "<group>"; };
+		B6AF1B8B23227A7B0099EBAE /* StringTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringTag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				B6AF1B85232276F40099EBAE /* ArrayTag.swift */,
 				B6AF1B87232278410099EBAE /* IntArrayTag.swift */,
 				B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */,
+				B6AF1B8B23227A7B0099EBAE /* StringTag.swift */,
 			);
 			path = Tags;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 				B6AF1B7E232275AE0099EBAE /* Tag.swift in Sources */,
 				B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */,
 				B6AF1B8A23227A2A0099EBAE /* LongArrayTag.swift in Sources */,
+				B6AF1B8C23227A7B0099EBAE /* StringTag.swift in Sources */,
 				B6AF1B76232275AE0099EBAE /* LongTag.swift in Sources */,
 				B6AF1B7C232275AE0099EBAE /* DoubleTag.swift in Sources */,
 				B6AF1B86232276F40099EBAE /* ArrayTag.swift in Sources */,
