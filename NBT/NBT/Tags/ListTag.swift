@@ -41,12 +41,11 @@ public class ListTag<U, T: Tag<U>>: Tag<[T]> {
         
         let size = try dis.uInt32()
         
-        
         if (size != 0) {
-            for i in 0..<size {
-                let t = T(value: nil)
-                t.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
-                append(t)
+            for _ in 0..<size {
+                let t = TagFactory.fromID(type: U.self, id: typeId)
+                try t.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
+                self.append(t as! T)
             }
         }
     }
