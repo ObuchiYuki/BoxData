@@ -25,7 +25,7 @@ public class LongArrayTag: ArrayTag<[Int64]> {
         for _ in 0..<length {
             _value.append(try dis.readBytes())
         }
-        self.value = value
+        self.value = _value
     }
     
     override public func valueString(maxDepth: Int) -> String {
