@@ -3,7 +3,7 @@
 // This source file is part of the Box project.
 //
 // Copyright (c) 2019 Obuchi Yuki
-// This source file is released under the MIT License, see LICENSE.txt.
+// This source file is released under the MIT License.
 //
 // See http://opensource.org/licenses/mit-license.php for license information
 //
