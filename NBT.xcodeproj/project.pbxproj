@@ -13,7 +13,6 @@
 		B694D1E9232346DE00811F0E /* TagID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B694D1E8232346DE00811F0E /* TagID.swift */; };
 		B694D1EB2323535900811F0E /* ByteArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B694D1EA2323535900811F0E /* ByteArrayTag.swift */; };
 		B6AF1B5D232275800099EBAE /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B5C232275800099EBAE /* main.swift */; };
-		B6AF1B75232275AE0099EBAE /* EndTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B65232275AE0099EBAE /* EndTag.swift */; };
 		B6AF1B76232275AE0099EBAE /* LongTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B67232275AE0099EBAE /* LongTag.swift */; };
 		B6AF1B77232275AE0099EBAE /* IntegerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B68232275AE0099EBAE /* IntegerTag.swift */; };
 		B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B69232275AE0099EBAE /* IntTag.swift */; };
@@ -22,7 +21,6 @@
 		B6AF1B7B232275AE0099EBAE /* FloatTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6D232275AE0099EBAE /* FloatTag.swift */; };
 		B6AF1B7C232275AE0099EBAE /* DoubleTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */; };
 		B6AF1B7D232275AE0099EBAE /* FloatingTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */; };
-		B6AF1B7E232275AE0099EBAE /* ValueTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B70232275AE0099EBAE /* ValueTag.swift */; };
 		B6AF1B7F232275AE0099EBAE /* Ex+DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B71232275AE0099EBAE /* Ex+DataStream.swift */; };
 		B6AF1B80232275AE0099EBAE /* DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B72232275AE0099EBAE /* DataStream.swift */; };
 		B6AF1B82232275AE0099EBAE /* TagFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B74232275AE0099EBAE /* TagFactory.swift */; };
@@ -52,7 +50,6 @@
 		B694D1EA2323535900811F0E /* ByteArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteArrayTag.swift; sourceTree = "<group>"; };
 		B6AF1B59232275800099EBAE /* NBT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NBT; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF1B5C232275800099EBAE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		B6AF1B65232275AE0099EBAE /* EndTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndTag.swift; sourceTree = "<group>"; };
 		B6AF1B67232275AE0099EBAE /* LongTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongTag.swift; sourceTree = "<group>"; };
 		B6AF1B68232275AE0099EBAE /* IntegerTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegerTag.swift; sourceTree = "<group>"; };
 		B6AF1B69232275AE0099EBAE /* IntTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntTag.swift; sourceTree = "<group>"; };
@@ -61,7 +58,6 @@
 		B6AF1B6D232275AE0099EBAE /* FloatTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatTag.swift; sourceTree = "<group>"; };
 		B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleTag.swift; sourceTree = "<group>"; };
 		B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingTag.swift; sourceTree = "<group>"; };
-		B6AF1B70232275AE0099EBAE /* ValueTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTag.swift; sourceTree = "<group>"; };
 		B6AF1B71232275AE0099EBAE /* Ex+DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ex+DataStream.swift"; sourceTree = "<group>"; };
 		B6AF1B72232275AE0099EBAE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
 		B6AF1B74232275AE0099EBAE /* TagFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagFactory.swift; sourceTree = "<group>"; };
@@ -142,8 +138,6 @@
 			isa = PBXGroup;
 			children = (
 				B60BACA0232331B60081B600 /* Tag.swift */,
-				B6AF1B70232275AE0099EBAE /* ValueTag.swift */,
-				B6AF1B65232275AE0099EBAE /* EndTag.swift */,
 				B694D1E8232346DE00811F0E /* TagID.swift */,
 				B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */,
 				B6AF1B85232276F40099EBAE /* ArrayTag.swift */,
@@ -213,14 +207,12 @@
 				B6AF1B7D232275AE0099EBAE /* FloatingTag.swift in Sources */,
 				B6AF1B7A232275AE0099EBAE /* ByteTag.swift in Sources */,
 				B6AF1B88232278410099EBAE /* IntArrayTag.swift in Sources */,
-				B6AF1B75232275AE0099EBAE /* EndTag.swift in Sources */,
 				B6AF1B79232275AE0099EBAE /* ShortTag.swift in Sources */,
 				B694D1E723233BE200811F0E /* CompoundTag.swift in Sources */,
 				B6AF1B7F232275AE0099EBAE /* Ex+DataStream.swift in Sources */,
 				B6AF1B7B232275AE0099EBAE /* FloatTag.swift in Sources */,
 				B60BACA1232331B60081B600 /* Tag.swift in Sources */,
 				B6AF1B77232275AE0099EBAE /* IntegerTag.swift in Sources */,
-				B6AF1B7E232275AE0099EBAE /* ValueTag.swift in Sources */,
 				B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */,
 				B60BAC9F232281AA0081B600 /* ListTag.swift in Sources */,
 				B694D1EB2323535900811F0E /* ByteArrayTag.swift in Sources */,
