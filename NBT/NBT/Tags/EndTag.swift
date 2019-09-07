@@ -8,12 +8,16 @@
 
 import Foundation
 
-public final class EndTag: Tag<Int> {
+public final class EndTag: AnyTag {
 
     static let shared = EndTag()
 
     required init(value: Int? = nil) {
-        super.init(value: nil)
+        super.init(typeID: TagID.end.rawValue)
+    }
+    
+    required init(typeID: UInt8) {
+        fatalError("init(typeID:) has not been implemented")
     }
     
     public override func serialize(into dos: DataWriteStream, maxDepth: Int) throws {}

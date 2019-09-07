@@ -16,7 +16,6 @@ public class ShortTag: IntegerTag<Int16> {
     init(value: Int16) {
         super.init(typeID: TagID.short.rawValue, value: value)
     }
-    
     required init(typeID: UInt8) { fatalError("init(typeID:) has not been implemented") }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {

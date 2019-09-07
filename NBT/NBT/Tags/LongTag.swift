@@ -11,6 +11,12 @@ import Foundation
 public class LongTag: IntegerTag<Int64> {
 
     public static let zero = LongTag(value: 0)
+    
+    init(value:Int64) {
+        super.init(typeID: TagID.long.rawValue, value: value)
+    }
+    
+    required init(typeID: UInt8) {fatalError()}
 
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
