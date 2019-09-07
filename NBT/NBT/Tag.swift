@@ -453,13 +453,13 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
     final override func tagID() -> TagID { .longArray }
 
     @usableFromInline
-    final override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
         try value?.forEach{try dos.write($0) }
     }
     
     @usableFromInline
-    final override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int8]()
         for _ in 0..<length { _value.append(try dis.int8()) }
@@ -485,13 +485,13 @@ internal final class IntArrayTag: ValueTag<[Int32]> {
     final override func tagID() -> TagID { .intArray }
 
     @usableFromInline
-    final override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
         try value?.forEach{try dos.write($0) }
     }
     
     @usableFromInline
-    final override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int32]()
         for _ in 0..<length { _value.append(try dis.int32()) }
@@ -518,13 +518,13 @@ internal final class LongArrayTag: ValueTag<[Int64]> {
     final override func tagID() -> TagID { .longArray }
 
     @usableFromInline
-    final override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
         try value?.forEach{try dos.write($0) }
     }
     
     @usableFromInline
-    final override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int64]()
         for _ in 0..<length { _value.append(try dis.int64()) }
@@ -549,14 +549,14 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     final override func tagID() -> TagID { .compound }
         
     @usableFromInline
-    final override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         for (key, value) in value {
             try value.serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
         }
         try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
     }
     
-    final override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         self.value = [:]
         
         var id = try dis.uInt8()
