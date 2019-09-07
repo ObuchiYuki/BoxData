@@ -8,4 +8,4 @@
 
 import Foundation
 
-class AnyTag: Tag<Any> {}
+public class AnyTag: Tag<AnyHashable> {}

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class ListTag<U, T: Tag<U>>: Tag<[T]> {
+public class ListTag<T: AnyTag>: Tag<[T]> {
     
     
     public var size:Int32 {
