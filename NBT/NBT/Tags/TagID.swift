@@ -21,4 +21,5 @@ enum TagID: UInt8 {
     case list
     case compound
     case intArray
+    case longArray
 }

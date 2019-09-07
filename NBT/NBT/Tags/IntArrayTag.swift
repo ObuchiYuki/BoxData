@@ -11,6 +11,12 @@ import Foundation
 public class IntArrayTag: ArrayTag<[Int32]> {
 
     public static let zero = IntArrayTag(value: [])
+    
+    init(value:[Int32]) {
+        super.init(typeID: TagID.intArray.rawValue, value: value)
+    }
+    
+    required init(typeID: UInt8) {fatalError()}
 
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)
