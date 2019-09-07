@@ -9,12 +9,28 @@
 import Foundation
 
 public class TagFactory {
-    static func idFromType<T: Tag>(_ type:T.Type) -> UInt8 {
-        fatalError()
+    static func idFromType<T: Tag>(_ type:T.Type) -> TagID {
+        if T.self == EndTag.self         {return .end}
+        if T.self == ByteTag.self        {return .byte}
+        if T.self == ShortTag.self       {return .short}
+        if T.self == IntTag.self         {return .int}
+        if T.self == LongTag.self        {return .long}
+        if T.self == FloatTag.self       {return .float}
+        if T.self == DoubleTag.self      {return .double}
+        if T.self == ByteArrayTag.self   {return .byteArray}
+        if T.self == StringTag.self      {return .string}
+        if T.self == ListTag.self        {return .list}
+        if T.self == CompoundTag.self    {return .compound}
+        if T.self == IntArrayTag.self    {return .intArray}
+        if T.self == LongArrayTag.self   {return .longArray}
+        
+        fatalError("Not matching tag")
     }
-    static func idFromValue<T: Tag>(_ value:T? = nil) -> UInt8 {
-        fatalError()
+    
+    static func idFromValue<T: Tag>(_ value:T? = nil) -> TagID {
+        return idFromType(T.self)
     }
+    
     static func fromID(id: UInt8) -> Tag {
         switch TagID(rawValue: id)! {
         case .end:      return EndTag()
@@ -31,8 +47,5 @@ public class TagFactory {
         case .intArray: return IntArrayTag(value: nil)
         case .longArray:return LongArrayTag(value: nil)
         }
-    }
-    static func fromID<T>(type: T.Type, id:UInt8) -> ValueTag<T> {
-        fatalError()
     }
 }

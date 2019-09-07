@@ -28,7 +28,7 @@ public class ListTag<T: Tag>: ValueTag<[T]> {
     }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        try dos.write(TagFactory.idFromType(T.self))
+        try dos.write(TagFactory.idFromType(T.self).rawValue)
         try dos.write(size)
         
         if size != 0 {
@@ -39,6 +39,7 @@ public class ListTag<T: Tag>: ValueTag<[T]> {
     }
     
     override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+        self.value = []
         let typeId = try dis.uInt8()
         
         let size = try dis.uInt32()
@@ -47,6 +48,7 @@ public class ListTag<T: Tag>: ValueTag<[T]> {
             for _ in 0..<size {
                 let t = TagFactory.fromID(id: typeId)
                 try t.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+                
                 self.append(t as! T)
             }
         }

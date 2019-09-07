@@ -22,7 +22,7 @@ public class CompoundTag: ValueTag<[String: Tag]> {
             try value.serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
         }
         
-        try EndTag.shared.serialize(into: dos, maxDepth: maxDepth)
+        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
     }
     
     override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
