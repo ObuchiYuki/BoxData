@@ -1,41 +1,40 @@
 //
-//  StringTag.swift
+//  ByteArrayTag.swift
 //  NBT
 //
-//  Created by yuki on 2019/09/06.
+//  Created by yuki on 2019/09/07.
 //  Copyright © 2019 yuki. All rights reserved.
 //
 
 import Foundation
 
-public class StringTag: ArrayTag<String> {
+public class ByteArrayTag: ArrayTag<[Int8]> {
 
-    public static let zero = StringTag(value: "")
-
-    init(value:String) {
-        super.init(typeID: TagID.string.rawValue, value: value)
+    public static let zero = IntArrayTag(value: [])
+    
+    init(value:[Int8]?) {
+        super.init(typeID: TagID.intArray.rawValue, value: value)
     }
     
     required init(typeID: UInt8) {fatalError()}
-    
+
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)
         
-        try dos.write(value!)
+        try value?.forEach{try dos.write($0) }
     }
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
-        let length:UInt32 = try dis.uInt32()
-        var _value = [UInt8]()
+        let length:Int32 = try dis.readBytes()
+        var _value = [Int8]()
         
         for _ in 0..<length {
-            _value.append(try dis.uInt8())
+            _value.append(try dis.readBytes())
         }
-        
-        self.value = String(bytes: _value, encoding: .utf8)
+        self.value = _value
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        return value ?? "nil"
+        value.map{"\($0)s"} ?? "nil"
     }
 }

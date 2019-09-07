@@ -14,7 +14,7 @@ public class CompoundTag: ValueTag<[String: Tag]> {
         return value.map{UInt32($0.count)} ?? 0
     }
     
-    init(value:[String: Tag]) {
+    init(value:[String: Tag]?) {
         super.init(typeID: TagID.compound.rawValue, value: value)
     }
     

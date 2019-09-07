@@ -12,7 +12,9 @@ public class DoubleTag: FloatingTag<Double> {
 
     public static let zero = DoubleTag(value: 0)
     
-    init(value:Double?) {
+    
+    
+    override init(value:Double?) {
         super.init(typeID: TagID.double.rawValue, value: value)
     }
     

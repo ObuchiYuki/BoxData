@@ -8,8 +8,14 @@
 
 import Foundation
 
-public class ListTag<U, T: ValueTag<U>>: ValueTag<[T]> {
+public class ListTag<T: Tag>: ValueTag<[T]> {
     
+    
+    init(value:[T]?) {
+        super.init(typeID: TagID.list.rawValue, value: value)
+    }
+    
+    required init(typeID: UInt8) {fatalError()}
     
     public var size:Int32 {
         return Int32(value!.count)
@@ -44,7 +50,7 @@ public class ListTag<U, T: ValueTag<U>>: ValueTag<[T]> {
         
         if (size != 0) {
             for _ in 0..<size {
-                let t = TagFactory.fromID(type: U.self, id: typeId)
+                let t = TagFactory.fromID(id: typeId)
                 try t.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
                 self.append(t as! T)
             }

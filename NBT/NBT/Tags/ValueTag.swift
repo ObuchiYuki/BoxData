@@ -17,16 +17,8 @@ public class ValueTag<T>: Tag {
     
     // ====================================================== //
     // MARK: - Construcotr -
-    init(typeID: UInt8, value:T? = nil) {
-        super.init(typeID: typeID)
-        
+    init(value:T? = nil) {
         self.value = value
-    }
-    
-    required init(typeID: UInt8) {
-        super.init(typeID: typeID)
-        
-        self.value = nil
     }
     
     override public func valueString(maxDepth: Int) -> String {

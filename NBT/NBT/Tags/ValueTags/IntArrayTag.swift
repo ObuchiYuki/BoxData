@@ -1,5 +1,5 @@
 //
-//  LongArrayTag.swift
+//  IntArrayTag.swift
 //  NBT
 //
 //  Created by yuki on 2019/09/06.
@@ -8,12 +8,12 @@
 
 import Foundation
 
-public class LongArrayTag: ArrayTag<[Int64]> {
+public class IntArrayTag: ArrayTag<[Int32]> {
 
-    public static let zero = LongArrayTag(value: [])
+    public static let zero = IntArrayTag(value: [])
     
-    init(value:[Int64]) {
-        super.init(typeID: TagID.longArray.rawValue, value: value)
+    init(value:[Int32]?) {
+        super.init(typeID: TagID.intArray.rawValue, value: value)
     }
     
     required init(typeID: UInt8) {fatalError()}
@@ -26,7 +26,7 @@ public class LongArrayTag: ArrayTag<[Int64]> {
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
         let length:Int32 = try dis.readBytes()
-        var _value = [Int64]()
+        var _value = [Int32]()
         
         for _ in 0..<length {
             _value.append(try dis.readBytes())
