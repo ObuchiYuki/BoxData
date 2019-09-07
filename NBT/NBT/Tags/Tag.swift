@@ -7,8 +7,8 @@
 //
 
 
-public class Tag<T: Hashable> {
-         
+public class Tag<T> {
+    public typealias Element = T
     // ====================================================== //
     // MARK: - Properties -
     public var value: T!
@@ -46,10 +46,9 @@ public class Tag<T: Hashable> {
     public static func deserialize<U>(from dis: DataReadStream, maxDepth:Int) throws -> Tag<U> {
         let id = try dis.uInt8()
     
-        let tag:Tag<U> = TagFactory.fromID(id)
+        let tag = TagFactory.fromID(type: U.self, id: id)
         
-        if (id != 0) {
-            //dis.string(count: T##Int##);
+        if (id != 0) { 
             try tag.deserializeValue(into: dis, maxDepth: maxDepth);
         }
         
@@ -94,13 +93,13 @@ extension Tag: CustomStringConvertible {
     }
 }
 
-extension Tag: Equatable {
+extension Tag: Equatable where Element: Equatable {
     static public func == (left:Tag, right:Tag) -> Bool {
-        return type(of: left) == type(of: right)
+        return left.value == right.value
     }
 }
 
-extension Tag: Hashable {
+extension Tag: Hashable where Element: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(value)
     }

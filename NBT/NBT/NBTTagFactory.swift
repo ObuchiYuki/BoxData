@@ -9,13 +9,13 @@
 import Foundation
 
 public class TagFactory {
-    static func idFromType<U:Hashable, T: Tag<U>>(_ type:T.Type) -> UInt8 {
+    static func idFromType<U, T: Tag<U>>(_ type:T.Type) -> UInt8 {
         fatalError()
     }
-    static func idFromValue<U:Hashable, T: Tag<U>>(_ value:T? = nil) -> UInt8 {
+    static func idFromValue<U, T: Tag<U>>(_ value:T? = nil) -> UInt8 {
         fatalError()
     }
-    static func fromID<T: Hashable>(type: T.Type, id:UInt8) -> Tag<T> {
+    static func fromID<T>(type: T.Type, id:UInt8) -> Tag<T> {
         fatalError()
     }
 }

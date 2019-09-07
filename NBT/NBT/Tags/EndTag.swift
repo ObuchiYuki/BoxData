@@ -12,7 +12,7 @@ public final class EndTag: Tag<Int> {
 
     static let shared = EndTag()
 
-    required init(value: T? = nil) {
+    required init(value: Int? = nil) {
         super.init(value: nil)
     }
     
