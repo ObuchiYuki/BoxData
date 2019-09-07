@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class ListTag<T: AnyTag>: Tag<[T]> {
+public class ListTag<U, T: Tag<U>>: Tag<[T]> {
     
     
     public var size:Int32 {
@@ -44,10 +44,9 @@ public class ListTag<T: AnyTag>: Tag<[T]> {
         
         if (size != 0) {
             for _ in 0..<size {
-                let t = T(value: nil)
-                t.typeID = typeId
+                let t = TagFactory.fromID(type: U.self, id: typeId)
                 try t.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
-                self.append(t)
+                self.append(t as! T)
             }
         }
     }

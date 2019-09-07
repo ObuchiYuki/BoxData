@@ -12,6 +12,12 @@ public class StringTag: ArrayTag<String> {
 
     public static let zero = StringTag(value: "")
 
+    init(value:String) {
+        super.init(typeID: TagID.string.rawValue, value: value)
+    }
+    
+    required init(typeID: UInt8) {fatalError()}
+    
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)
         
