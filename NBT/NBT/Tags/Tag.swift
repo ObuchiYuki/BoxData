@@ -58,25 +58,19 @@ public class Tag {
     // MARK: - Overridable -
     
     open func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        fatalError()
+        fatalError("Subclass of Tag must implement serializeValue(into:, _:).")
     }
     
     open func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
-        fatalError()
+        fatalError("Subclass of Tag must implement deserializeValue(from:, _:).")
     }
     
     open func valueString(maxDepth: Int) -> String {
-        fatalError()
+        fatalError("Subclass of Tag must implement valueString(maxDepth:)")
     }
 
     open func tagString() -> String {
-        fatalError()
-    }
-}
-
-extension Tag {
-    public static var defaultMaxDepth:Int {
-        return 512
+        fatalError("Subclass of Tag must implement tagString()")
     }
 }
 

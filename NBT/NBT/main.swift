@@ -11,32 +11,29 @@ import Foundation
 do {
     
     if true {
-
         let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
         
         let stream = DataReadStream(data: data)
         
-        let tag = try CompoundTag.deserialize(from: stream, maxDepth: 512)
+        let tag = try Tag.deserialize(from: stream, maxDepth: 512)
         
         print(tag)
     }else{
         let stream = DataWriteStream()
         
         let component = CompoundTag(value: [
-            "name": StringTag(value: "Alice"),
-            "age": IntTag(value: 12),
-            "birth": CompoundTag(value: [
-                "country": StringTag(value: "Amarica"),
-                "state": StringTag(value: "Oregon"),
-                "ages": ListTag(value: [
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                    IntTag(value: 12),
-                ])
+            "ages": ListTag(value: [
+                IntTag(value: 12),
+                IntTag(value: 12),
+                CompoundTag(value: [
+                    "name": StringTag(value: "Alice"),
+                    "age": IntTag(value: 12),
+                    "list": ListTag(value: [])
+                ]),
+                IntTag(value: 12),
+                IntTag(value: 12),
+                IntTag(value: 12),
+                IntTag(value: 12),
             ])
         ])
         
