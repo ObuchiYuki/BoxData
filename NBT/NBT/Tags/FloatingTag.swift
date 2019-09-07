@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class FloatingTag<T: BinaryFloatingPoint & CustomStringConvertible>: Tag<T> {
+public class FloatingTag<T: BinaryFloatingPoint & CustomStringConvertible>: ValueTag<T> {
 
     public func asInt8() -> Int8? {
         return value.map{Int8($0)}

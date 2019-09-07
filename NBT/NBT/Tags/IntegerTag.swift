@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IntegerTag<T: BinaryInteger>: Tag<T> {
+public class IntegerTag<T: BinaryInteger>: ValueTag<T> {
     
     public func asInt8() -> Int8? {
         return value.map{Int8($0)}

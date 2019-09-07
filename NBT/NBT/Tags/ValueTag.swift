@@ -7,7 +7,7 @@
 //
 
 
-public class Tag<T>: AnyTag {
+public class ValueTag<T>: AnyTag {
     
     public typealias Element = T
     
@@ -38,13 +38,13 @@ public class Tag<T>: AnyTag {
     }
 }
 
-extension Tag: Equatable where Element: Equatable {
-    static public func == (left:Tag, right:Tag) -> Bool {
+extension ValueTag: Equatable where Element: Equatable {
+    static public func == (left:ValueTag, right:ValueTag) -> Bool {
         return left.value == right.value
     }
 }
 
-extension Tag: Hashable where Element: Hashable {
+extension ValueTag: Hashable where Element: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(value)
     }

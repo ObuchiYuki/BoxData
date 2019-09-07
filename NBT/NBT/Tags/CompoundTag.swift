@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class CompoundTag: Tag<[String: AnyTag]> {
+public class CompoundTag: ValueTag<[String: AnyTag]> {
 
     public var size:UInt32 {
         return value.map{UInt32($0.count)} ?? 0
@@ -27,7 +27,7 @@ public class CompoundTag: Tag<[String: AnyTag]> {
         var id = try dis.uInt8()
         
         while id != 0 {
-            let tag = TagFactory.fromID(type: U.self, id: id)
+            let tag = TagFactory.fromID(id: id)
             let scount = try dis.uInt32()
             let name = try dis.string(count: scount)
             

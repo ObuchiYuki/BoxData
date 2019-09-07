@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class ArrayTag<T: Collection & Hashable>: Tag<T> {
+public class ArrayTag<T: Collection & Hashable>: ValueTag<T> {
 
     var length:Int32 {
         return value.map{Int32($0.count)} ?? 0

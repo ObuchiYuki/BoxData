@@ -21,7 +21,7 @@
 		B6AF1B7B232275AE0099EBAE /* FloatTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6D232275AE0099EBAE /* FloatTag.swift */; };
 		B6AF1B7C232275AE0099EBAE /* DoubleTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */; };
 		B6AF1B7D232275AE0099EBAE /* FloatingTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */; };
-		B6AF1B7E232275AE0099EBAE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B70232275AE0099EBAE /* Tag.swift */; };
+		B6AF1B7E232275AE0099EBAE /* ValueTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B70232275AE0099EBAE /* ValueTag.swift */; };
 		B6AF1B7F232275AE0099EBAE /* Ex+DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B71232275AE0099EBAE /* Ex+DataStream.swift */; };
 		B6AF1B80232275AE0099EBAE /* DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B72232275AE0099EBAE /* DataStream.swift */; };
 		B6AF1B82232275AE0099EBAE /* NBTTagFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B74232275AE0099EBAE /* NBTTagFactory.swift */; };
@@ -59,7 +59,7 @@
 		B6AF1B6D232275AE0099EBAE /* FloatTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatTag.swift; sourceTree = "<group>"; };
 		B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleTag.swift; sourceTree = "<group>"; };
 		B6AF1B6F232275AE0099EBAE /* FloatingTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingTag.swift; sourceTree = "<group>"; };
-		B6AF1B70232275AE0099EBAE /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		B6AF1B70232275AE0099EBAE /* ValueTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTag.swift; sourceTree = "<group>"; };
 		B6AF1B71232275AE0099EBAE /* Ex+DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ex+DataStream.swift"; sourceTree = "<group>"; };
 		B6AF1B72232275AE0099EBAE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
 		B6AF1B74232275AE0099EBAE /* NBTTagFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NBTTagFactory.swift; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		B6AF1B64232275AE0099EBAE /* Tags */ = {
 			isa = PBXGroup;
 			children = (
-				B6AF1B70232275AE0099EBAE /* Tag.swift */,
+				B6AF1B70232275AE0099EBAE /* ValueTag.swift */,
 				B60BACA0232331B60081B600 /* AnyTag.swift */,
 				B6AF1B65232275AE0099EBAE /* EndTag.swift */,
 				B6AF1B67232275AE0099EBAE /* LongTag.swift */,
@@ -209,7 +209,7 @@
 				B6AF1B7B232275AE0099EBAE /* FloatTag.swift in Sources */,
 				B60BACA1232331B60081B600 /* AnyTag.swift in Sources */,
 				B6AF1B77232275AE0099EBAE /* IntegerTag.swift in Sources */,
-				B6AF1B7E232275AE0099EBAE /* Tag.swift in Sources */,
+				B6AF1B7E232275AE0099EBAE /* ValueTag.swift in Sources */,
 				B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */,
 				B60BAC9F232281AA0081B600 /* ListTag.swift in Sources */,
 				B6AF1B8A23227A2A0099EBAE /* LongArrayTag.swift in Sources */,

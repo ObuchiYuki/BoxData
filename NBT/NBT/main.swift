@@ -10,20 +10,5 @@ import Foundation
 
 print("Hello, World!")
 
-
-
-
-let nbt = CompoundTag(value: [
-    "name": StringTag(value: "Hi"),
-    "position": ShortTag(value: 12)
-])
-    
-    ListTag(value: [
-    IntTag(value: 12),
-    IntTag(value: 12),
-    IntTag(value: 12),
-    IntTag(value: 12)
-])
-
     
 print(nbt)
