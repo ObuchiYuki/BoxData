@@ -12,7 +12,7 @@ public class FloatTag: FloatingTag<Float> {
 
     public static let zero = FloatTag(value: 0)
     
-    init(value:Float) {
+    init(value:Float?) {
         super.init(typeID: TagID.float.rawValue, value: value)
     }
     

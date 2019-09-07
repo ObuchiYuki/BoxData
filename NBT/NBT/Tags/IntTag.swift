@@ -12,7 +12,7 @@ public class IntTag: IntegerTag<Int32> {
 
     public static let zero = IntTag(value: 0)
     
-    init(value:Int32) {
+    init(value:Int32?) {
         super.init(typeID: TagID.int.rawValue, value: value)
     }
     

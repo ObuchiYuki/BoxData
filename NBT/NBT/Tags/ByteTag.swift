@@ -12,7 +12,7 @@ public class ByteTag: IntegerTag<Int8> {
 
     public static let zero = ByteTag(value: 0)
     
-    init(value:Int8) {
+    init(value:Int8?) {
         super.init(typeID: TagID.byte.rawValue, value: value)
     }
     

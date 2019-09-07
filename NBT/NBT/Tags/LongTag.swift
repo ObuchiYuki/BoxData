@@ -12,7 +12,7 @@ public class LongTag: IntegerTag<Int64> {
 
     public static let zero = LongTag(value: 0)
     
-    init(value:Int64) {
+    init(value:Int64?) {
         super.init(typeID: TagID.long.rawValue, value: value)
     }
     

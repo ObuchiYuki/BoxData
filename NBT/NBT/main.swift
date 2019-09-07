@@ -16,5 +16,13 @@ let player = CompoundTag(value: [
     "foodLevel": IntTag(value: 1212)
 ])
 
+do {
+    
+    let stream = DataReadStream(data: try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp")))
 
-print(player)
+    let a = try CompoundTag(value: [:]).deserializeValue(into: stream, maxDepth: 512)
+    
+    print(a)
+}catch {
+    print(error)
+}

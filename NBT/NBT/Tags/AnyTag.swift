@@ -49,7 +49,7 @@ public class Tag {
     
     public func decrementMaxDepth(_ maxDepth: Int) -> Int {
         assert(maxDepth > 0, "negative maximum depth is not allowed")
-        assert(maxDepth == 0, "reached maximum depth of NBT structure")
+        assert(maxDepth != 0, "reached maximum depth of NBT structure")
         
         return maxDepth - 1
     }
