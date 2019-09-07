@@ -7,7 +7,7 @@
 //
 
 
-public class ValueTag<T>: AnyTag {
+public class ValueTag<T>: Tag {
     
     public typealias Element = T
     
@@ -29,12 +29,12 @@ public class ValueTag<T>: AnyTag {
         self.value = nil
     }
     
-    override func valueString(maxDepth: Int) -> String {
+    override public func valueString(maxDepth: Int) -> String {
         return value.map{"\($0)"} ?? "nil"
     }
 
-    override func tagString() -> String {
-        valueString(maxDepth: AnyTag.defaultMaxDepth)
+    override public func tagString() -> String {
+        valueString(maxDepth: Tag.defaultMaxDepth)
     }
 }
 

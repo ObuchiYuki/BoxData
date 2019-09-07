@@ -10,5 +10,11 @@ import Foundation
 
 print("Hello, World!")
 
-    
-print(nbt)
+let player = CompoundTag(value: [
+    "DataVersion": ShortTag(value: 12),
+    "Demention": ShortTag(value: 12),
+    "foodLevel": IntTag(value: 1212)
+])
+
+
+print(player)

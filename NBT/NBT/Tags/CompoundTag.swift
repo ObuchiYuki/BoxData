@@ -8,11 +8,17 @@
 
 import Foundation
 
-public class CompoundTag: ValueTag<[String: AnyTag]> {
+public class CompoundTag: ValueTag<[String: Tag]> {
 
     public var size:UInt32 {
         return value.map{UInt32($0.count)} ?? 0
     }
+    
+    init(value:[String: Tag]) {
+        super.init(typeID: TagID.compound.rawValue, value: value)
+    }
+    
+    required init(typeID: UInt8) {fatalError()}
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         for (key, value) in value {

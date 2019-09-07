@@ -27,6 +27,6 @@ public class ShortTag: IntegerTag<Int16> {
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        value.map{"\($0)s"} ?? "nil"
+        value.map{"\($0)"} ?? "nil"
     }
 }
