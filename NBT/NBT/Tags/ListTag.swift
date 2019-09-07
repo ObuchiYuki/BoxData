@@ -8,7 +8,9 @@
 
 import Foundation
 
-public class ListTag<U, T: Tag<U>>: Tag<[T]> {
+public class ListTag<T: Hashable>: Tag<[T]> {
+    
+    public let elementID:Int8! = nil
     
     public var size:Int32 {
         return Int32(value!.count)
@@ -26,7 +28,7 @@ public class ListTag<U, T: Tag<U>>: Tag<[T]> {
     }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        try dos.write(TagFactory.idFromType(T.self))
+        try dos.write(TagFactory))
         try dos.write(size)
         
         if size != 0 {
