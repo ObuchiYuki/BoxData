@@ -10,29 +10,19 @@
 import Foundation
 import CoreGraphics
 
-// ======================================================================== //
-// MARK: - DataStreamError -
 enum DataStreamError: Error {
-    /// Error happend while reading
     case readError
     
-    /// Error happend while wrting
     case writeError
 }
 
-// ======================================================================== //
-// MARK: - DataReadStream -
-public class DataReadStream {
+internal class DataReadStream {
 
-    // ======================================================================== //
-    // MARK: - Properties -
     private var inputStream: InputStream
     private let bytes: Int
     private var offset: Int = 0
     
-    // ======================================================================== //
-    // MARK: - Constructor -
-    public init(data: Data) {
+    init(data: Data) {
         self.inputStream = InputStream(data: data)
         self.inputStream.open()
         self.bytes = data.count
@@ -42,19 +32,15 @@ public class DataReadStream {
         self.inputStream.close()
     }
 
-    // ======================================================================== //
-    // MARK: - Access -
-    public var hasBytesAvailable: Bool {
+    var hasBytesAvailable: Bool {
         return self.inputStream.hasBytesAvailable
     }
     
-    public var bytesAvailable: Int {
+    var bytesAvailable: Int {
         return self.bytes - self.offset
     }
     
-    // ======================================================================== //
-    // MARK: - Methods -
-    public func readBytes<T>() throws -> T {
+    func readBytes<T>() throws -> T {
         let valueSize = MemoryLayout<T>.size
         let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
         var buffer = [UInt8](repeating: 0, count: MemoryLayout<T>.stride)
@@ -70,51 +56,51 @@ public class DataReadStream {
         return valuePointer.pointee
     }
 
-    public func int8() throws -> Int8 {
+    func int8() throws -> Int8 {
         return try self.readBytes()
     }
-    public func uInt8() throws -> UInt8 {
+    func uInt8() throws -> UInt8 {
         return try self.readBytes()
     }
 
-    public func int16() throws -> Int16 {
+    func int16() throws -> Int16 {
         let value:UInt16 = try self.readBytes()
         return Int16(bitPattern: CFSwapInt16BigToHost(value))
     }
-    public func uint16() throws -> UInt16 {
+    func uint16() throws -> UInt16 {
         let value:UInt16 = try self.readBytes()
         return CFSwapInt16BigToHost(value)
     }
 
-    public func int32() throws -> Int32 {
+    func int32() throws -> Int32 {
         let value:UInt32 = try self.readBytes()
         return Int32(bitPattern: CFSwapInt32BigToHost(value))
     }
-    public func uInt32() throws -> UInt32 {
+    func uInt32() throws -> UInt32 {
         let value:UInt32 = try self.readBytes()
         return CFSwapInt32BigToHost(value)
     }
 
-    public func int64() throws -> Int64 {
+    func int64() throws -> Int64 {
         let value:UInt64 = try self.readBytes()
         return Int64(bitPattern: CFSwapInt64BigToHost(value))
     }
-    public func uInt64() throws -> UInt64 {
+    func uInt64() throws -> UInt64 {
         let value:UInt64 = try self.readBytes()
         return CFSwapInt64BigToHost(value)
     }
 
-    public func float() throws -> Float {
+    func float() throws -> Float {
         let value:CFSwappedFloat32 = try self.readBytes()
         return CFConvertFloatSwappedToHost(value)
     }
 
-    public func double() throws -> Double {
+    func double() throws -> Double {
         let value:CFSwappedFloat64 = try self.readBytes()
         return CFConvertFloat64SwappedToHost(value)
     }
 
-    public func data(count: Int) throws -> Data {
+    func data(count: Int) throws -> Data {
         var buffer = [UInt8](repeating: 0, count: count)
         if self.inputStream.read(&buffer, maxLength: count) != count {
             
@@ -124,24 +110,18 @@ public class DataReadStream {
         return Data(buffer)
     }
 
-    public func bit() throws -> Bool {
+    func bit() throws -> Bool {
         let byte = try self.uInt8() as UInt8
         return byte != 0
     }
     
 }
 
-// ======================================================================== //
-// MARK: - DataWriteStream -
-public class DataWriteStream {
+internal class DataWriteStream {
 
-    // ======================================================================== //
-    // MARK: - Properties -
     private var outputStream: OutputStream
 
-    // ======================================================================== //
-    // MARK: - Construcotr -
-    public init() {
+    init() {
         self.outputStream = OutputStream.toMemory()
         self.outputStream.open()
     }
@@ -150,15 +130,11 @@ public class DataWriteStream {
         self.outputStream.close()
     }
 
-    // ======================================================================== //
-    // MARK: - Access -
-    public var data: Data? {
+    var data: Data? {
         return self.outputStream.property(forKey: .dataWrittenToMemoryStreamKey) as? Data
     }
     
-    // ======================================================================== //
-    // MARK: - Methods -
-    public func writeBytes<T>(value: T) throws {
+    func writeBytes<T>(value: T) throws {
         let valueSize = MemoryLayout<T>.size
         var value = value
         var result = 0
@@ -173,41 +149,41 @@ public class DataWriteStream {
         }
     }
 
-    public func write(_ value: Int8) throws {
+    func write(_ value: Int8) throws {
         try writeBytes(value: value)
     }
-    public func write(_ value: UInt8) throws {
+    func write(_ value: UInt8) throws {
         try writeBytes(value: value)
     }
 
-    public func write(_ value: Int16) throws {
+    func write(_ value: Int16) throws {
         try writeBytes(value: CFSwapInt16HostToBig(UInt16(bitPattern: value)))
     }
-    public func write(_ value: UInt16) throws {
+    func write(_ value: UInt16) throws {
         try writeBytes(value: CFSwapInt16HostToBig(value))
     }
 
-    public func write(_ value: Int32) throws {
+    func write(_ value: Int32) throws {
         try writeBytes(value: CFSwapInt32HostToBig(UInt32(bitPattern: value)))
     }
-    public func write(_ value: UInt32) throws {
+    func write(_ value: UInt32) throws {
         try writeBytes(value: CFSwapInt32HostToBig(value))
     }
 
-    public func write(_ value: Int64) throws {
+    func write(_ value: Int64) throws {
         try writeBytes(value: CFSwapInt64HostToBig(UInt64(bitPattern: value)))
     }
-    public func write(_ value: UInt64) throws {
+    func write(_ value: UInt64) throws {
         try writeBytes(value: CFSwapInt64HostToBig(value))
     }
     
-    public func write(_ value: Float32) throws {
+    func write(_ value: Float32) throws {
         try writeBytes(value: CFConvertFloatHostToSwapped(value))
     }
-    public func write(_ value: Float64) throws {
+    func write(_ value: Float64) throws {
         try writeBytes(value: CFConvertFloat64HostToSwapped(value))
     }
-    public func write(_ data: Data) throws {
+    func write(_ data: Data) throws {
         var bytesWritten = 0
         
         data.withUnsafeBytes {
@@ -220,7 +196,7 @@ public class DataWriteStream {
         }
     }
     
-    public func write(_ value: Bool) throws {
+    func write(_ value: Bool) throws {
         try writeBytes(value: UInt8(value ? 0xff : 0x00))
     }
 }

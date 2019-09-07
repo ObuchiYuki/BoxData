@@ -10,7 +10,7 @@ import Foundation
 
 do {
     
-    if false {
+    if true {
         let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
         
         let stream = DataReadStream(data: data)
