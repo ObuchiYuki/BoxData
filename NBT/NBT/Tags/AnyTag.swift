@@ -8,4 +8,6 @@
 
 import Foundation
 
-public class AnyTag: Tag<AnyHashable> {}
+public class AnyTag: Tag<AnyHashable> {
+    var typeID:UInt8!
+}

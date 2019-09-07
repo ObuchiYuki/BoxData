@@ -44,9 +44,10 @@ public class ListTag<T: AnyTag>: Tag<[T]> {
         
         if (size != 0) {
             for _ in 0..<size {
-                let t = TagFactory.fromID(type: U.self, id: typeId)
+                let t = T(value: nil)
+                t.typeID = typeId
                 try t.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
-                self.append(t as! T)
+                self.append(t)
             }
         }
     }
