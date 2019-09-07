@@ -9,10 +9,6 @@
 import Foundation
 
 public class IntegerTag<T: BinaryInteger>: Tag<T> {
-
-    init(value: T) {
-        super.init(value: value)
-    }
     
     public func asInt8() -> Int8? {
         return value.map{Int8($0)}

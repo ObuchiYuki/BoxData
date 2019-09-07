@@ -10,10 +10,6 @@ import Foundation
 
 public class FloatingTag<T: BinaryFloatingPoint & CustomStringConvertible>: Tag<T> {
 
-    init(value: T) {
-        super.init(value: value)
-    }
-    
     public func asInt8() -> Int8? {
         return value.map{Int8($0)}
     }
@@ -38,7 +34,7 @@ public class FloatingTag<T: BinaryFloatingPoint & CustomStringConvertible>: Tag<
         return value.map{Double($0)}
     }
     
-    override public func valueToString(maxDepth:Int) -> String {
+    override public func valueString(maxDepth:Int) -> String {
         return value?.description ?? ""
     }
 }

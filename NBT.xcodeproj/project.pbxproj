@@ -96,7 +96,6 @@
 			isa = PBXGroup;
 			children = (
 				B6AF1B63232275AE0099EBAE /* NBT */,
-				B6AF1B5C232275800099EBAE /* main.swift */,
 			);
 			path = NBT;
 			sourceTree = "<group>";
@@ -104,6 +103,7 @@
 		B6AF1B63232275AE0099EBAE /* NBT */ = {
 			isa = PBXGroup;
 			children = (
+				B6AF1B5C232275800099EBAE /* main.swift */,
 				B6AF1B64232275AE0099EBAE /* Tags */,
 				B6AF1B71232275AE0099EBAE /* Ex+DataStream.swift */,
 				B6AF1B72232275AE0099EBAE /* DataStream.swift */,

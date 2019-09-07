@@ -12,10 +12,10 @@ public final class EndTag: Tag<Int> {
 
     static let shared = EndTag()
 
-    private init() {
+    required init(value: T? = nil) {
         super.init(value: nil)
     }
-
+    
     public override func serialize(into dos: DataWriteStream, maxDepth: Int) throws {}
     public override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {}
     public override func serialize(into dos: DataWriteStream, named name: String, maxDepth: Int) throws {}
