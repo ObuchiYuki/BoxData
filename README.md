@@ -1,2 +1,2 @@
-# NBT
-A Swift implementation of the NBT protocol
+# Box Data
+A Swift implementation of the Box Data
