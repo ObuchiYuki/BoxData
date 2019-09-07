@@ -18,6 +18,7 @@ extension ReadStreamStringReadingError: LocalizedError {
 
 extension DataWriteStream {
     public func write(_ string:String) throws {
+        if string.isEmpty { return }
         guard let data = string.data(using: .utf8) else {return}
         
         try self.write(UInt8(data.count))

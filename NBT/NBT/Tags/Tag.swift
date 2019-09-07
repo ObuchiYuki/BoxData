@@ -19,6 +19,7 @@ public class Tag {
     
     /// 無名Data書き込み
     public func serialize(into dos:DataWriteStream, maxDepth:Int) throws {
+        
         try serialize(into: dos, named: "", maxDepth: maxDepth)
     }
 

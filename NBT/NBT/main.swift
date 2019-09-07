@@ -16,7 +16,7 @@ do {
         "age": IntTag(value: 12)
     ])
     
-    try component.serialize(into: stream, maxDepth: 512)
+    try component.serialize(into: stream ,maxDepth: 512)
     
     FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: stream.data)
     
