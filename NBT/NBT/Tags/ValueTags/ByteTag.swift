@@ -10,16 +10,6 @@ import Foundation
 
 public class ByteTag: IntegerTag<Int8> {
 
-    public static let zero = ByteTag(value: 0)
-    
-    init(value:Int8?) {
-        super.init(typeID: TagID.byte.rawValue, value: value)
-    }
-    
-    required init(typeID: UInt8) {fatalError()}
-
-
-    
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
     }

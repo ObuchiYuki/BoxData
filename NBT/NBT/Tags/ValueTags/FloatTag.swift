@@ -10,14 +10,6 @@ import Foundation
 
 public class FloatTag: FloatingTag<Float> {
 
-    public static let zero = FloatTag(value: 0)
-    
-    init(value:Float?) {
-        super.init(typeID: TagID.float.rawValue, value: value)
-    }
-    
-    required init(typeID: UInt8) {fatalError()}
-
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
     }

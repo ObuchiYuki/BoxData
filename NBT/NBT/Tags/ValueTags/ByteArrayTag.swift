@@ -10,14 +10,6 @@ import Foundation
 
 public class ByteArrayTag: ArrayTag<[Int8]> {
 
-    public static let zero = IntArrayTag(value: [])
-    
-    init(value:[Int8]?) {
-        super.init(typeID: TagID.intArray.rawValue, value: value)
-    }
-    
-    required init(typeID: UInt8) {fatalError()}
-
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)
         

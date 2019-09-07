@@ -11,14 +11,6 @@ import Foundation
 public final class EndTag: Tag {
 
     static let shared = EndTag()
-
-    required init(value: Int? = nil) {
-        super.init(typeID: TagID.end.rawValue)
-    }
-    
-    required init(typeID: UInt8) {
-        fatalError("init(typeID:) has not been implemented")
-    }
     
     public override func serialize(into dos: DataWriteStream, maxDepth: Int) throws {}
     public override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {}

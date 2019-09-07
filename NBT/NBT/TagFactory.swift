@@ -17,7 +17,7 @@ public class TagFactory {
     }
     static func fromID(id: UInt8) -> Tag {
         switch TagID(rawValue: id)! {
-        case .end:      return EndTag(value: nil)
+        case .end:      return EndTag()
         case .byte:     return ByteTag(value: nil)
         case .short:    return ShortTag(value: nil)
         case .int:      return IntTag(value: nil)

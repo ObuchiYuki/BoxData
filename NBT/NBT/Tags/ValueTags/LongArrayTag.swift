@@ -10,14 +10,6 @@ import Foundation
 
 public class LongArrayTag: ArrayTag<[Int64]> {
 
-    public static let zero = LongArrayTag(value: [])
-    
-    init(value:[Int64]?) {
-        super.init(typeID: TagID.longArray.rawValue, value: value)
-    }
-    
-    required init(typeID: UInt8) {fatalError()}
-
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)
         

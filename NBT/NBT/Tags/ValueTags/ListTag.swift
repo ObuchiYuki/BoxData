@@ -9,14 +9,7 @@
 import Foundation
 
 public class ListTag<T: Tag>: ValueTag<[T]> {
-    
-    
-    init(value:[T]?) {
-        super.init(typeID: TagID.list.rawValue, value: value)
-    }
-    
-    required init(typeID: UInt8) {fatalError()}
-    
+        
     public var size:Int32 {
         return Int32(value!.count)
     }

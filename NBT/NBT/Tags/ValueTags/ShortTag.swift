@@ -10,13 +10,6 @@ import Foundation
 
 
 public class ShortTag: IntegerTag<Int16> {
-
-    public static let zero = ShortTag(value: 0)
-
-    init(value: Int16?) {
-        super.init(typeID: TagID.short.rawValue, value: value)
-    }
-    required init(typeID: UInt8) { fatalError("init(typeID:) has not been implemented") }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
