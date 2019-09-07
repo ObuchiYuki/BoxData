@@ -10,14 +10,16 @@ import Foundation
 
 public class StringTag: ArrayTag<String> {
     
+    override func tagID() -> TagID { .string }
+    
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        try dos.write(length)
+        try dos.write(UInt8(length))
         
         try dos.write(value!)
     }
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
-        let length:UInt32 = try dis.uInt32()
+        let length = try dis.uInt8()
         var _value = [UInt8]()
         
         for _ in 0..<length {

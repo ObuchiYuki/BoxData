@@ -10,7 +10,8 @@ import Foundation
 
 public class IntTag: IntegerTag<Int32> {
 
-    typ
+    override func tagID() -> TagID { .int }
+    
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
     }

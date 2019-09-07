@@ -9,6 +9,8 @@
 import Foundation
 
 public class CompoundTag: ValueTag<[String: Tag]> {
+    
+    override func tagID() -> TagID { .compound }
 
     public var size:UInt32 {
         return value.map{UInt32($0.count)} ?? 0

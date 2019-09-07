@@ -9,6 +9,8 @@
 import Foundation
 
 public class ByteArrayTag: ArrayTag<[Int8]> {
+    
+    override func tagID() -> TagID { .byteArray }
 
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(length)

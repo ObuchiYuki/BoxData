@@ -9,6 +9,8 @@
 import Foundation
 
 public class IntArrayTag: ArrayTag<[Int32]> {
+    
+    override func tagID() -> TagID { .intArray }
 
     public static let zero = IntArrayTag(value: [])
 

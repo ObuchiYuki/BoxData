@@ -9,6 +9,8 @@
 import Foundation
 
 public class FloatTag: FloatingTag<Float> {
+    
+    override func tagID() -> TagID { .float }
 
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }

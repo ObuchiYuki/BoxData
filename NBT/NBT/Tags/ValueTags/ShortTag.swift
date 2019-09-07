@@ -11,6 +11,8 @@ import Foundation
 
 public class ShortTag: IntegerTag<Int16> {
     
+    override func tagID() -> TagID { .short }
+    
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
     }

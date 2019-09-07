@@ -9,6 +9,8 @@
 import Foundation
 
 public class ListTag<T: Tag>: ValueTag<[T]> {
+    
+    override func tagID() -> TagID { .list }
         
     public var size:Int32 {
         return Int32(value!.count)

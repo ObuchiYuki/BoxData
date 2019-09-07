@@ -85,19 +85,19 @@
 		B694D1EC23235AE200811F0E /* ValueTags */ = {
 			isa = PBXGroup;
 			children = (
-				B6AF1B69232275AE0099EBAE /* IntTag.swift */,
-				B6AF1B6A232275AE0099EBAE /* ShortTag.swift */,
-				B6AF1B6D232275AE0099EBAE /* FloatTag.swift */,
 				B6AF1B68232275AE0099EBAE /* IntegerTag.swift */,
 				B6AF1B6B232275AE0099EBAE /* ByteTag.swift */,
-				B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */,
+				B6AF1B6A232275AE0099EBAE /* ShortTag.swift */,
+				B6AF1B69232275AE0099EBAE /* IntTag.swift */,
+				B6AF1B67232275AE0099EBAE /* LongTag.swift */,
+				B6AF1B6D232275AE0099EBAE /* FloatTag.swift */,
 				B6AF1B6E232275AE0099EBAE /* DoubleTag.swift */,
+				B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */,
 				B694D1EA2323535900811F0E /* ByteArrayTag.swift */,
 				B694D1E623233BE200811F0E /* CompoundTag.swift */,
 				B6AF1B87232278410099EBAE /* IntArrayTag.swift */,
 				B60BAC9E232281AA0081B600 /* ListTag.swift */,
 				B6AF1B8B23227A7B0099EBAE /* StringTag.swift */,
-				B6AF1B67232275AE0099EBAE /* LongTag.swift */,
 			);
 			path = ValueTags;
 			sourceTree = "<group>";

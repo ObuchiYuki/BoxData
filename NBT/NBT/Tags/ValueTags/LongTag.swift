@@ -9,6 +9,8 @@
 import Foundation
 
 public class LongTag: IntegerTag<Int64> {
+    
+    override func tagID() -> TagID { .long }
 
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
