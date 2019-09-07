@@ -26,7 +26,7 @@
 
 /* Begin PBXFileReference section */
 		B60BACA0232331B60081B600 /* BoxTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxTag.swift; sourceTree = "<group>"; };
-		B6AF1B59232275800099EBAE /* NBT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NBT; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AF1B59232275800099EBAE /* BoxData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BoxData; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF1B5C232275800099EBAE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B6AF1B72232275AE0099EBAE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,7 +45,7 @@
 		B6AF1B50232275800099EBAE = {
 			isa = PBXGroup;
 			children = (
-				B6AF1B5B232275800099EBAE /* NBT */,
+				B6AF1B5B232275800099EBAE /* BoxData */,
 				B6AF1B5A232275800099EBAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,35 +53,35 @@
 		B6AF1B5A232275800099EBAE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B6AF1B59232275800099EBAE /* NBT */,
+				B6AF1B59232275800099EBAE /* BoxData */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B6AF1B5B232275800099EBAE /* NBT */ = {
+		B6AF1B5B232275800099EBAE /* BoxData */ = {
 			isa = PBXGroup;
 			children = (
-				B6AF1B63232275AE0099EBAE /* NBT */,
+				B6AF1B63232275AE0099EBAE /* BoxData */,
 			);
-			path = NBT;
+			path = BoxData;
 			sourceTree = "<group>";
 		};
-		B6AF1B63232275AE0099EBAE /* NBT */ = {
+		B6AF1B63232275AE0099EBAE /* BoxData */ = {
 			isa = PBXGroup;
 			children = (
 				B6AF1B5C232275800099EBAE /* main.swift */,
 				B60BACA0232331B60081B600 /* BoxTag.swift */,
 				B6AF1B72232275AE0099EBAE /* DataStream.swift */,
 			);
-			path = NBT;
+			path = BoxData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B6AF1B58232275800099EBAE /* NBT */ = {
+		B6AF1B58232275800099EBAE /* BoxData */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B6AF1B60232275800099EBAE /* Build configuration list for PBXNativeTarget "NBT" */;
+			buildConfigurationList = B6AF1B60232275800099EBAE /* Build configuration list for PBXNativeTarget "BoxData" */;
 			buildPhases = (
 				B6AF1B55232275800099EBAE /* Sources */,
 				B6AF1B56232275800099EBAE /* Frameworks */,
@@ -91,9 +91,9 @@
 			);
 			dependencies = (
 			);
-			name = NBT;
+			name = BoxData;
 			productName = NBT;
-			productReference = B6AF1B59232275800099EBAE /* NBT */;
+			productReference = B6AF1B59232275800099EBAE /* BoxData */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -111,7 +111,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B6AF1B54232275800099EBAE /* Build configuration list for PBXProject "NBT" */;
+			buildConfigurationList = B6AF1B54232275800099EBAE /* Build configuration list for PBXProject "BoxData" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -124,7 +124,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B6AF1B58232275800099EBAE /* NBT */,
+				B6AF1B58232275800099EBAE /* BoxData */,
 			);
 		};
 /* End PBXProject section */
@@ -281,7 +281,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B6AF1B54232275800099EBAE /* Build configuration list for PBXProject "NBT" */ = {
+		B6AF1B54232275800099EBAE /* Build configuration list for PBXProject "BoxData" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6AF1B5E232275800099EBAE /* Debug */,
@@ -290,7 +290,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B6AF1B60232275800099EBAE /* Build configuration list for PBXNativeTarget "NBT" */ = {
+		B6AF1B60232275800099EBAE /* Build configuration list for PBXNativeTarget "BoxData" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6AF1B61232275800099EBAE /* Debug */,

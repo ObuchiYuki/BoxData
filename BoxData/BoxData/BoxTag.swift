@@ -628,7 +628,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 //===----------------------------------===//
 
 /// This class represents tag of `[Tag]`.
-/// can contain all type tag.
+/// free format
 ///
 /// ### Serialize structure
 ///
