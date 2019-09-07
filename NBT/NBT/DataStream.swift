@@ -109,6 +109,16 @@ internal class DataReadStream {
         offset += count
         return Data(buffer)
     }
+    
+    func string() throws -> String {
+        let count = try uInt8()
+        
+        guard let string = String(bytes: try self.data(count: Int(count)), encoding: .utf8) else {
+            throw DataStreamError.readError
+        }
+        
+        return string
+    }
 
     func bit() throws -> Bool {
         let byte = try self.uInt8() as UInt8
@@ -194,6 +204,14 @@ internal class DataWriteStream {
             
             throw DataStreamError.writeError
         }
+    }
+    
+    func write(_ string:String) throws {
+        if string.isEmpty { return }
+        guard let data = string.data(using: .utf8) else {return}
+        
+        try self.write(UInt8(data.count))
+        try self.write(data)
     }
     
     func write(_ value: Bool) throws {
