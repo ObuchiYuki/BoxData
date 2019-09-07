@@ -1,5 +1,5 @@
 //
-//  AnyTag.swift
+//  Tag.swift
 //  NBT
 //
 //  Created by yuki on 2019/09/07.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class AnyTag {
+public class Tag {
     public var typeID:UInt8
     
     required init(typeID: UInt8) {
@@ -73,13 +73,13 @@ public class AnyTag {
     }
 }
 
-extension AnyTag {
+extension Tag {
     public static var defaultMaxDepth:Int {
         return 512
     }
 }
 
-extension AnyTag: CustomStringConvertible {
+extension Tag: CustomStringConvertible {
     public var description: String {
         return tagString()
     }

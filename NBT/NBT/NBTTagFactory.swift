@@ -15,7 +15,7 @@ public class TagFactory {
     static func idFromValue<U, T: ValueTag<U>>(_ value:T? = nil) -> UInt8 {
         fatalError()
     }
-    static func fromID(id: UInt8) -> AnyTag {
+    static func fromID(id: UInt8) -> Tag {
         fatalError()
     }
     static func fromID<T>(type: T.Type, id:UInt8) -> ValueTag<T> {

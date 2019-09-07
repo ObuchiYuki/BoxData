@@ -8,7 +8,7 @@
 
 import Foundation
 
-public final class EndTag: AnyTag {
+public final class EndTag: Tag {
 
     static let shared = EndTag()
 
