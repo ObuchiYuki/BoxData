@@ -19,13 +19,15 @@ extension ReadStreamStringReadingError: LocalizedError {
 extension DataWriteStream {
     public func write(_ string:String) throws {
         guard let data = string.data(using: .utf8) else {return}
-
+        
+        try self.write(UInt8(data.count))
         try self.write(data)
     }
 }
 
 extension DataReadStream {
-    public func string(count:UInt32) throws -> String {
+    public func string() throws -> String {
+        let count = try uInt8()
         
         guard let string = String(bytes: try self.data(count: Int(count)), encoding: .utf8) else {
             throw ReadStreamStringReadingError()

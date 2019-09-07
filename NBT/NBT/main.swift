@@ -13,16 +13,28 @@ print("Hello, World!")
 do {
     let stream = DataWriteStream()
     
-    let alice = CompoundTag(value: [
+    let component = CompoundTag(value: [
         "name": StringTag(value: "Alice"),
-        "age": IntTag(value: 12),
+        "age": IntTag(value: 12)
     ])
     
-    try alice.serializeValue(into: stream, maxDepth: 512)
+    try component.serialize(into: stream, named: "root", maxDepth: 512)
     
-    FileManager.default.createFile(atPath: "/Users/yuki/Desktop/main.tp", contents: stream.data)    
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: stream.data)
     
 }catch {
     print(error)
 }
 
+
+/**
+
+ 
+ let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
+ 
+ 
+ let tag = CompoundTag.deserialize(from: stream, maxDepth: 512)
+ 
+ print(tag)
+  
+ */

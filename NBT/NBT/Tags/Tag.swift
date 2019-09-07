@@ -34,10 +34,9 @@ public class Tag {
     }
 
     /// 読み込み
-    public static func deserialize<U>(from dis: DataReadStream, maxDepth:Int) throws -> ValueTag<U> {
+    public static func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
         let id = try dis.uInt8()
-    
-        let tag = TagFactory.fromID(type: U.self, id: id)
+        let tag = TagFactory.fromID(id: id)
         
         if (id != 0) {
             try tag.deserializeValue(into: dis, maxDepth: maxDepth);

@@ -13,20 +13,13 @@ public class StringTag: ArrayTag<String> {
     override func tagID() -> TagID { .string }
     
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
-        try dos.write(UInt8(length))
         
         try dos.write(value!)
     }
     
     override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
-        let length = try dis.uInt8()
-        var _value = [UInt8]()
         
-        for _ in 0..<length {
-            _value.append(try dis.uInt8())
-        }
-        
-        self.value = String(bytes: _value, encoding: .utf8)
+        self.value = try dis.string()
     }
     
     override public func valueString(maxDepth: Int) -> String {

@@ -16,7 +16,7 @@ public class CompoundTag: ValueTag<[String: Tag]> {
         return value.map{UInt32($0.count)} ?? 0
     }
         
-    override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { 
         for (key, value) in value {
             
             try value.serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
@@ -31,8 +31,7 @@ public class CompoundTag: ValueTag<[String: Tag]> {
         
         while id != 0 {
             let tag = TagFactory.fromID(id: id)
-            let scount = try dis.uInt32()
-            let name = try dis.string(count: scount)
+            let name = try dis.string()
             
             try tag.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
             value[name] = tag
