@@ -14,7 +14,9 @@ public final class EndTag: Tag {
     
     public override func serialize(into dos: DataWriteStream, maxDepth: Int) throws {}
     public override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {}
-    public override func serialize(into dos: DataWriteStream, named name: String, maxDepth: Int) throws {}
+    public override func serialize(into dos: DataWriteStream, named name: String, maxDepth: Int) throws {
+        dos.write(TagID.end.rawValue)
+    }
     
     public override func valueString(maxDepth: Int) -> String {
         return "\"end\""

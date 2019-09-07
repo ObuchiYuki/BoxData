@@ -11,30 +11,31 @@ import Foundation
 print("Hello, World!")
 
 do {
-    let stream = DataWriteStream()
+    let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
     
-    let component = CompoundTag(value: [
-        "name": StringTag(value: "Alice"),
-        "age": IntTag(value: 12)
-    ])
+    let stream = DataReadStream(data: data)
     
-    try component.serialize(into: stream, named: "root", maxDepth: 512)
+    let tag = try CompoundTag.deserialize(from: stream, maxDepth: 512)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: stream.data)
-    
+    print(tag)
 }catch {
     print(error)
 }
 
 
 /**
+ let stream = DataWriteStream()
+ 
+ let component = CompoundTag(value: [
+     "name": StringTag(value: "Alice"),
+     "age": IntTag(value: 12)
+ ])
+ 
+ try component.serialize(into: stream, named: "root", maxDepth: 512)
+ 
+ FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: stream.data)
+ 
+ 
 
- 
- let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
- 
- 
- let tag = CompoundTag.deserialize(from: stream, maxDepth: 512)
- 
- print(tag)
   
  */

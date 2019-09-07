@@ -39,7 +39,7 @@ public class Tag {
         let tag = TagFactory.fromID(id: id)
         
         if (id != 0) {
-            try tag.deserializeValue(into: dis, maxDepth: maxDepth);
+            try tag.deserializeValue(from: dis, maxDepth: maxDepth);
         }
         
         return tag
@@ -58,7 +58,7 @@ public class Tag {
         fatalError()
     }
     
-    open func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
+    open func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         fatalError()
     }
     

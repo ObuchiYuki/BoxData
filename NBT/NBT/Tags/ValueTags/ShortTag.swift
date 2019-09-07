@@ -17,7 +17,7 @@ public class ShortTag: IntegerTag<Int16> {
         try value.map{ try dos.write($0) }
     }
     
-    override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
+    override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         self.value = try dis.readBytes()
     }
     

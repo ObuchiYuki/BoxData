@@ -60,6 +60,7 @@ public class DataReadStream {
         var buffer = [UInt8](repeating: 0, count: MemoryLayout<T>.stride)
         let bufferPointer = UnsafeMutablePointer<UInt8>(&buffer)
         if self.inputStream.read(bufferPointer, maxLength: valueSize) != valueSize {
+            
             throw DataStreamError.readError
         }
         bufferPointer.withMemoryRebound(to: T.self, capacity: 1) {
@@ -116,6 +117,7 @@ public class DataReadStream {
     public func data(count: Int) throws -> Data {
         var buffer = [UInt8](repeating: 0, count: count)
         if self.inputStream.read(&buffer, maxLength: count) != count {
+            
             throw DataStreamError.readError
         }
         offset += count

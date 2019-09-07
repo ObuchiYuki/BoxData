@@ -17,7 +17,7 @@ public class StringTag: ArrayTag<String> {
         try dos.write(value!)
     }
     
-    override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
+    override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         
         self.value = try dis.string()
     }

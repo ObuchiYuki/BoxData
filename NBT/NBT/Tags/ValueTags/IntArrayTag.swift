@@ -20,7 +20,7 @@ public class IntArrayTag: ArrayTag<[Int32]> {
         try value?.forEach{try dos.write($0) }
     }
     
-    override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
+    override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length:Int32 = try dis.readBytes()
         var _value = [Int32]()
         

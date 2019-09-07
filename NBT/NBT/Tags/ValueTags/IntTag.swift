@@ -16,8 +16,8 @@ public class IntTag: IntegerTag<Int32> {
         try value.map{ try dos.write($0) }
     }
     
-    override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
-        self.value = try dis.readBytes()
+    override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+        self.value = try dis.int32()
     }
     
     override public func valueString(maxDepth: Int) -> String {

@@ -21,22 +21,25 @@ public class CompoundTag: ValueTag<[String: Tag]> {
             
             try value.serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
         }
+        
         try EndTag.shared.serialize(into: dos, maxDepth: maxDepth)
     }
     
-    override public func deserializeValue(into dis: DataReadStream, maxDepth: Int) throws {
+    override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         self.value = [:]
         
         var id = try dis.uInt8()
+        var name = try dis.string()
         
-        while id != 0 {
+        while true {
             let tag = TagFactory.fromID(id: id)
-            let name = try dis.string()
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             
-            try tag.deserializeValue(into: dis, maxDepth: decrementMaxDepth(maxDepth))
             value[name] = tag
             
             id = try dis.uInt8()
+            if id == 0 {break}
+            name = try dis.string()
         }
     }
 }
