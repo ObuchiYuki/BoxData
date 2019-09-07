@@ -273,7 +273,7 @@ final internal class EndTag: Tag {
 /// | tag_id | 1 byte |
 internal final class ByteTag: ValueTag<Int8> {
     
-    @usableFromInline
+    @inlinable
     final override func tagID() -> TagID { .byte }
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.int8() }
@@ -290,7 +290,7 @@ internal final class ByteTag: ValueTag<Int8> {
 /// | tag_id | 2 bytes |
 internal final class ShortTag: ValueTag<Int16> {
     
-    @usableFromInline
+    @inlinable
     final override func tagID() -> TagID { .short }
     final override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
     final override public func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.int16() }
@@ -307,7 +307,7 @@ internal final class ShortTag: ValueTag<Int16> {
 /// | tag_id | 4 bytes |
 internal final class IntTag: ValueTag<Int32> {
 
-    @usableFromInline
+    @inlinable
     final override func tagID() -> TagID { .int }
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.int32()}
@@ -324,7 +324,7 @@ internal final class IntTag: ValueTag<Int32> {
 /// | tag_id | 8 bytes |
 internal final class LongTag: ValueTag<Int64> {
     
-    @usableFromInline 
+    @inlinable
     final override func tagID() -> TagID { .long }
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.int64() }
@@ -339,11 +339,12 @@ internal final class LongTag: ValueTag<Int64> {
 /// ### Serialize structure
 ///
 /// | tag_id | 4 bytes |
-internal class FloatTag: ValueTag<Float> {
+internal final class FloatTag: ValueTag<Float> {
     
-    override func tagID() -> TagID { .float }
-    override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
-    override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.float()}
+    @inlinable
+    final override func tagID() -> TagID { .float }
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.float()}
 }
 
 //===----------------------------------===//
@@ -355,11 +356,12 @@ internal class FloatTag: ValueTag<Float> {
 /// ### Serialize structure
 ///
 /// | tag_id | 8 bytes |
-internal class DoubleTag: ValueTag<Double> {
+internal final class DoubleTag: ValueTag<Double> {
     
-    override func tagID() -> TagID { .double }
-    override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
-    override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.double() }
+    @inlinable
+    final override func tagID() -> TagID { .double }
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.double() }
 }
 
 //===----------------------------------===//
@@ -372,11 +374,12 @@ internal class DoubleTag: ValueTag<Double> {
 /// ### Serialize structure
 ///
 /// | tag_id | length(1 bytes) | data(UTF)... |
-internal class StringTag: ValueTag<String> {
+internal final class StringTag: ValueTag<String> {
     
-    override func tagID() -> TagID { .string }
-    override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
-    override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.string() }
+    @inlinable
+    final override func tagID() -> TagID { .string }
+    final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws { try dos.write(value) }
+    final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws { self.value = try dis.string() }
 }
 
 //===----------------------------------===//
