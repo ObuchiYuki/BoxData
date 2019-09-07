@@ -483,14 +483,20 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
     @usableFromInline
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
-        try value?.forEach{try dos.write($0) }
+        
+        try value.forEach{
+            try dos.write($0)
+        }
     }
     
     @usableFromInline
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int8]()
-        for _ in 0..<length { _value.append(try dis.int8()) }
+        
+        for _ in 0..<length {
+            _value.append(try dis.int8())
+        }
         
         self.value = _value
     }
@@ -515,14 +521,20 @@ internal final class IntArrayTag: ValueTag<[Int32]> {
     @usableFromInline
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
-        try value?.forEach{try dos.write($0) }
+        
+        try value.forEach{
+            try dos.write($0)
+        }
     }
     
     @usableFromInline
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int32]()
-        for _ in 0..<length { _value.append(try dis.int32()) }
+        
+        for _ in 0..<length {
+            _value.append(try dis.int32())
+        }
         
         self.value = _value
     }
@@ -548,14 +560,20 @@ internal final class LongArrayTag: ValueTag<[Int64]> {
     @usableFromInline
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
-        try value?.forEach{try dos.write($0) }
+        
+        try value.forEach{
+            try dos.write($0)
+        }
     }
     
     @usableFromInline
     final override func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         let length = try dis.uInt32()
         var _value = [Int64]()
-        for _ in 0..<length { _value.append(try dis.int64()) }
+        
+        for _ in 0..<length {
+            _value.append(try dis.int64())
+        }
         
         self.value = _value
     }
@@ -597,7 +615,9 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
             value[name] = tag
             
             id = try dis.uInt8()
-            if id == 0 {break} /// Read until End tag.
+            if id == 0 { /// Read until End tag.
+                break
+            }
             name = try dis.string()
         }
     }
