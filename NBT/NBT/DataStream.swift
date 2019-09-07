@@ -1,14 +1,16 @@
+//===----------------------------------------------------------------------===//
 //
-//  DataStream.swift
-//  NBTCoder
+// This source file is part of the Box project.
 //
-//  Created by yuki on 2019/09/06.
-//  Copyright © 2019 yuki. All rights reserved.
+// Copyright (c) 2019 Obuchi Yuki
+// This source file is released under the MIT License, see LICENSE.txt.
 //
-
+// See http://opensource.org/licenses/mit-license.php for license information
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
-import CoreGraphics
+
 
 enum DataStreamError: Error {
     case readError
@@ -16,6 +18,7 @@ enum DataStreamError: Error {
     case writeError
 }
 
+@usableFromInline
 internal class DataReadStream {
 
     private var inputStream: InputStream
@@ -127,6 +130,7 @@ internal class DataReadStream {
     
 }
 
+@usableFromInline
 internal class DataWriteStream {
 
     private var outputStream: OutputStream

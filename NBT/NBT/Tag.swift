@@ -92,6 +92,7 @@ final internal class TagFactory {
 ///
 /// ### for End tag
 /// | tag_id |
+@usableFromInline
 internal class Tag {
     
     /// Subclass of Tag must implement tagID() to return own type.
@@ -168,11 +169,13 @@ internal class Tag {
 extension Tag {
      
     /// defalt max depth of deserialize.
+    @usableFromInline
     static let defaultMaxTag = 512
 }
 
 extension Tag: CustomStringConvertible {
     
+    @usableFromInline
     var description: String {
         return valueString(maxDepth: Tag.defaultMaxTag)
     }
@@ -186,6 +189,7 @@ extension Tag: CustomStringConvertible {
 ///
 /// This class represents tag with value. Use generics to represent value type.
 /// All Tag with value must stem from this class.
+@usableFromInline
 internal class ValueTag<T>: Tag {
     
     /// The type of value contained in ValueTag.
@@ -241,6 +245,7 @@ extension ValueTag: Hashable where Element: Hashable {
 /// | compound_tag |...| end_tag |
 /// ```
 /// Compound type read file while reaches this tag.
+@usableFromInline
 final internal class EndTag: Tag {
 
     /// Shared instance of `EndTag`.
@@ -271,6 +276,7 @@ final internal class EndTag: Tag {
 /// ### Serialize structure
 ///
 /// | tag_id | 1 byte |
+@usableFromInline
 internal final class ByteTag: ValueTag<Int8> {
     
     @inlinable
@@ -288,6 +294,7 @@ internal final class ByteTag: ValueTag<Int8> {
 /// ### Serialize structure
 ///
 /// | tag_id | 2 bytes |
+@usableFromInline
 internal final class ShortTag: ValueTag<Int16> {
     
     @inlinable
@@ -305,6 +312,7 @@ internal final class ShortTag: ValueTag<Int16> {
 /// ### Serialize structure
 ///
 /// | tag_id | 4 bytes |
+@usableFromInline
 internal final class IntTag: ValueTag<Int32> {
 
     @inlinable
@@ -322,6 +330,7 @@ internal final class IntTag: ValueTag<Int32> {
 /// ### Serialize structure
 ///
 /// | tag_id | 8 bytes |
+@usableFromInline
 internal final class LongTag: ValueTag<Int64> {
     
     @inlinable
@@ -339,6 +348,7 @@ internal final class LongTag: ValueTag<Int64> {
 /// ### Serialize structure
 ///
 /// | tag_id | 4 bytes |
+@usableFromInline
 internal final class FloatTag: ValueTag<Float> {
     
     @inlinable
@@ -356,6 +366,7 @@ internal final class FloatTag: ValueTag<Float> {
 /// ### Serialize structure
 ///
 /// | tag_id | 8 bytes |
+@usableFromInline
 internal final class DoubleTag: ValueTag<Double> {
     
     @inlinable
@@ -374,6 +385,7 @@ internal final class DoubleTag: ValueTag<Double> {
 /// ### Serialize structure
 ///
 /// | tag_id | length(1 bytes) | data(UTF)... |
+@usableFromInline
 internal final class StringTag: ValueTag<String> {
     
     @inlinable
@@ -391,6 +403,7 @@ internal final class StringTag: ValueTag<String> {
 /// ### Serialize structure
 ///
 /// | tag_id | length (4 bytes) | data...(1byte...) |
+@usableFromInline
 internal final class ByteArrayTag: ValueTag<[Int8]> {
     
     @inlinable
@@ -419,6 +432,7 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
 /// ### Serialize structure
 ///
 /// | tag_id | length (4 bytes) | data...(4byte...) |
+@usableFromInline
 internal final class IntArrayTag: ValueTag<[Int32]> {
     
     @inlinable
@@ -448,6 +462,7 @@ internal final class IntArrayTag: ValueTag<[Int32]> {
 /// ### Serialize structure
 ///
 /// | tag_id | length (4 bytes) | data...(8byte...) |
+@usableFromInline
 internal final class LongArrayTag: ValueTag<[Int64]> {
     
     @inlinable
@@ -476,6 +491,7 @@ internal final class LongArrayTag: ValueTag<[Int64]> {
 /// ### Serialize structure
 ///
 /// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
+@usableFromInline
 internal final class CompoundTag: ValueTag<[String: Tag]> {
     
     @inlinable
@@ -517,6 +533,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 /// ### Serialize structure
 ///
 /// | tag_id | length(4 bytes) | ( value(ValueTag) )... |
+@usableFromInline
 internal final class ListTag<T: Tag>: ValueTag<[T]> {
     
     @inlinable
