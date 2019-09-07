@@ -10,6 +10,7 @@ import Foundation
 
 public class IntTag: IntegerTag<Int32> {
 
+    typ
     override public func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try value.map{ try dos.write($0) }
     }
@@ -19,6 +20,6 @@ public class IntTag: IntegerTag<Int32> {
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        value.map{"\($0)"} ?? "nil"
+        return value.map{"\($0)"} ?? "nil"
     }
 }

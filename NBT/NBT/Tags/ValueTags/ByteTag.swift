@@ -19,7 +19,7 @@ public class ByteTag: IntegerTag<Int8> {
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        value.map{"\($0)b"} ?? "nil"
+        return value.map{"\($0)b"} ?? "nil"
     }
     
 }

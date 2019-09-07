@@ -51,6 +51,6 @@ public class ListTag<T: Tag>: ValueTag<[T]> {
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        value.map{"\($0)"} ?? "nil"
+        return value.map{"\($0)"} ?? "nil"
     }
 }

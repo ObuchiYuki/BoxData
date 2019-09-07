@@ -10,8 +10,8 @@ import Foundation
 
 public class Tag {
     
-    func typeID() -> UInt8 {
-        fatalError()
+    func tagID() -> TagID {
+        fatalError("Subclass of Tag must implement tagID().")
     }
     
     // ====================================================== //
@@ -24,9 +24,9 @@ public class Tag {
 
     /// 有名Data書き込み
     public func serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
-        try dos.write(typeID()) // まずタグを書き込み
+        try dos.write(tagID().rawValue) // まずタグを書き込み
         
-        if (typeID() != 0) { // TAG_ENDでなければ書き込み
+        if (tagID() != .end) { // TAG_ENDでなければ書き込み
             try dos.write(name)
         }
         

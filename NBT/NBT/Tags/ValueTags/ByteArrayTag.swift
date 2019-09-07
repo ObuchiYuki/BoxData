@@ -27,6 +27,6 @@ public class ByteArrayTag: ArrayTag<[Int8]> {
     }
     
     override public func valueString(maxDepth: Int) -> String {
-        value.map{"\($0)s"} ?? "nil"
+        return value.map{"\($0)s"} ?? "nil"
     }
 }

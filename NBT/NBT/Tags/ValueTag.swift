@@ -26,7 +26,7 @@ public class ValueTag<T>: Tag {
     }
 
     override public func tagString() -> String {
-        valueString(maxDepth: Tag.defaultMaxDepth)
+        return valueString(maxDepth: Tag.defaultMaxDepth)
     }
 }
 
