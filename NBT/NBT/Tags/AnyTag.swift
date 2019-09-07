@@ -8,6 +8,4 @@
 
 import Foundation
 
-class AnyTag {
-    
-}
+class AnyTag: Tag<Any> {}

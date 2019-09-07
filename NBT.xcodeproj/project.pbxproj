@@ -116,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				B6AF1B70232275AE0099EBAE /* Tag.swift */,
+				B60BACA0232331B60081B600 /* AnyTag.swift */,
 				B6AF1B65232275AE0099EBAE /* EndTag.swift */,
 				B6AF1B67232275AE0099EBAE /* LongTag.swift */,
 				B6AF1B68232275AE0099EBAE /* IntegerTag.swift */,
@@ -130,7 +131,6 @@
 				B6AF1B8923227A2A0099EBAE /* LongArrayTag.swift */,
 				B6AF1B8B23227A7B0099EBAE /* StringTag.swift */,
 				B60BAC9E232281AA0081B600 /* ListTag.swift */,
-				B60BACA0232331B60081B600 /* AnyTag.swift */,
 			);
 			path = Tags;
 			sourceTree = "<group>";
