@@ -60,7 +60,6 @@ public class DataReadStream {
         var buffer = [UInt8](repeating: 0, count: MemoryLayout<T>.stride)
         let bufferPointer = UnsafeMutablePointer<UInt8>(&buffer)
         if self.inputStream.read(bufferPointer, maxLength: valueSize) != valueSize {
-            
             throw DataStreamError.readError
         }
         bufferPointer.withMemoryRebound(to: T.self, capacity: 1) {
@@ -117,7 +116,6 @@ public class DataReadStream {
     public func data(count: Int) throws -> Data {
         var buffer = [UInt8](repeating: 0, count: count)
         if self.inputStream.read(&buffer, maxLength: count) != count {
-            
             throw DataStreamError.readError
         }
         offset += count
@@ -161,12 +159,18 @@ public class DataWriteStream {
     public func writeBytes<T>(value: T) throws {
         let valueSize = MemoryLayout<T>.size
         var value = value
-        var result = false
+        var result = 0
+        
         let valuePointer = UnsafeMutablePointer<T>(&value)
-        let _ = valuePointer.withMemoryRebound(to: UInt8.self, capacity: valueSize) {
-            result = (outputStream.write($0, maxLength: valueSize) == valueSize)
+        _ = valuePointer.withMemoryRebound(to: UInt8.self, capacity: valueSize) {
+            result = outputStream.write($0, maxLength: valueSize)
         }
-        if !result { throw DataStreamError.writeError }
+        
+        print("\(T.self)", valueSize, value)
+        
+        if result < 0 {
+            throw DataStreamError.writeError
+        }
     }
 
     public func write(_ value: Int8) throws {
@@ -206,8 +210,14 @@ public class DataWriteStream {
     public func write(_ data: Data) throws {
         var bytesWritten = 0
         
-        data.withUnsafeBytes { bytesWritten = outputStream.write($0, maxLength: data.count) }
-        if bytesWritten != data.count { throw DataStreamError.writeError }
+        data.withUnsafeBytes {
+            bytesWritten = outputStream.write($0, maxLength: data.count)
+        }
+        
+        if bytesWritten != data.count {
+            
+            throw DataStreamError.writeError
+        }
     }
     
     public func write(_ value: Bool) throws {

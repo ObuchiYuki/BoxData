@@ -24,7 +24,9 @@ public class Tag {
 
     /// 有名Data書き込み
     public func serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
-        try dos.write(tagID().rawValue) // まずタグを書き込み
+        let a = tagID().rawValue
+        
+        try dos.write(a) // まずタグを書き込み
         
         if (tagID() != .end) { // TAG_ENDでなければ書き込み
             try dos.write(name)
