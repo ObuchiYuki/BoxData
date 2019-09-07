@@ -10,3 +10,9 @@ import Foundation
 
 print("Hello, World!")
 
+do {
+    
+}catch {
+    print(error)
+}
+

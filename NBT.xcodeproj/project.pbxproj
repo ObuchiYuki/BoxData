@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B60BAC9F232281AA0081B600 /* ListTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BAC9E232281AA0081B600 /* ListTag.swift */; };
-		B60BACA1232331B60081B600 /* AnyTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BACA0232331B60081B600 /* AnyTag.swift */; };
+		B60BACA1232331B60081B600 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BACA0232331B60081B600 /* Tag.swift */; };
 		B694D1E723233BE200811F0E /* CompoundTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B694D1E623233BE200811F0E /* CompoundTag.swift */; };
 		B694D1E9232346DE00811F0E /* TagID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B694D1E8232346DE00811F0E /* TagID.swift */; };
 		B694D1EB2323535900811F0E /* ByteArrayTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B694D1EA2323535900811F0E /* ByteArrayTag.swift */; };
@@ -46,7 +46,7 @@
 
 /* Begin PBXFileReference section */
 		B60BAC9E232281AA0081B600 /* ListTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTag.swift; sourceTree = "<group>"; };
-		B60BACA0232331B60081B600 /* AnyTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTag.swift; sourceTree = "<group>"; };
+		B60BACA0232331B60081B600 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		B694D1E623233BE200811F0E /* CompoundTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompoundTag.swift; sourceTree = "<group>"; };
 		B694D1E8232346DE00811F0E /* TagID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagID.swift; sourceTree = "<group>"; };
 		B694D1EA2323535900811F0E /* ByteArrayTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteArrayTag.swift; sourceTree = "<group>"; };
@@ -141,7 +141,7 @@
 		B6AF1B64232275AE0099EBAE /* Tags */ = {
 			isa = PBXGroup;
 			children = (
-				B60BACA0232331B60081B600 /* AnyTag.swift */,
+				B60BACA0232331B60081B600 /* Tag.swift */,
 				B6AF1B70232275AE0099EBAE /* ValueTag.swift */,
 				B6AF1B65232275AE0099EBAE /* EndTag.swift */,
 				B694D1E8232346DE00811F0E /* TagID.swift */,
@@ -218,7 +218,7 @@
 				B694D1E723233BE200811F0E /* CompoundTag.swift in Sources */,
 				B6AF1B7F232275AE0099EBAE /* Ex+DataStream.swift in Sources */,
 				B6AF1B7B232275AE0099EBAE /* FloatTag.swift in Sources */,
-				B60BACA1232331B60081B600 /* AnyTag.swift in Sources */,
+				B60BACA1232331B60081B600 /* Tag.swift in Sources */,
 				B6AF1B77232275AE0099EBAE /* IntegerTag.swift in Sources */,
 				B6AF1B7E232275AE0099EBAE /* ValueTag.swift in Sources */,
 				B6AF1B78232275AE0099EBAE /* IntTag.swift in Sources */,
