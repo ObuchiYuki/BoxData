@@ -21,8 +21,4 @@ public final class EndTag: Tag {
     public override func valueString(maxDepth: Int) -> String {
         return "\"end\""
     }
-    
-    public override func tagString() -> String {
-        fatalError("EndTag cannot be turned into a String.")
-    }
 }

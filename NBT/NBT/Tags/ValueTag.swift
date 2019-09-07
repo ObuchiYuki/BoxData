@@ -11,22 +11,15 @@ public class ValueTag<T>: Tag {
     
     public typealias Element = T
     
-    // ====================================================== //
-    // MARK: - Properties -
     public var value: T!
     
-    // ====================================================== //
-    // MARK: - Construcotr -
     init(value:T? = nil) {
         self.value = value
     }
     
+    /// Value String
     override public func valueString(maxDepth: Int) -> String {
         return value.map{"\($0)"} ?? "nil"
-    }
-
-    override public func tagString() -> String {
-        return valueString(maxDepth: Tag.defaultMaxDepth)
     }
 }
 
