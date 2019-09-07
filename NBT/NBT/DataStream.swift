@@ -165,9 +165,7 @@ public class DataWriteStream {
         _ = valuePointer.withMemoryRebound(to: UInt8.self, capacity: valueSize) {
             result = outputStream.write($0, maxLength: valueSize)
         }
-        
-        print("\(T.self)", valueSize, value)
-        
+            
         if result < 0 {
             throw DataStreamError.writeError
         }
