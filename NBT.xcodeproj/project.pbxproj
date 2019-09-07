@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B60BACA1232331B60081B600 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BACA0232331B60081B600 /* Tag.swift */; };
+		B60BACA1232331B60081B600 /* BoxTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BACA0232331B60081B600 /* BoxTag.swift */; };
 		B6AF1B5D232275800099EBAE /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B5C232275800099EBAE /* main.swift */; };
 		B6AF1B80232275AE0099EBAE /* DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AF1B72232275AE0099EBAE /* DataStream.swift */; };
 /* End PBXBuildFile section */
@@ -25,7 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B60BACA0232331B60081B600 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		B60BACA0232331B60081B600 /* BoxTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxTag.swift; sourceTree = "<group>"; };
 		B6AF1B59232275800099EBAE /* NBT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NBT; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AF1B5C232275800099EBAE /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B6AF1B72232275AE0099EBAE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				B6AF1B5C232275800099EBAE /* main.swift */,
-				B60BACA0232331B60081B600 /* Tag.swift */,
+				B60BACA0232331B60081B600 /* BoxTag.swift */,
 				B6AF1B72232275AE0099EBAE /* DataStream.swift */,
 			);
 			path = NBT;
@@ -134,7 +134,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B60BACA1232331B60081B600 /* Tag.swift in Sources */,
+				B60BACA1232331B60081B600 /* BoxTag.swift in Sources */,
 				B6AF1B80232275AE0099EBAE /* DataStream.swift in Sources */,
 				B6AF1B5D232275800099EBAE /* main.swift in Sources */,
 			);
