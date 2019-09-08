@@ -11,12 +11,28 @@
 
 import Foundation
 
+/// Determine `Int` type based on environment.
 #if (arch(i386) || arch(arm)) // 32bit
 typealias SwiftIntTag = IntTag
 #else // 64bit
 typealias SwiftIntTag = LongTag
 #endif
 
+/// A marker protocol used to determine whether a value is a `String`-keyed `Dictionary`
+/// containing `Encodable` values (in which case it should be exempt from key conversion strategies).
+fileprivate protocol _BoxStringDictionaryEncodableMarker { }
+
+extension Dictionary : _BoxStringDictionaryEncodableMarker where Key == String, Value: Encodable { }
+
+/// A marker protocol used to determine whether a value is a `String`-keyed `Dictionary`
+/// containing `Decodable` values (in which case it should be exempt from key conversion strategies).
+fileprivate protocol _BoxStringDictionaryDecodableMarker {
+    static var elementType: Decodable.Type { get }
+}
+
+extension Dictionary : _BoxStringDictionaryDecodableMarker where Key == String, Value: Decodable {
+    static var elementType: Decodable.Type { return Value.self }
+}
 
 //===----------------------------------------------------------------------===//
 // Box Encoder
@@ -127,9 +143,56 @@ extension _BoxEncoder {
     fileprivate func box(_ value: UInt16) -> Tag { return ShortTag      (value: Int16(bitPattern: value)) }
     fileprivate func box(_ value: UInt32) -> Tag { return IntTag        (value: Int32(bitPattern: value)) }
     fileprivate func box(_ value: UInt64) -> Tag { return LongTag       (value: Int64(bitPattern: value)) }
+    
     fileprivate func box(_ value: String) -> Tag { return StringTag     (value: value) }
     
+    fileprivate func box(_ value: Float)  -> Tag { return FloatTag      (value: value) }
+    fileprivate func box(_ value: Double) -> Tag { return DoubleTag     (value: value) }
+    
+    fileprivate func box(_ date:  Date)   -> Tag { return DoubleTag     (value: date.timeIntervalSince1970) }
+    fileprivate func box(_ data:  Data)   -> Tag { return ByteArrayTag  (value: data.map{Int8(bitPattern: $0)}) }
+    
+    fileprivate func box(_ dict: [String : Encodable]) throws -> Tag? {
+        return CompoundTag(value: try dict.mapValues{try box_($0)}.compactMapValues{$0})
+    }
+
+    // This method is called "box_" instead of "box" to disambiguate it from the overloads. Because the return type here is different from all of the "box" overloads (and is more general), any "box" calls in here would call back into "box" recursively instead of calling the appropriate overload, which is not what we want.
     fileprivate func box_(_ value: Encodable) throws -> Tag? {
+        // Disambiguation between variable and function is required due to
+        let type = Swift.type(of: value)
+        
+        if type == Date.self || type == NSDate.self {
+            // Respect Date encoding strategy
+            return self.box((value as! Date))
+        } else if type == Data.self || type == NSData.self {
+            // Respect Data encoding strategy
+            return self.box((value as! Data))
+        } else if type == URL.self || type == NSURL.self {
+            // Encode URLs as single strings.
+            return self.box((value as! URL).absoluteString)
+        } else if value is _BoxStringDictionaryEncodableMarker {
+            return try self.box(value as! [String : Encodable])
+        }
+        
+        // The value should request a container from the __BoxEncoder.
+        let depth = self.storage.count
+        do {
+                try value.encode(to: self)
+        } catch {
+            // If the value pushed a container before throwing, pop it back off to restore state.
+            if self.storage.count > depth {
+                let _ = self.storage.popContainer()
+            }
+
+            throw error
+        }
+
+        // The top container should be a new container.
+        guard self.storage.count > depth else {
+            return nil
+        }
+
+        return self.storage.popContainer()
         fatalError()
     }
 }
@@ -283,7 +346,7 @@ fileprivate struct _BoxEncodingStorage {
     // MARK: Properties
     /// The container stack.
     /// Elements may be any one of the Box types.
-    private(set) fileprivate var containers: [NSObject] = []
+    private(set) fileprivate var containers: [Tag] = []
 
     // MARK: - Initialization
     /// Initializes `self` with no containers.
@@ -294,23 +357,23 @@ fileprivate struct _BoxEncodingStorage {
         return self.containers.count
     }
 
-    fileprivate mutating func pushKeyedContainer() -> NSMutableDictionary {
-        let dictionary = NSMutableDictionary()
+    fileprivate mutating func pushKeyedContainer() -> CompoundTag {
+        let dictionary = CompoundTag(value: [:])
         self.containers.append(dictionary)
         return dictionary
     }
 
-    fileprivate mutating func pushUnkeyedContainer() -> NSMutableArray {
-        let array = NSMutableArray()
+    fileprivate mutating func pushUnkeyedContainer() -> ListTag<Tag> {
+        let array = ListTag(value: [])
         self.containers.append(array)
         return array
     }
 
-    fileprivate mutating func push(container: __owned NSObject) {
+    fileprivate mutating func push(container: __owned Tag) {
         self.containers.append(container)
     }
 
-    fileprivate mutating func popContainer() -> NSObject {
+    fileprivate mutating func popContainer() -> Tag {
         precondition(!self.containers.isEmpty, "Empty container stack.")
         return self.containers.popLast()!
     }
