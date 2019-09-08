@@ -678,7 +678,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
 // Box Decoder
 //===----------------------------------------------------------------------===//
 
-public class JSONDecoder {
+public class BoxDecoder {
     // MARK: - Constructing a Box Decoder
     
     /// Initializes `self` with default strategies.

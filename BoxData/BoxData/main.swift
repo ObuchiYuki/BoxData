@@ -9,17 +9,23 @@
 import Foundation
 
 struct Person: Codable {
-    let age:Int?
+    let age:UInt8?
+    let name:String
 }
 
 do {
-    let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
     
-    let stream = DataReadStream(data: data)
+    let alice = Person(age: nil, name: "Alice")
+    let encoder = BoxEncoder()
     
-    let tag = try Tag.deserialize(from: stream, maxDepth: 512)
+    let data = try encoder.encode(alice)
     
-    print(tag)
+    let decoder = BoxDecoder()
+    
+    let alice_ = try decoder.decode(Person.self, from: data)
+    
+    print(alice_)
+    
 }catch {
     print(error)
 }
@@ -27,6 +33,26 @@ do {
 
 
 /**
+ 
+ 
+ 
+ FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
+ 
+ let stream = DataReadStream(data: data)
+ 
+ let tag = try Tag.deserialize(from: stream, maxDepth: 512)
+ 
+ print(tag)
+ 
+ 
  let alice = Person(age: nil)
  let encoder = BoxEncoder()
  let data = try encoder.encode(alice)
