@@ -116,18 +116,18 @@ fileprivate class _BoxEncoder: Encoder {
 
 extension _BoxEncoder {
     /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
-    fileprivate func box(_ value: Bool)   -> Tag { return ByteTag(flag: value) }
-    fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag(value: Int64(value)) }
-    fileprivate func box(_ value: Int8)   -> Tag { return ByteTag(value: value) }
-    fileprivate func box(_ value: Int16)  -> Tag { return ShortTag(value: value) }
-    fileprivate func box(_ value: Int32)  -> Tag { return IntTag(value: value) }
-    fileprivate func box(_ value: Int64)  -> Tag { return LongTag(value: value) }
-    fileprivate func box(_ value: UInt)   -> Tag { return SwiftIntTag(value: Int64(bitPattern: UInt64(value))) }
-    fileprivate func box(_ value: UInt8)  -> Tag { return ByteTag(value: Int8(bitPattern: value)) }
-    fileprivate func box(_ value: UInt16) -> Tag { return ShortTag(value: Int16(bitPattern: value)) }
-    fileprivate func box(_ value: UInt32) -> Tag { return IntTag(value: Int32(bitPattern: value)) }
-    fileprivate func box(_ value: UInt64) -> Tag { return LongTag(value: Int64(bitPattern: value)) }
-    fileprivate func box(_ value: String) -> Tag { return StringTag(value: value) }
+    fileprivate func box(_ value: Bool)   -> Tag { return ByteTag       (flag: value) }
+    fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag   (value: Int64(value)) }
+    fileprivate func box(_ value: Int8)   -> Tag { return ByteTag       (value: value) }
+    fileprivate func box(_ value: Int16)  -> Tag { return ShortTag      (value: value) }
+    fileprivate func box(_ value: Int32)  -> Tag { return IntTag        (value: value) }
+    fileprivate func box(_ value: Int64)  -> Tag { return LongTag       (value: value) }
+    fileprivate func box(_ value: UInt)   -> Tag { return SwiftIntTag   (value: Int64(bitPattern: UInt64(value))) }
+    fileprivate func box(_ value: UInt8)  -> Tag { return ByteTag       (value: Int8 (bitPattern: value)) }
+    fileprivate func box(_ value: UInt16) -> Tag { return ShortTag      (value: Int16(bitPattern: value)) }
+    fileprivate func box(_ value: UInt32) -> Tag { return IntTag        (value: Int32(bitPattern: value)) }
+    fileprivate func box(_ value: UInt64) -> Tag { return LongTag       (value: Int64(bitPattern: value)) }
+    fileprivate func box(_ value: String) -> Tag { return StringTag     (value: value) }
     
     fileprivate func box_(_ value: Encodable) throws -> Tag? {
         fatalError()
