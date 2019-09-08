@@ -10,38 +10,23 @@ import Foundation
 
 struct Person: Codable {
     let age:UInt8?
-    let ids:[UInt8] = [
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-        12, 129, 12, 33, 22, 12, 129, 12, 33, 22,
-    ]
     let name:String
 }
 
 do {
+
+    let encoder = BoxEncoder()
+    let decoder = BoxDecoder()
+    
     let alice = Person(age: nil, name: "Alice")
-    let encoder = JSONEncoder()
     
     let data = try encoder.encode(alice)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.json", contents: data)
+    let alice_ = try decoder.decode(Person.self, from: data)
+    
+    print(alice_)
+    
+    
 }catch {
     print(error)
 }
