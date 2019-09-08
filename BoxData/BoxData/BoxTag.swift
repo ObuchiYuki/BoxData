@@ -642,11 +642,12 @@ internal final class ListTag<T: Tag>: ValueTag<[T]> {
     
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
+        try dos.write(TagFactory.idFromType(T.self).rawValue)
         
         guard !value.isEmpty else { return }
         
         for element in value {
-            try element.serialize(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
     
@@ -654,11 +655,12 @@ internal final class ListTag<T: Tag>: ValueTag<[T]> {
         self.value = []
         
         let size = try dis.uInt32()
-
         guard size != 0 else { return }
         
+        let typeId = try dis.uInt8()
+        
         for _ in 0..<size {
-            let typeId = try dis.uInt8()
+            
             let tag = TagFactory.fromID(id: typeId)
             try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             

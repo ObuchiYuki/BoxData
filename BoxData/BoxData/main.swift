@@ -10,7 +10,7 @@ import Foundation
 
 do {
     
-    if true {
+    if false {
         let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
         
         let stream = DataReadStream(data: data)
@@ -25,11 +25,6 @@ do {
             "ages": ListTag(value: [
                 IntTag(value: 12),
                 IntTag(value: 12),
-                CompoundTag(value: [
-                    "name": StringTag(value: "Alice"),
-                    "age": IntTag(value: 12),
-                    "list": ListTag(value: [])
-                ]),
                 IntTag(value: 12),
                 IntTag(value: 12),
                 IntTag(value: 12),

@@ -11,12 +11,12 @@
 
 import Foundation
 
-
+/// Error from DataStream
 enum DataStreamError: Error {
     case readError
-    
     case writeError
 }
+
 
 @usableFromInline
 internal class DataReadStream {
