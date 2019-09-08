@@ -337,26 +337,6 @@ extension _BoxEncoder : SingleValueEncodingContainer {
     }
 }
 
-fileprivate struct _BoxKey : CodingKey {
-    var stringValue: String
-    var intValue: Int?
-
-    init?(stringValue: String) {
-        self.stringValue = stringValue
-        self.intValue = nil
-    }
-
-    init?(intValue: Int) {
-        self.stringValue = "\(intValue)"
-        self.intValue = intValue
-    }
-
-    init(index: Int) {
-        self.stringValue = "Index \(index)"
-        self.intValue = index
-    }
-}
-
 // MARK: - Encoding Containers
 
 
@@ -491,7 +471,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     }
     
     mutating func superEncoder() -> Encoder {
-        return _BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey(index: 0), wrapping: self.container)
+        return _BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey.super, wrapping: self.container)
     }
     
     mutating func superEncoder(forKey key: K) -> Encoder {
@@ -708,7 +688,7 @@ public class JSONDecoder {
     
     /// Decodes a top-level value of the given type from the given Box representation.
     open func decode<T : Decodable>(_ type: T.Type, from data: Data) throws -> T {
-        let topLevel: Any
+        let topLevel: Tag
         do {
            topLevel = try _BoxSerialization.boxObject(with: data)
         } catch {
@@ -740,7 +720,7 @@ fileprivate class _BoxDecoder : Decoder {
     // MARK: - Initialization
     
     /// Initializes `self` with the given top-level container and options.
-    fileprivate init(referencing container: Any, at codingPath: [CodingKey] = []) {
+    fileprivate init(referencing container: Tag, at codingPath: [CodingKey] = []) {
         self.storage = _BoxDecodingStorage()
         self.storage.push(container: container)
         self.codingPath = codingPath
@@ -748,14 +728,14 @@ fileprivate class _BoxDecoder : Decoder {
 
     // MARK: - Decoder Methods
     public func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> {
-        guard !(self.storage.topContainer is NSNull) else {
+        guard !(self.storage.topContainer is EndTag) else {
             throw DecodingError.valueNotFound(KeyedDecodingContainer<Key>.self,
                     DecodingError.Context(codingPath: self.codingPath,
                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let topContainer = self.storage.topContainer as? [String : Any] else {
-            throw DecodingError._typeMismatch(at: self.codingPath, expectation: [String : Any].self, reality: self.storage.topContainer)
+        guard let topContainer = self.storage.topContainer as? CompoundTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: CompoundTag.self, reality: self.storage.topContainer)
         }
 
         let container = _BoxKeyedDecodingContainer<Key>(referencing: self, wrapping: topContainer)
@@ -763,13 +743,13 @@ fileprivate class _BoxDecoder : Decoder {
     }
 
     public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-        guard !(self.storage.topContainer is NSNull) else {
+        guard !(self.storage.topContainer is EndTag) else {
             throw DecodingError.valueNotFound(UnkeyedDecodingContainer.self,
                                               DecodingError.Context(codingPath: self.codingPath,
                                                                     debugDescription: "Cannot get unkeyed decoding container -- found null value instead."))
         }
 
-        guard let topContainer = self.storage.topContainer as? [Any] else {
+        guard let topContainer = self.storage.topContainer as? ListTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [Any].self, reality: self.storage.topContainer)
         }
 
@@ -825,7 +805,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     private let decoder: _BoxDecoder
 
     /// A reference to the container we're reading from.
-    private let container: [String : Tag]
+    private let container: CompoundTag
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -833,7 +813,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     // MARK: - Initialization
     
     /// Initializes `self` by referencing the given decoder and container.
-    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: [String : Any]) {
+    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: CompoundTag) {
         self.decoder = decoder
         self.container = container
         self.codingPath = decoder.codingPath
@@ -842,7 +822,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     // MARK: - KeyedDecodingContainerProtocol Methods
     
     public var allKeys: [Key] {
-        return self.container.keys.compactMap { Key(stringValue: $0) }
+        return self.container.value.keys.compactMap { Key(stringValue: $0) }
     }
 
     public func contains(_ key: Key) -> Bool {
@@ -1125,12 +1105,12 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
         self.decoder.codingPath.append(key)
         defer { self.decoder.codingPath.removeLast() }
 
-        let value: Any = self.container[key.stringValue] ?? NSNull()
+        let value: Tag = self.container[key.stringValue] ?? EndTag.shared
         return _BoxDecoder(referencing: value, at: self.decoder.codingPath)
     }
 
     public func superDecoder() throws -> Decoder {
-        return try _superDecoder(forKey: _BoxKey(index: 0))
+        return try _superDecoder(forKey: _BoxKey.super)
     }
 
     public func superDecoder(forKey key: Key) throws -> Decoder {
@@ -1435,13 +1415,13 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         }
 
         let value = self.container.value[self.currentIndex]
-        guard !(value is NSNull) else {
+        guard !(value is EndTag) else {
             throw DecodingError.valueNotFound(KeyedDecodingContainer<NestedKey>.self,
                                               DecodingError.Context(codingPath: self.codingPath,
                                                                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let dictionary = value as? [String : Any] else {
+        guard let dictionary = value as? CompoundTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [String : Any].self, reality: value)
         }
 
@@ -1461,13 +1441,13 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         }
 
         let value = self.container.value[self.currentIndex]
-        guard !(value is NSNull) else {
+        guard !(value is EndTag) else {
             throw DecodingError.valueNotFound(UnkeyedDecodingContainer.self,
                                               DecodingError.Context(codingPath: self.codingPath,
                                                                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let array = value as? [Any] else {
+        guard let array = value as? ListTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [Any].self, reality: value)
         }
 
