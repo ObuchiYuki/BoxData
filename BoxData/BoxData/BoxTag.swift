@@ -26,7 +26,7 @@ enum TagID: UInt8 {
     case long           = 4
     case float          = 5
     case double         = 6
-    case string         = 6
+    case string         = 7
     case list           = 8
     case compound       = 9
 }
@@ -45,12 +45,9 @@ final internal class TagFactory {
         if T.self == LongTag.self        {return .long}
         if T.self == FloatTag.self       {return .float}
         if T.self == DoubleTag.self      {return .double}
-        if T.self == ByteArrayTag.self   {return .byteArray}
         if T.self == StringTag.self      {return .string}
         if T.self == ListTag.self        {return .list}
         if T.self == CompoundTag.self    {return .compound}
-        if T.self == IntArrayTag.self    {return .intArray}
-        if T.self == LongArrayTag.self   {return .longArray}
         
         fatalError("Not matching tag")
     }
@@ -64,12 +61,9 @@ final internal class TagFactory {
         case .long:     return LongTag(value: nil)
         case .float:    return FloatTag(value: nil)
         case .double:   return DoubleTag(value: nil)
-        case .byteArray:return ByteArrayTag(value: nil)
         case .string:   return StringTag(value: nil)
         case .list:     return ListTag(value: nil)
         case .compound: return CompoundTag(value: nil)
-        case .intArray: return IntArrayTag(value: nil)
-        case .longArray:return LongArrayTag(value: nil)
         }
     }
 }
