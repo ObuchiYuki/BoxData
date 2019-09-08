@@ -104,19 +104,25 @@ internal class Tag {
     
     // MARK: - Methods -
     
-    /// serialize data with no name.
-    /// for list, array or root tag.
+    ///
+    //@usableFromInline
+    //final func serialize(into dos: DataWriteStream, maxDepth:Int) throws {
+    //
+    //
+    //    serialize(into: dos, maxDepth: maxDepth)
+    //}
+    
+    /// This method must be called from outside as root object.
     @usableFromInline
-    final func serialize(into dos:DataWriteStream, maxDepth:Int) throws {
-        
-        try serialize(into: dos, named: "", maxDepth: maxDepth)
-    }
- 
-    /// serialize data with name. for component
-    final func serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
+    final func serialize(into dos:DataWriteStream, maxDepth:Int = Tag.defaultMaxDepth) throws {
         try dos.write(UInt8(102)) // 'B'
         try dos.write(UInt8(1))   // version
         
+        try _serialize(into: dos, named: "", maxDepth: maxDepth)
+    }
+ 
+    /// serialize data with name. for component
+    final func _serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
         let id = tagID()
         try dos.write(id.rawValue)
         
@@ -129,8 +135,10 @@ internal class Tag {
 
     /// deserialize input.
     static func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
-        precondition((try dis.uInt8()) == 102, "This file is not BoxData format.")
-        precondition((try dis.uInt8()) == 1, "This BoxData format file is not version 1.0.")
+        let filetag = try dis.uInt8()
+        precondition(filetag == 102, "This file is not BoxData format.")
+        let version = try dis.uInt8()
+        precondition(version == 1, "This BoxData format file is not version 1.0.")
         
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
@@ -180,14 +188,14 @@ extension Tag {
      
     /// defalt max depth of deserialize.
     @usableFromInline
-    static let defaultMaxTag = 512
+    static let defaultMaxDepth = 512
 }
 
 extension Tag: CustomStringConvertible {
     
     @usableFromInline
     var description: String {
-        return valueString(maxDepth: Tag.defaultMaxTag)
+        return valueString(maxDepth: Tag.defaultMaxDepth)
     }
 }
 
@@ -602,7 +610,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     @usableFromInline
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         for (key, value) in value {
-            try value.serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
         }
         try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
     }
