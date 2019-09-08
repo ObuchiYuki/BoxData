@@ -441,7 +441,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
     }
 
     public mutating func superEncoder() -> Encoder {
-        return __BoxReferencingEncoder(referencing: self.encoder, at: self.container.count, wrapping: self.container)
+        return _BoxReferencingEncoder(referencing: self.encoder, at: self.container.value.count, wrapping: self.container)
     }
 }
 
@@ -486,5 +486,73 @@ fileprivate struct _BoxEncodingStorage {
 internal class _BoxSerialization {
     static func data(withBoxTag boxTag: Tag) throws -> Data {
         fatalError()
+    }
+}
+
+// MARK: - _BoxReferencingEncoder
+
+fileprivate class _BoxReferencingEncoder : _BoxEncoder {
+    // MARK: Reference types.
+    /// The type of container we're referencing.
+    private enum Reference {
+        /// Referencing a specific index in an array container.
+        case array(ListTag<Tag>, Int)
+
+        /// Referencing a specific key in a dictionary container.
+        case dictionary(CompoundTag, String)
+    }
+
+    // MARK: - Properties
+    /// The encoder we're referencing.
+    fileprivate let encoder: _BoxEncoder
+
+    /// The container reference itself.
+    private let reference: Reference
+
+    // MARK: - Initialization
+    /// Initializes `self` by referencing the given array container in the given encoder.
+    fileprivate init(referencing encoder: _BoxEncoder, at index: Int, wrapping array: ListTag<Tag>) {
+        self.encoder = encoder
+        self.reference = .array(array, index)
+        super.init(codingPath: encoder.codingPath)
+
+        self.codingPath.append(_BoxKey(index: index))
+    }
+
+    /// Initializes `self` by referencing the given dictionary container in the given encoder.
+    fileprivate init(referencing encoder: _BoxEncoder,
+                     key: CodingKey, convertedKey: __shared CodingKey, wrapping dictionary: CompoundTag) {
+        self.encoder = encoder
+        self.reference = .dictionary(dictionary, convertedKey.stringValue)
+        super.init(codingPath: encoder.codingPath)
+
+        self.codingPath.append(key)
+    }
+
+    // MARK: - Coding Path Operations
+    fileprivate override var canEncodeNewValue: Bool {
+        // With a regular encoder, the storage and coding path grow together.
+        // A referencing encoder, however, inherits its parents coding path, as well as the key it was created for.
+        // We have to take this into account.
+        return self.storage.count == self.codingPath.count - self.encoder.codingPath.count - 1
+    }
+
+    // MARK: - Deinitialization
+    // Finalizes `self` by writing the contents of our storage to the referenced encoder's storage.
+    deinit {
+        let value: Tag
+        switch self.storage.count {
+        case 0: value = CompoundTag(value: [:])
+        case 1: value = self.storage.popContainer()
+        default: fatalError("Referencing encoder deallocated with multiple containers on stack.")
+        }
+        
+        switch self.reference {
+        case .array(let array, let index):
+            array.value.insert(value, at: index)
+
+        case .dictionary(let dictionary, let key):
+            dictionary[key] = value
+        }
     }
 }
