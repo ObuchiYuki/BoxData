@@ -297,6 +297,11 @@ internal final class ByteTag: ValueTag<Int8> {
         self.value = flag ? 1 : 0
     }
     
+    /// Initirize ByteTag with Int8 value.
+    internal override init(value: Int8?) {
+        super.init(value: value)
+    }
+    
     /// Bool representation of Int8.
     internal var bool: Bool {
         return value != 0

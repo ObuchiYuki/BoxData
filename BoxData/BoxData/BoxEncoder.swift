@@ -116,7 +116,7 @@ fileprivate class _BoxEncoder: Encoder {
 
 extension _BoxEncoder {
     /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
-    fileprivate func box(_ value: Bool)   -> Tag { return NSNumber(value: value) }
+    fileprivate func box(_ value: Bool)   -> Tag { return ByteTag(flag: value) }
     fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag(value: Int64(value)) }
     fileprivate func box(_ value: Int8)   -> Tag { return ByteTag(value: value) }
     fileprivate func box(_ value: Int16)  -> Tag { return ShortTag(value: value) }
