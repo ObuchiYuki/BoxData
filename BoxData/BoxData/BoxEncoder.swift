@@ -11,6 +11,13 @@
 
 import Foundation
 
+#if (arch(i386) || arch(arm)) // 32bit
+typealias SwiftIntTag = IntTag
+#else // 64bit
+typealias SwiftIntTag = LongTag
+#endif
+
+
 //===----------------------------------------------------------------------===//
 // Box Encoder
 //===----------------------------------------------------------------------===//
@@ -108,9 +115,167 @@ fileprivate class _BoxEncoder: Encoder {
 }
 
 extension _BoxEncoder {
+    /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
+    fileprivate func box(_ value: Bool)   -> Tag { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag(value: Int64(value)) }
+    fileprivate func box(_ value: Int8)   -> Tag { return ByteTag(value: value) }
+    fileprivate func box(_ value: Int16)  -> Tag { return ShortTag(value: value) }
+    fileprivate func box(_ value: Int32)  -> Tag { return IntTag(value: value) }
+    fileprivate func box(_ value: Int64)  -> Tag { return LongTag(value: value) }
+    fileprivate func box(_ value: UInt)   -> Tag { return SwiftIntTag(value: Int64(bitPattern: UInt64(value))) }
+    fileprivate func box(_ value: UInt8)  -> Tag { return ByteTag(value: Int8(bitPattern: value)) }
+    fileprivate func box(_ value: UInt16) -> Tag { return ShortTag(value: Int16(bitPattern: value)) }
+    fileprivate func box(_ value: UInt32) -> Tag { return IntTag(value: Int32(bitPattern: value)) }
+    fileprivate func box(_ value: UInt64) -> Tag { return LongTag(value: Int64(bitPattern: value)) }
+    fileprivate func box(_ value: String) -> Tag { return StringTag(value: value) }
+    
     fileprivate func box_(_ value: Encodable) throws -> Tag? {
         fatalError()
     }
+}
+
+// MARK: - Encoding Containers
+
+
+fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingContainerProtocol {
+    
+    typealias Key = K
+    
+    // MARK: Properties
+    
+    /// A reference to the encoder we're writing to.
+    private let encoder: _BoxEncoder
+
+    /// A reference to the container we're writing to.
+    private let container: NSMutableDictionary
+
+    /// The path of coding keys taken to get to this point in encoding.
+    private(set) public var codingPath: [CodingKey]
+
+    // MARK: - Initialization
+    
+    /// Initializes `self` with the given references.
+    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: NSMutableDictionary) {
+        self.encoder = encoder
+        self.codingPath = codingPath
+        self.container = container
+    }
+    
+    mutating func encodeNil(forKey key: K) throws {
+        self.container[key.stringValue] = NSNull()
+    }
+    
+    mutating func encode(_ value: Bool, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: String, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Double, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Float, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Int, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Int8, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Int16, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Int32, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: Int64, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: UInt, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: UInt8, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: UInt16, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: UInt32, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode(_ value: UInt64, forKey key: K) throws {
+        self.container[key.stringValue] = self.encoder.box(value)
+    }
+    
+    mutating func encode<T>(_ value: T, forKey key: K) throws where T : Encodable {
+        self.encoder.codingPath.append(key)
+        defer { self.encoder.codingPath.removeLast() }
+        self.container[key.stringValue] = try self.encoder.box(value)
+    }
+    
+    mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
+        let containerKey = key.stringValue
+        let dictionary: NSMutableDictionary
+        if let existingContainer = self.container[containerKey] {
+            precondition(
+                existingContainer is NSMutableDictionary,
+                "Attempt to re-encode into nested KeyedEncodingContainer<\(Key.self)> for key \"\(containerKey)\" is invalid: non-keyed container already encoded for this key"
+            )
+            dictionary = existingContainer as! NSMutableDictionary
+        } else {
+            dictionary = NSMutableDictionary()
+            self.container[containerKey] = dictionary
+        }
+
+        self.codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+
+        let container = _BoxKeyedEncodingContainer<NestedKey>(referencing: self.encoder, codingPath: self.codingPath, wrapping: dictionary)
+        return KeyedEncodingContainer(container)
+    }
+    
+    mutating func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
+        let containerKey = key.stringValue
+        let array: NSMutableArray
+        if let existingContainer = self.container[containerKey] {
+            precondition(
+                existingContainer is NSMutableArray,
+                "Attempt to re-encode into nested UnkeyedEncodingContainer for key \"\(containerKey)\" is invalid: keyed container/single value already encoded for this key"
+            )
+            array = existingContainer as! NSMutableArray
+        } else {
+            array = NSMutableArray()
+            self.container[containerKey] = array
+        }
+
+        self.codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+        return _BoxUnkeyedEncodingContainer(referencing: self.encoder, codingPath: self.codingPath, wrapping: array)
+    }
+    
+    mutating func superEncoder() -> Encoder {
+        return __BoxReferencingEncoder(referencing: self.encoder, key: _JSONKey.super, convertedKey: _converted(_JSONKey.super), wrapping: self.container)
+
+    }
+    
+    mutating func superEncoder(forKey key: K) -> Encoder {
+        return __BoxReferencingEncoder(referencing: self.encoder, key: key, convertedKey: _converted(key), wrapping: self.container)
+    }
+    
 }
 
 // MARK: - Encoding Storage and Containers
