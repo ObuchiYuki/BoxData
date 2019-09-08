@@ -351,12 +351,12 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     }
     
     mutating func superEncoder() -> Encoder {
-        return __BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey.super, convertedKey: _BoxKey.super, wrapping: self.container)
+        return _BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey.super, convertedKey: _BoxKey.super, wrapping: self.container)
 
     }
     
     mutating func superEncoder(forKey key: K) -> Encoder {
-        return __BoxReferencingEncoder(referencing: self.encoder, key: key, convertedKey: _converted(key), wrapping: self.container)
+        return _BoxReferencingEncoder(referencing: self.encoder, key: key, convertedKey: key, wrapping: self.container)
     }
     
 }
