@@ -132,7 +132,7 @@ internal class Tag {
     }
 
     /// deserialize input.
-    static internal func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
+    static internal func deserialize(from dis: DataReadStream, maxDepth:Int = Tag.defaultMaxDepth) throws -> Tag {
         let filetag = try dis.uInt8()
         precondition(filetag == 0x42, "This file is not BoxData format.")
         let version = try dis.uInt8()

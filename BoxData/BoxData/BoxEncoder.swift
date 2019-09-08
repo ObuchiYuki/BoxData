@@ -590,20 +590,6 @@ fileprivate struct _BoxEncodingStorage {
     }
 }
 
-internal class _BoxSerialization {
-    static func data(withBoxTag boxTag: Tag) throws -> Data {
-        let stream = DataWriteStream()
-        
-        try boxTag.serialize(into: stream)
-        
-        guard let data = stream.data else {
-            throw DataStreamError.writeError
-        }
-        
-        return data
-    }
-}
-
 // MARK: - _BoxReferencingEncoder
 
 fileprivate class _BoxReferencingEncoder : _BoxEncoder {
@@ -674,3 +660,50 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
 //===----------------------------------------------------------------------===//
 // Box Decoder
 //===----------------------------------------------------------------------===//
+
+public class JSONDecoder {
+    // MARK: - Constructing a Box Decoder
+    
+    /// Initializes `self` with default strategies.
+    public init() {}
+    
+    // MARK: - Decoding Values
+    
+    /// Decodes a top-level value of the given type from the given Box representation.
+    open func decode<T : Decodable>(_ type: T.Type, from data: Data) throws -> T {
+        let topLevel: Any
+        do {
+           topLevel = try JSONSerialization.jsonObject(with: data)
+        } catch {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON.", underlyingError: error))
+        }
+
+        let decoder = __JSONDecoder(referencing: topLevel, options: self.options)
+        guard let value = try decoder.unbox(topLevel, as: type) else {
+            throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: [], debugDescription: "The given data did not contain a top-level value."))
+        }
+
+        return value
+    }
+}
+
+
+internal class _BoxSerialization {
+    static func boxObject(with data: Data) throws -> Tag {
+        let stream = DataReadStream(data: data)
+        
+        return try Tag.deserialize(from: stream)
+    }
+    
+    static func data(withBoxTag boxTag: Tag) throws -> Data {
+        let stream = DataWriteStream()
+        
+        try boxTag.serialize(into: stream)
+        
+        guard let data = stream.data else {
+            throw DataStreamError.writeError
+        }
+        
+        return data
+    }
+}
