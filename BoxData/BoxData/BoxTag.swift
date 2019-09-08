@@ -51,27 +51,24 @@ final internal class TagFactory {
         if T.self == StringTag.self      {return .string}
         if T.self == ListTag.self        {return .list}
         if T.self == CompoundTag.self    {return .compound}
-        if T.self == IntArrayTag.self    {return .intArray}
-        if T.self == LongArrayTag.self   {return .longArray}
         
         fatalError("Not matching tag")
     }
     
     static func fromID(id: UInt8) -> Tag {
         switch TagID(rawValue: id)! {
-        case .end:      return EndTag.shared
-        case .byte:     return ByteTag(value: nil)
-        case .short:    return ShortTag(value: nil)
-        case .int:      return IntTag(value: nil)
-        case .long:     return LongTag(value: nil)
-        case .float:    return FloatTag(value: nil)
-        case .double:   return DoubleTag(value: nil)
-        case .byteArray:return ByteArrayTag(value: nil)
-        case .string:   return StringTag(value: nil)
-        case .list:     return ListTag(value: nil)
-        case .compound: return CompoundTag(value: nil)
-        case .intArray: return IntArrayTag(value: nil)
-        case .longArray:return LongArrayTag(value: nil)
+        case .end:          return EndTag.shared
+        case .byte:         return ByteTag(value: nil)
+        case .short:        return ShortTag(value: nil)
+        case .int:          return IntTag(value: nil)
+        case .long:         return LongTag(value: nil)
+        case .float:        return FloatTag(value: nil)
+        case .double:       return DoubleTag(value: nil)
+        case .byteArray:    return ByteArrayTag(value: nil)
+        case .string:       return StringTag(value: nil)
+        case .list:         return ListTag(value: nil)
+        case .compound:     return CompoundTag(value: nil)
+        case .fixCompound:  return FixCompoundTag(value: nil)
         }
     }
 }
@@ -524,58 +521,6 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
 }
 
 //===----------------------------------===//
-// MARK: - CompoundTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int64]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
-@usableFromInline
-internal final class CompoundTag: ValueTag<[String: Tag]> {
-    
-    internal subscript(_ name:String) -> Tag? {
-        set { value[name] = newValue }
-        get { return value[name] }
-    }
-    
-    @inlinable
-    final override func tagID() -> TagID { .compound }
-        
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (key, value) in value {
-            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
-        }
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        self.value = [:]
-        
-        var id = try dis.uInt8()
-        if id == 0 { /// Empty CompoundTag
-            return
-        }
-        var name = try dis.string()
-        
-        while true {
-            let tag = TagFactory.fromID(id: id)
-            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-            
-            value[name] = tag
-            
-            id = try dis.uInt8()
-            if id == 0 { /// Read until End tag.
-                break
-            }
-            name = try dis.string()
-        }
-    }
-}
-
-//===----------------------------------===//
 // MARK: - ListTag -
 //===----------------------------------===//
 
@@ -633,3 +578,60 @@ internal final class ListTag: ValueTag<[Tag]> {
         }
     }
 }
+
+
+//===----------------------------------===//
+// MARK: - CompoundTag -
+//===----------------------------------===//
+
+/// This class represents tag of `[Int64]`.
+///
+/// ### Serialize structure
+///
+/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
+@usableFromInline
+internal final class CompoundTag: ValueTag<[String: Tag]> {
+    
+    internal subscript(_ name:String) -> Tag? {
+        set { value[name] = newValue }
+        get { return value[name] }
+    }
+    
+    @inlinable
+    final override func tagID() -> TagID { .compound }
+        
+    @usableFromInline
+    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
+        for (key, value) in value {
+            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+        }
+        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
+    }
+    
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        self.value = [:]
+        
+        var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
+        var name = try dis.string()
+        
+        while true {
+            let tag = TagFactory.fromID(id: id)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+            
+            value[name] = tag
+            
+            id = try dis.uInt8()
+            if id == 0 { /// Read until End tag.
+                break
+            }
+            name = try dis.string()
+        }
+    }
+}
+
+//===----------------------------------===//
+// MARK: - FixCompoundTag -
+//===----------------------------------===//
