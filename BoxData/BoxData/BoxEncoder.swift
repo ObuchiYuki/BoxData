@@ -152,8 +152,12 @@ extension _BoxEncoder {
     fileprivate func box(_ date:  Date)   -> Tag { return DoubleTag     (value: date.timeIntervalSince1970) }
     fileprivate func box(_ data:  Data)   -> Tag { return ByteArrayTag  (value: data.map{Int8(bitPattern: $0)}) }
     
+    fileprivate func box(_ value: Encodable) throws -> Tag {
+        return try self.box_(value) ?? CompoundTag(value: [:])
+    }
+    
     fileprivate func box(_ dict: [String : Encodable]) throws -> Tag? {
-        return CompoundTag(value: try dict.mapValues{try box_($0)}.compactMapValues{$0})
+        return CompoundTag(value: try dict.mapValues{try box($0)}.compactMapValues{$0})
     }
 
     // This method is called "box_" instead of "box" to disambiguate it from the overloads. Because the return type here is different from all of the "box" overloads (and is more general), any "box" calls in here would call back into "box" recursively instead of calling the appropriate overload, which is not what we want.
@@ -193,7 +197,6 @@ extension _BoxEncoder {
         }
 
         return self.storage.popContainer()
-        fatalError()
     }
 }
 
@@ -489,7 +492,15 @@ fileprivate struct _BoxEncodingStorage {
 
 internal class _BoxSerialization {
     static func data(withBoxTag boxTag: Tag) throws -> Data {
-        fatalError()
+        let stream = DataWriteStream()
+        
+        try boxTag.serialize(into: stream)
+        
+        guard let data = stream.data else {
+            throw DataStreamError.writeError
+        }
+        
+        return data
     }
 }
 
@@ -526,7 +537,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
     /// Initializes `self` by referencing the given dictionary container in the given encoder.
     fileprivate init(referencing encoder: _BoxEncoder, key: CodingKey, wrapping dictionary: CompoundTag) {
         self.encoder = encoder
-        self.reference = .dictionary(dictionary, convertedKey.stringValue)
+        self.reference = .dictionary(dictionary, key.stringValue)
         super.init(codingPath: encoder.codingPath)
 
         self.codingPath.append(key)
