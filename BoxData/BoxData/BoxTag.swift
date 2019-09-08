@@ -655,7 +655,9 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 //===----------------------------------===//
 
 /// This class represents tag of `[Tag]`.
-/// free format
+///
+/// ListTag contains single type of tag.
+/// You must not put multiple type of tag into ListTag.
 ///
 /// ### Serialize structure
 ///
@@ -667,9 +669,9 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 ///
 /// `| tag_id | length(4 bytes) | value_tag_id (1 bytes) | ( value(ValueTag) )... |`
 @usableFromInline
-internal final class ListTag<T: Tag>: ValueTag<[T]> {
+internal final class ListTag: ValueTag<[Tag]> {
     
-    internal func add(_ tag:T) {
+    internal func add(_ tag:Tag) {
         self.value.append(tag)
     }
     
@@ -702,7 +704,7 @@ internal final class ListTag<T: Tag>: ValueTag<[T]> {
             let tag = TagFactory.fromID(id: typeId)
             try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             
-            self.value.append(tag as! T)
+            self.value.append(tag)
         }
     }
 }

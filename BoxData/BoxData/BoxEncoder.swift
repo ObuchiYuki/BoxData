@@ -122,7 +122,20 @@ fileprivate class _BoxEncoder: Encoder {
     }
     
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-        fatalError()
+        // If an existing unkeyed container was already requested, return that one.
+        let topContainer: ListTag
+        if self.canEncodeNewValue {
+            // We haven't yet pushed a container at this level; do so here.
+            topContainer = self.storage.pushUnkeyedContainer()
+        } else {
+            guard let container = self.storage.containers.last as? ListTag else {
+                preconditionFailure("Attempt to push new unkeyed encoding container when already previously encoded at this path.")
+            }
+
+            topContainer = container
+        }
+
+        return _BoxUnkeyedEncodingContainer(referencing: self, codingPath: self.codingPath, wrapping: topContainer)
     }
     
     func singleValueContainer() -> SingleValueEncodingContainer {
@@ -336,7 +349,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     
     mutating func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
         let containerKey = key.stringValue
-        let array: ListTag<Tag>
+        let array: ListTag
         if let existingContainer = self.container[containerKey] {
             precondition(
                 existingContainer is ListTag,
@@ -369,7 +382,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
     private let encoder: _BoxEncoder
 
     /// A reference to the container we're writing to.
-    private let container: ListTag<Tag>
+    private let container: ListTag
 
     /// The path of coding keys taken to get to this point in encoding.
     private(set) public var codingPath: [CodingKey]
@@ -381,7 +394,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
 
     // MARK: - Initialization
     /// Initializes `self` with the given references.
-    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: ListTag<Tag>) {
+    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: ListTag) {
         self.encoder = encoder
         self.codingPath = codingPath
         self.container = container
@@ -474,7 +487,7 @@ fileprivate struct _BoxEncodingStorage {
         return dictionary
     }
 
-    fileprivate mutating func pushUnkeyedContainer() -> ListTag<Tag> {
+    fileprivate mutating func pushUnkeyedContainer() -> ListTag {
         let array = ListTag(value: [])
         self.containers.append(array)
         return array
@@ -511,7 +524,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
     /// The type of container we're referencing.
     private enum Reference {
         /// Referencing a specific index in an array container.
-        case array(ListTag<Tag>, Int)
+        case array(ListTag, Int)
 
         /// Referencing a specific key in a dictionary container.
         case dictionary(CompoundTag, String)
@@ -526,7 +539,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
 
     // MARK: - Initialization
     /// Initializes `self` by referencing the given array container in the given encoder.
-    fileprivate init(referencing encoder: _BoxEncoder, at index: Int, wrapping array: ListTag<Tag>) {
+    fileprivate init(referencing encoder: _BoxEncoder, at index: Int, wrapping array: ListTag) {
         self.encoder = encoder
         self.reference = .array(array, index)
         super.init(codingPath: encoder.codingPath)

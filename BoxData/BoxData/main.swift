@@ -13,6 +13,8 @@ struct Person: Codable {
     let age:Int
     let birth:Country
     
+    let ids:[UInt8] = [12, 125, 31, 55, 9]
+    
     struct Country: Codable {
         let name:String
         let state:String
