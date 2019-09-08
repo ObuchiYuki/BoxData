@@ -30,7 +30,6 @@ enum TagID: UInt8 {
     case list           = 8
     case compound       = 9
     case byteArray      = 10
-    case fixCompound    = 11
 }
 
 
@@ -50,7 +49,7 @@ final internal class TagFactory {
         if T.self == ByteArrayTag.self   {return .byteArray}
         if T.self == StringTag.self      {return .string}
         if T.self == ListTag.self        {return .list}
-        if T.self == CompoundTag.self    {return .compound}
+        if T.self == CompoundTag.self {return .compound}
         
         fatalError("Not matching tag")
     }
@@ -67,8 +66,7 @@ final internal class TagFactory {
         case .byteArray:    return ByteArrayTag(value: nil)
         case .string:       return StringTag(value: nil)
         case .list:         return ListTag(value: nil)
-        case .compound:     return CompoundTag(value: nil)
-        case .fixCompound:  return FixCompoundTag(value: nil)
+        case .compound:  return CompoundTag(value: nil)
         }
     }
 }
@@ -520,59 +518,6 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
     }
 }
 
-
-//===----------------------------------===//
-// MARK: - CompoundTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[String: Tag]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
-@usableFromInline
-internal final class CompoundTag: ValueTag<[String: Tag]> {
-    
-    internal subscript(_ name:String) -> Tag? {
-        set { value[name] = newValue }
-        get { return value[name] }
-    }
-    
-    @inlinable
-    final override func tagID() -> TagID { .compound }
-        
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (key, value) in value {
-            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
-        }
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        self.value = [:]
-        
-        var id = try dis.uInt8()
-        if id == 0 { /// Empty CompoundTag
-            return
-        }
-        var name = try dis.string()
-        
-        while true {
-            let tag = TagFactory.fromID(id: id)
-            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-            
-            value[name] = tag
-            
-            id = try dis.uInt8()
-            if id == 0 { /// Read until End tag.
-                break
-            }
-            name = try dis.string()
-        }
-    }
-}
-
 //===----------------------------------===//
 // MARK: - ListTag -
 //===----------------------------------===//
@@ -611,9 +556,9 @@ internal final class ListTag: ValueTag<[Tag]> {
         let tagId = valuez.tagID()
         try dos.write(tagId.rawValue)
         
-        if tagId == .fixCompound { // FixCompoundのみ特例処理
+        if tagId == .compound { // FixCompoundのみ特例処理
             
-            try serializeFixCompound(into: dos, fixCompound: valuez as! FixCompoundTag, maxDepth: maxDepth)
+            try serializeFixCompound(into: dos, fixCompound: valuez as! CompoundTag, maxDepth: maxDepth)
             
         }else{
             for element in value {
@@ -631,7 +576,7 @@ internal final class ListTag: ValueTag<[Tag]> {
         
         let typeId = try dis.uInt8()
         
-        if typeId == TagID.fixCompound.rawValue { // FixCompoundのみ特例処理
+        if typeId == TagID.compound.rawValue { // FixCompoundのみ特例処理
             
             try deserializeFixCompound(from: dis, size:size, maxDepth: maxDepth)
             
@@ -648,7 +593,7 @@ internal final class ListTag: ValueTag<[Tag]> {
     
     // MARK: FixCompound serialize
     
-    private final func serializeFixCompound(into dos: BoxDataWriteStream, fixCompound:FixCompoundTag , maxDepth: Int) throws {
+    private final func serializeFixCompound(into dos: BoxDataWriteStream, fixCompound:CompoundTag , maxDepth: Int) throws {
         try fixCompound.serializeDataStructure(into: dos)
         
         for element in value {
@@ -681,13 +626,13 @@ internal final class ListTag: ValueTag<[Tag]> {
                 dict[name] = tag
             }
             
-            self.value.append(FixCompoundTag(value: dict))
+            self.value.append(CompoundTag(value: dict))
         }
     }
 }
 
 //===----------------------------------===//
-// MARK: - FixCompoundTag -
+// MARK: - CompoundTag -
 //===----------------------------------===//
 
 /// This class represents tag of `[Int64]`.
@@ -705,12 +650,13 @@ internal final class ListTag: ValueTag<[Tag]> {
 ///
 /// | tag_id | value(Value)... |
 @usableFromInline
-internal final class FixCompoundTag: ValueTag<[String: Tag]> {
+internal final class CompoundTag: ValueTag<[String: Tag]> {
     
     final func serializeDataStructure(into dos: BoxDataWriteStream) throws {
         try dos.write(UInt32(value.count))
         
         for (key, value) in value.sorted(by: {$0.key < $1.key}) {
+            print("serializeDataStructure", (key, value))
             try dos.write(key)
             try dos.write(value.tagID().rawValue)
         }
@@ -722,11 +668,11 @@ internal final class FixCompoundTag: ValueTag<[String: Tag]> {
     }
     
     @inlinable
-    final override func tagID() -> TagID { .fixCompound }
+    final override func tagID() -> TagID { .compound }
         
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (_, value) in value {
+        for (_, value) in value.sorted(by: {$0.key < $1.key}) {
             try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
         try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)

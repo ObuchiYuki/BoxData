@@ -63,7 +63,7 @@ extension DecodingError {
             return "a string"
         } else if value is ListTag {
             return "an list"
-        } else if value is FixCompoundTag {
+        } else if value is CompoundTag {
             return "a dictionary"
         } else {
             return "\(type(of: value))"
@@ -141,13 +141,13 @@ fileprivate class _BoxEncoder: Encoder {
     // MARK: - Encoder Methods
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-        let topContainer: FixCompoundTag
+        let topContainer: CompoundTag
         
         if self.canEncodeNewValue {
             // We haven't yet pushed a container at this level; do so here.
             topContainer = self.storage.pushKeyedContainer()
         } else {
-            guard let container = self.storage.containers.last as? FixCompoundTag else {
+            guard let container = self.storage.containers.last as? CompoundTag else {
                 preconditionFailure("Attempt to push new keyed encoding container when already previously encoded at this path.")
             }
 
@@ -203,11 +203,11 @@ extension _BoxEncoder {
     fileprivate func box(_ data:  Data)   -> Tag { return ByteArrayTag  (value: data.map{Int8(bitPattern: $0)}) }
     
     fileprivate func box(_ value: Encodable) throws -> Tag {
-        return try self.box_(value) ?? FixCompoundTag(value: [:])
+        return try self.box_(value) ?? CompoundTag(value: [:])
     }
     
     fileprivate func box(_ dict: [String : Encodable]) throws -> Tag? {
-        return FixCompoundTag(value: try dict.mapValues{try box($0)}.compactMapValues{$0})
+        return CompoundTag(value: try dict.mapValues{try box($0)}.compactMapValues{$0})
     }
 
     // This method is called "box_" instead of "box" to disambiguate it from the overloads. Because the return type here is different from all of the "box" overloads (and is more general), any "box" calls in here would call back into "box" recursively instead of calling the appropriate overload, which is not what we want.
@@ -350,7 +350,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     private let encoder: _BoxEncoder
 
     /// A reference to the container we're writing to.
-    private let container: FixCompoundTag
+    private let container: CompoundTag
 
     /// The path of coding keys taken to get to this point in encoding.
     private(set) public var codingPath: [CodingKey]
@@ -358,7 +358,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     // MARK: - Initialization
     
     /// Initializes `self` with the given references.
-    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: FixCompoundTag) {
+    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: CompoundTag) {
         self.encoder = encoder
         self.codingPath = codingPath
         self.container = container
@@ -432,15 +432,15 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
         let containerKey = key.stringValue
-        let dictionary: FixCompoundTag
+        let dictionary: CompoundTag
         if let existingContainer = self.container[containerKey] {
             precondition(
-                existingContainer is FixCompoundTag,
+                existingContainer is CompoundTag,
                 "Attempt to re-encode into nested KeyedEncodingContainer<\(Key.self)> for key \"\(containerKey)\" is invalid: non-keyed container already encoded for this key"
             )
-            dictionary = existingContainer as! FixCompoundTag
+            dictionary = existingContainer as! CompoundTag
         } else {
-            dictionary = FixCompoundTag()
+            dictionary = CompoundTag()
             self.container[containerKey] = dictionary
         }
 
@@ -548,7 +548,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
         self.codingPath.append(_BoxKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
-        let dictionary = FixCompoundTag(value: [:])
+        let dictionary = CompoundTag(value: [:])
         self.container.add(dictionary)
 
         let container = _BoxKeyedEncodingContainer<NestedKey>(referencing: self.encoder, codingPath: self.codingPath, wrapping: dictionary)
@@ -585,8 +585,8 @@ fileprivate struct _BoxEncodingStorage {
         return self.containers.count
     }
 
-    fileprivate mutating func pushKeyedContainer() -> FixCompoundTag {
-        let dictionary = FixCompoundTag(value: [:])
+    fileprivate mutating func pushKeyedContainer() -> CompoundTag {
+        let dictionary = CompoundTag(value: [:])
         self.containers.append(dictionary)
         return dictionary
     }
@@ -617,7 +617,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
         case array(ListTag, Int)
 
         /// Referencing a specific key in a dictionary container.
-        case dictionary(FixCompoundTag, String)
+        case dictionary(CompoundTag, String)
     }
 
     // MARK: - Properties
@@ -638,7 +638,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
     }
 
     /// Initializes `self` by referencing the given dictionary container in the given encoder.
-    fileprivate init(referencing encoder: _BoxEncoder, key: CodingKey, wrapping dictionary: FixCompoundTag) {
+    fileprivate init(referencing encoder: _BoxEncoder, key: CodingKey, wrapping dictionary: CompoundTag) {
         self.encoder = encoder
         self.reference = .dictionary(dictionary, key.stringValue)
         super.init(codingPath: encoder.codingPath)
@@ -659,7 +659,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
     deinit {
         let value: Tag
         switch self.storage.count {
-        case 0: value = FixCompoundTag(value: [:])
+        case 0: value = CompoundTag(value: [:])
         case 1: value = self.storage.popContainer()
         default: fatalError("Referencing encoder deallocated with multiple containers on stack.")
         }
@@ -734,8 +734,8 @@ fileprivate class _BoxDecoder : Decoder {
                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let topContainer = self.storage.topContainer as? FixCompoundTag else {
-            throw DecodingError._typeMismatch(at: self.codingPath, expectation: FixCompoundTag.self, reality: self.storage.topContainer)
+        guard let topContainer = self.storage.topContainer as? CompoundTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: CompoundTag.self, reality: self.storage.topContainer)
         }
 
         let container = _BoxKeyedDecodingContainer<Key>(referencing: self, wrapping: topContainer)
@@ -805,7 +805,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     private let decoder: _BoxDecoder
 
     /// A reference to the container we're reading from.
-    private let container: FixCompoundTag
+    private let container: CompoundTag
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -813,7 +813,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     // MARK: - Initialization
     
     /// Initializes `self` by referencing the given decoder and container.
-    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: FixCompoundTag) {
+    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: CompoundTag) {
         self.decoder = decoder
         self.container = container
         self.codingPath = decoder.codingPath
@@ -1076,7 +1076,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
                                                                   debugDescription: "Cannot get \(KeyedDecodingContainer<NestedKey>.self) -- no value found for key \(_errorDescription(of: key))"))
         }
 
-        guard let dictionary = value as? FixCompoundTag else {
+        guard let dictionary = value as? CompoundTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [String : Any].self, reality: value)
         }
 
@@ -1421,7 +1421,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let dictionary = value as? FixCompoundTag else {
+        guard let dictionary = value as? CompoundTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [String : Any].self, reality: value)
         }
 
@@ -1735,7 +1735,7 @@ extension _BoxDecoder {
         guard !(value is EndTag) else { return nil }
 
         var result = [String : Any]()
-        guard let dict = value as? FixCompoundTag else {
+        guard let dict = value as? CompoundTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
         }
         let elementType = type.elementType

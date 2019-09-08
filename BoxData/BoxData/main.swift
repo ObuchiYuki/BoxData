@@ -9,35 +9,22 @@
 import Foundation
 
 struct Person: Codable {
-    let age:UInt8?
+    let age:UInt8
     let name:String
-    
-    let id:[ID]
-    
-    struct ID: Codable {
-        let name:String
-        let number:Int
-    }
 }
 
 do {
 
     let encoder = BoxEncoder()
     
-    let decoder = BoxDecoder()
+    let people = [
+        Person(age: 16, name: "Alice"),
+        Person(age: 22, name: "Bob"),
+    ]
     
-    let alice = Person(age: nil, name: "Alice", id: [
-        .init(name: "A", number: 1),
-        .init(name: "B", number: 2),
-        .init(name: "C", number: 3),
-        .init(name: "D", number: 4),
-    ])
+    let data = try encoder.encode(people)
     
-    let data = try encoder.encode(alice)
-    
-    let alice_ = try decoder.decode(Person.self, from: data)
-    
-    print(alice_)
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
     
     
 }catch {
@@ -48,7 +35,11 @@ do {
 
 /**
  
+let decoder = BoxDecoder()
+ let alice_ = try decoder.decode(Person.self, from: data)
  
+ print(alice_)
+  
  
  FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
  
