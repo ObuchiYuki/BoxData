@@ -653,10 +653,9 @@ internal final class ListTag: ValueTag<[Tag]> {
 internal final class CompoundTag: ValueTag<[String: Tag]> {
     
     final func serializeDataStructure(into dos: BoxDataWriteStream) throws {
-        try dos.write(UInt32(value.count))
+        try dos.write(UInt16(value.count))
         
         for (key, value) in value.sorted(by: {$0.key < $1.key}) {
-            print("serializeDataStructure", (key, value))
             try dos.write(key)
             try dos.write(value.tagID().rawValue)
         }
@@ -675,7 +674,6 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         for (_, value) in value.sorted(by: {$0.key < $1.key}) {
             try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
     }
     
     final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
