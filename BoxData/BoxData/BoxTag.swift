@@ -633,6 +633,9 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         self.value = [:]
         
         var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
         var name = try dis.string()
         
         while true {
