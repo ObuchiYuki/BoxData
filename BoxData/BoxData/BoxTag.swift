@@ -88,10 +88,10 @@ final internal class TagFactory {
 ///
 /// Tag serialization
 /// ### for Normal tag
-/// | tag_id | name | value |
+/// `| tag_id | name | value |`
 ///
 /// ### for End tag
-/// | tag_id |
+/// `| tag_id |`
 @usableFromInline
 internal class Tag {
     
@@ -251,12 +251,13 @@ extension ValueTag: Hashable where Element: Hashable {
 //===----------------------------------===//
 
 
-/// This tag represents Compound end.
+/// This tag represents Compound end or represents NULL
 /// Use like this
 ///
-/// ```
-/// | compound_tag |...| end_tag |
-/// ```
+/// `| compound_tag |...| end_tag |`
+/// or
+/// `| EndTag |`
+///
 /// Compound type read file while reaches this tag.
 @usableFromInline
 final internal class EndTag: Tag {
@@ -294,7 +295,7 @@ internal final class ByteTag: ValueTag<Int8> {
     
     /// Initirize ByteTag with Bool value.
     internal init(flag: Bool) {
-        self.value = flag ? 1 : 0
+        super.init(value: flag ? 1 : 0)
     }
     
     /// Initirize ByteTag with Int8 value.
@@ -667,6 +668,10 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 /// `| tag_id | length(4 bytes) | value_tag_id (1 bytes) | ( value(ValueTag) )... |`
 @usableFromInline
 internal final class ListTag<T: Tag>: ValueTag<[T]> {
+    
+    internal func add(_ tag:T) {
+        self.value.append(tag)
+    }
     
     @inlinable
     @inline(__always)
