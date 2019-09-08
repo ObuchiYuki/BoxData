@@ -16,6 +16,7 @@ struct Person: Codable {
 do {
 
     let encoder = BoxEncoder()
+    
     let decoder = BoxDecoder()
     
     let alice = Person(age: nil, name: "Alice")

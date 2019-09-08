@@ -26,12 +26,9 @@ enum TagID: UInt8 {
     case long           = 4
     case float          = 5
     case double         = 6
-    case byteArray      = 7
-    case string         = 8
-    case list           = 9
-    case compound       = 10
-    case intArray       = 11
-    case longArray      = 12
+    case string         = 6
+    case list           = 8
+    case compound       = 9
 }
 
 
@@ -487,173 +484,6 @@ internal final class StringTag: ValueTag<String> {
 }
 
 //===----------------------------------===//
-// MARK: - ByteArrayTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int8]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | length (4 bytes) | data...(1byte...) |
-@usableFromInline
-internal final class ByteArrayTag: ValueTag<[Int8]> {
-    
-    @inlinable
-    @inline(__always)
-    final override func tagID() -> TagID { .longArray }
-
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        try dos.write(UInt32(value.count))
-        
-        try value.forEach{
-            try dos.write($0)
-        }
-    }
-    
-    @usableFromInline
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        let length = try dis.uInt32()
-        var _value = [Int8]()
-        
-        for _ in 0..<length {
-            _value.append(try dis.int8())
-        }
-        
-        self.value = _value
-    }
-}
-
-//===----------------------------------===//
-// MARK: - IntArrayTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int32]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | length (4 bytes) | data...(4byte...) |
-@usableFromInline
-internal final class IntArrayTag: ValueTag<[Int32]> {
-    
-    @inlinable
-    @inline(__always)
-    final override func tagID() -> TagID { .intArray }
-
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        try dos.write(UInt32(value.count))
-        
-        try value.forEach{
-            try dos.write($0)
-        }
-    }
-    
-    @usableFromInline
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        let length = try dis.uInt32()
-        var _value = [Int32]()
-        
-        for _ in 0..<length {
-            _value.append(try dis.int32())
-        }
-        
-        self.value = _value
-    }
-}
-
-
-//===----------------------------------===//
-// MARK: - LongArrayTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int64]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | length (4 bytes) | data...(8byte...) |
-@usableFromInline
-internal final class LongArrayTag: ValueTag<[Int64]> {
-    
-    @inlinable
-    @inline(__always)
-    final override func tagID() -> TagID { .longArray }
-
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        try dos.write(UInt32(value.count))
-        
-        try value.forEach{
-            try dos.write($0)
-        }
-    }
-    
-    @usableFromInline
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        let length = try dis.uInt32()
-        var _value = [Int64]()
-        
-        for _ in 0..<length {
-            _value.append(try dis.int64())
-        }
-        
-        self.value = _value
-    }
-}
-
-//===----------------------------------===//
-// MARK: - CompoundTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int64]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
-@usableFromInline
-internal final class CompoundTag: ValueTag<[String: Tag]> {
-    
-    internal subscript(_ name:String) -> Tag? {
-        set { value[name] = newValue }
-        get { return value[name] }
-    }
-    
-    @inlinable
-    final override func tagID() -> TagID { .compound }
-        
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (key, value) in value {
-            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
-        }
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        self.value = [:]
-        
-        var id = try dis.uInt8()
-        if id == 0 { /// Empty CompoundTag
-            return
-        }
-        var name = try dis.string()
-        
-        while true {
-            let tag = TagFactory.fromID(id: id)
-            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-            
-            value[name] = tag
-            
-            id = try dis.uInt8()
-            if id == 0 { /// Read until End tag.
-                break
-            }
-            name = try dis.string()
-        }
-    }
-}
-
-//===----------------------------------===//
 // MARK: - ListTag -
 //===----------------------------------===//
 
@@ -708,6 +538,58 @@ internal final class ListTag: ValueTag<[Tag]> {
             try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             
             self.value.append(tag)
+        }
+    }
+}
+
+//===----------------------------------===//
+// MARK: - CompoundTag -
+//===----------------------------------===//
+
+/// This class represents tag of `[Int64]`.
+///
+/// ### Serialize structure
+///
+/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
+@usableFromInline
+internal final class CompoundTag: ValueTag<[String: Tag]> {
+    
+    internal subscript(_ name:String) -> Tag? {
+        set { value[name] = newValue }
+        get { return value[name] }
+    }
+    
+    @inlinable
+    final override func tagID() -> TagID { .compound }
+        
+    @usableFromInline
+    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
+        for (key, value) in value {
+            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+        }
+        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
+    }
+    
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        self.value = [:]
+        
+        var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
+        var name = try dis.string()
+        
+        while true {
+            let tag = TagFactory.fromID(id: id)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+            
+            value[name] = tag
+            
+            id = try dis.uInt8()
+            if id == 0 { /// Read until End tag.
+                break
+            }
+            name = try dis.string()
         }
     }
 }
