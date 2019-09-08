@@ -10,6 +10,7 @@ import Foundation
 
 struct Person: Codable {
     let age:UInt8?
+    let ids:[UInt8] = [ 12, 129, 12, 33, 22 ]
     let name:String
 }
 
@@ -19,12 +20,6 @@ do {
     let encoder = BoxEncoder()
     
     let data = try encoder.encode(alice)
-    
-    let decoder = BoxDecoder()
-    
-    let alice_ = try decoder.decode(Person.self, from: data)
-    
-    print(alice_)
     
 }catch {
     print(error)
