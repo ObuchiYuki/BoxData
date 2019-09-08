@@ -27,9 +27,9 @@ public class BoxEncoder {
                                              EncodingError.Context(codingPath: [], debugDescription: "Top-level \(T.self) did not encode any values."))
         }
         
-        _BoxSerialization.data(withBoxTag: <#T##Dictionary<String, Any>#>)
         
         
+        fatalError()
     }
 }
 
@@ -52,7 +52,7 @@ internal class _BoxEncoder: Encoder {
 }
 
 extension _BoxEncoder {
-    fileprivate func box_(_ value: Encodable) throws -> CompoundTag {
+    fileprivate func box_(_ value: Encodable) throws -> CompoundTag? {
         fatalError()
     }
 }

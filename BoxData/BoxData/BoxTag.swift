@@ -96,9 +96,7 @@ final internal class TagFactory {
 internal class Tag {
     
     /// Subclass of Tag must implement tagID() to return own type.
-    @inlinable
-    @inline(__always)
-    func tagID() -> TagID {
+    fileprivate func tagID() -> TagID {
         fatalError("Subclass of Tag must implement tagID().")
     }
     
@@ -115,14 +113,14 @@ internal class Tag {
     /// This method must be called from outside as root object.
     @usableFromInline
     final func serialize(into dos:DataWriteStream, maxDepth:Int = Tag.defaultMaxDepth) throws {
-        try dos.write(UInt8(102)) // 'B'
+        try dos.write(UInt8(0x42)) // 'B'
         try dos.write(UInt8(1))   // version
         
         try _serialize(into: dos, named: "", maxDepth: maxDepth)
     }
  
     /// serialize data with name. for component
-    final func _serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
+    final fileprivate func _serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
         let id = tagID()
         try dos.write(id.rawValue)
         
@@ -134,9 +132,9 @@ internal class Tag {
     }
 
     /// deserialize input.
-    static func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
+    static internal func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
         let filetag = try dis.uInt8()
-        precondition(filetag == 102, "This file is not BoxData format.")
+        precondition(filetag == 0x42, "This file is not BoxData format.")
         let version = try dis.uInt8()
         precondition(version == 1, "This BoxData format file is not version 1.0.")
         
@@ -152,9 +150,7 @@ internal class Tag {
     
     /// decrement maxDepth use this method to decrease maxDepth.
     /// This method check if maxDepth match requirement.
-    @inlinable
-    @inline(__always)
-    final func decrementMaxDepth(_ maxDepth: Int) -> Int {
+    final fileprivate func decrementMaxDepth(_ maxDepth: Int) -> Int {
         assert(maxDepth > 0, "negative maximum depth is not allowed")
         assert(maxDepth != 0, "reached maximum depth of NBT structure")
         
@@ -166,20 +162,17 @@ internal class Tag {
     // Subclass of Tag must override those methods below to implement function.
     
     /// Subclass of Tag must override this method to serialize value.
-    @inlinable
-    func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
+    fileprivate func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         fatalError("Subclass of Tag must implement serializeValue(into:, _:).")
     }
     
     /// Subclass of Tag must override this method to deserialize value.
-    @inlinable
-    func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
+    fileprivate func deserializeValue(from dis: DataReadStream, maxDepth: Int) throws {
         fatalError("Subclass of Tag must implement deserializeValue(from:, _:).")
     }
     
     /// Subclass of Tag must override this method to retuen description of Value.
-    @inlinable
-    func valueString(maxDepth: Int) -> String {
+    fileprivate func valueString(maxDepth: Int) -> String {
         fatalError("Subclass of Tag must implement valueString(maxDepth:)")
     }
 }
