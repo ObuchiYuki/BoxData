@@ -612,6 +612,11 @@ internal final class LongArrayTag: ValueTag<[Int64]> {
 @usableFromInline
 internal final class CompoundTag: ValueTag<[String: Tag]> {
     
+    internal subscript(_ name:String) -> Tag? {
+        set { value[name] = newValue }
+        get { return value[name] }
+    }
+    
     @inlinable
     final override func tagID() -> TagID { .compound }
         
@@ -653,7 +658,13 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
 ///
 /// ### Serialize structure
 ///
-/// | tag_id | length(4 bytes) | ( value(ValueTag) )... |
+/// ##### Empty
+///
+/// `| tag_id | length(4 bytes) = 0 | `
+///
+/// ##### Not Empty
+///
+/// `| tag_id | length(4 bytes) | value_tag_id (1 bytes) | ( value(ValueTag) )... |`
 @usableFromInline
 internal final class ListTag<T: Tag>: ValueTag<[T]> {
     
@@ -663,9 +674,10 @@ internal final class ListTag<T: Tag>: ValueTag<[T]> {
     
     final override func serializeValue(into dos: DataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
-        try dos.write(TagFactory.idFromType(T.self).rawValue)
         
         guard !value.isEmpty else { return }
+        
+        try dos.write(value[0].tagID().rawValue)
         
         for element in value {
             try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))

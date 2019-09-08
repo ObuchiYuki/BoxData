@@ -104,13 +104,13 @@ fileprivate class _BoxEncoder: Encoder {
     // MARK: - Encoder Methods
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-        let topContainer: NSMutableDictionary
+        let topContainer: CompoundTag
         
         if self.canEncodeNewValue {
             // We haven't yet pushed a container at this level; do so here.
             topContainer = self.storage.pushKeyedContainer()
         } else {
-            guard let container = self.storage.containers.last as? NSMutableDictionary else {
+            guard let container = self.storage.containers.last as? CompoundTag else {
                 preconditionFailure("Attempt to push new keyed encoding container when already previously encoded at this path.")
             }
 
@@ -210,7 +210,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     private let encoder: _BoxEncoder
 
     /// A reference to the container we're writing to.
-    private let container: NSMutableDictionary
+    private let container: CompoundTag
 
     /// The path of coding keys taken to get to this point in encoding.
     private(set) public var codingPath: [CodingKey]
@@ -218,14 +218,14 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     // MARK: - Initialization
     
     /// Initializes `self` with the given references.
-    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: NSMutableDictionary) {
+    fileprivate init(referencing encoder: _BoxEncoder, codingPath: [CodingKey], wrapping container: CompoundTag) {
         self.encoder = encoder
         self.codingPath = codingPath
         self.container = container
     }
     
     mutating func encodeNil(forKey key: K) throws {
-        self.container[key.stringValue] = NSNull()
+        self.container[key.stringValue] = EndTag.shared
     }
     
     mutating func encode(_ value: Bool, forKey key: K) throws {
@@ -284,7 +284,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
         self.container[key.stringValue] = self.encoder.box(value)
     }
     
-    mutating func encode<T>(_ value: T, forKey key: K) throws where T : Encodable {
+    mutating func encode<T: Encodable>(_ value: T, forKey key: K) throws {
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
         self.container[key.stringValue] = try self.encoder.box(value)
@@ -292,15 +292,15 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
         let containerKey = key.stringValue
-        let dictionary: NSMutableDictionary
+        let dictionary: CompoundTag
         if let existingContainer = self.container[containerKey] {
             precondition(
-                existingContainer is NSMutableDictionary,
+                existingContainer is CompoundTag,
                 "Attempt to re-encode into nested KeyedEncodingContainer<\(Key.self)> for key \"\(containerKey)\" is invalid: non-keyed container already encoded for this key"
             )
-            dictionary = existingContainer as! NSMutableDictionary
+            dictionary = existingContainer as! CompoundTag
         } else {
-            dictionary = NSMutableDictionary()
+            dictionary = CompoundTag()
             self.container[containerKey] = dictionary
         }
 
@@ -313,15 +313,15 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     
     mutating func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
         let containerKey = key.stringValue
-        let array: NSMutableArray
+        let array: ListTag<Tag>
         if let existingContainer = self.container[containerKey] {
             precondition(
-                existingContainer is NSMutableArray,
+                existingContainer is ListTag,
                 "Attempt to re-encode into nested UnkeyedEncodingContainer for key \"\(containerKey)\" is invalid: keyed container/single value already encoded for this key"
             )
-            array = existingContainer as! NSMutableArray
+            array = existingContainer as! ListTag
         } else {
-            array = NSMutableArray()
+            array = ListTag()
             self.container[containerKey] = array
         }
 
