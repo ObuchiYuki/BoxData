@@ -11,6 +11,11 @@
 
 import Foundation
 
+//===----------------------------------------------------------------------===//
+// Box Encoder
+//===----------------------------------------------------------------------===//
+
+/// `BoxEncoder` facilitates the encoding of `Encodable` values into Box.
 public class BoxEncoder {
     
     /// Initializes `self` with default strategies.
@@ -27,16 +32,35 @@ public class BoxEncoder {
                                              EncodingError.Context(codingPath: [], debugDescription: "Top-level \(T.self) did not encode any values."))
         }
         
-        
-        
-        fatalError()
+        do {
+            return try _BoxSerialization.data(withBoxTag: topLevel)
+        } catch {
+            throw EncodingError.invalidValue(value,
+            EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to JSON.", underlyingError: error))
+        }
     }
 }
 
-internal class _BoxEncoder: Encoder {
+// MARK: - _BoxEncoder
+
+/// `_BoxEncoder` encodes `Codable` values.
+fileprivate class _BoxEncoder: Encoder {
+    
+    // MARK: Properties
+    
     var codingPath = [CodingKey]()
     
+    /// Don't use.
     var userInfo = [CodingUserInfoKey : Any]()
+    
+    // MARK: - Initialization
+    
+    /// Initializes `self` with the given `codingPath`.
+    fileprivate init(codingPath: [CodingKey] = []) {
+        self.codingPath = codingPath
+    }
+    
+    // MARK: - Encoder Methods
     
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
         fatalError()
@@ -52,13 +76,13 @@ internal class _BoxEncoder: Encoder {
 }
 
 extension _BoxEncoder {
-    fileprivate func box_(_ value: Encodable) throws -> CompoundTag? {
+    fileprivate func box_(_ value: Encodable) throws -> Tag? {
         fatalError()
     }
 }
 
 internal class _BoxSerialization {
-    static func data(withBoxTag boxTag: Dictionary<String,Any>) throws -> Data {
+    static func data(withBoxTag boxTag: Tag) throws -> Data {
         fatalError()
     }
 }
