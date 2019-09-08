@@ -659,28 +659,29 @@ internal final class ListTag: ValueTag<[Tag]> {
     private final func deserializeFixCompound(from dis: BoxDataReadStream, size: UInt32,maxDepth: Int) throws {
         let structureLength = try dis.uint16()
         
-        var structureNameList = [String]()
-        var structureTagIdList = [UInt8]()
+        var structureDict = [String: UInt8]()
         
         for _ in 0..<structureLength {
             let name = try dis.string()
             let tagId = try dis.uInt8()
             
-            structureNameList.append(name)
-            structureTagIdList.append(tagId)
+            structureDict[name] = tagId
         }
         
+        let structures = structureDict.sorted(by: {$0.key < $1.key})
+        
         for _ in 0..<size {
-            for (name, tagId) in zip(structureNameList, structureTagIdList) {
-                var dict = [String: Tag]()
+            var dict = [String: Tag]()
+            
+            for (name, tagId) in structures {
                 let tag = TagFactory.fromID(id: tagId)
                 
                 try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
                 
                 dict[name] = tag
-                
-                self.value.append(FixCompoundTag(value: dict))
             }
+            
+            self.value.append(FixCompoundTag(value: dict))
         }
     }
 }
@@ -698,6 +699,8 @@ internal final class ListTag: ValueTag<[Tag]> {
 ///
 /// | length(4 bytes) | (| name | tag_id |)... |
 ///
+/// The names must be ordered by name.
+///
 /// ##### Data
 ///
 /// | tag_id | value(Value)... |
@@ -707,7 +710,7 @@ internal final class FixCompoundTag: ValueTag<[String: Tag]> {
     final func serializeDataStructure(into dos: BoxDataWriteStream) throws {
         try dos.write(UInt32(value.count))
         
-        for (key, value) in value {
+        for (key, value) in value.sorted(by: {$0.key < $1.key}) {
             try dos.write(key)
             try dos.write(value.tagID().rawValue)
         }
