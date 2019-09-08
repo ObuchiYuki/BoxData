@@ -11,10 +11,16 @@ import Foundation
 struct Person: Codable {
     let name:String
     let age:Int
+    let birth:Country
+    
+    struct Country: Codable {
+        let name:String
+        let state:String
+    }
 }
 
 do {
-    let alice = Person(name: "Alice", age: 16)
+    let alice = Person(name: "Alice", age: 16, birth: .init(name: "America", state: "Oregon"))
     let encoder = BoxEncoder()
     let data = try encoder.encode(alice)
     

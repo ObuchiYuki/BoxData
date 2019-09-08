@@ -11,7 +11,7 @@
 
 import Foundation
 
-/// Determine `Int` type based on environment.
+/// Determine `Int` type based on running environment.
 #if (arch(i386) || arch(arm)) // 32bit
 typealias SwiftIntTag = IntTag
 #else // 64bit
