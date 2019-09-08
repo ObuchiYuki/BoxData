@@ -292,6 +292,16 @@ final internal class EndTag: Tag {
 @usableFromInline
 internal final class ByteTag: ValueTag<Int8> {
     
+    /// Initirize ByteTag with Bool value.
+    internal init(flag: Bool) {
+        self.value = flag ? 1 : 0
+    }
+    
+    /// Bool representation of Int8.
+    internal var bool: Bool {
+        return value != 0
+    }
+    
     @inlinable
     @inline(__always)
     final override func tagID() -> TagID { .byte }
