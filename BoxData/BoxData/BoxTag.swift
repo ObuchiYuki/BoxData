@@ -29,6 +29,8 @@ enum TagID: UInt8 {
     case string         = 7
     case list           = 8
     case compound       = 9
+    case byteArray      = 10
+    case fixCompound    = 11
 }
 
 
@@ -45,9 +47,12 @@ final internal class TagFactory {
         if T.self == LongTag.self        {return .long}
         if T.self == FloatTag.self       {return .float}
         if T.self == DoubleTag.self      {return .double}
+        if T.self == ByteArrayTag.self   {return .byteArray}
         if T.self == StringTag.self      {return .string}
         if T.self == ListTag.self        {return .list}
         if T.self == CompoundTag.self    {return .compound}
+        if T.self == IntArrayTag.self    {return .intArray}
+        if T.self == LongArrayTag.self   {return .longArray}
         
         fatalError("Not matching tag")
     }
@@ -61,9 +66,12 @@ final internal class TagFactory {
         case .long:     return LongTag(value: nil)
         case .float:    return FloatTag(value: nil)
         case .double:   return DoubleTag(value: nil)
+        case .byteArray:return ByteArrayTag(value: nil)
         case .string:   return StringTag(value: nil)
         case .list:     return ListTag(value: nil)
         case .compound: return CompoundTag(value: nil)
+        case .intArray: return IntArrayTag(value: nil)
+        case .longArray:return LongArrayTag(value: nil)
         }
     }
 }
@@ -396,7 +404,7 @@ internal final class LongTag: ValueTag<Int64> {
 }
 
 //===----------------------------------===//
-// MARK: - LongTag -
+// MARK: - FloatTag -
 //===----------------------------------===//
 
 /// This class represents tag of `Float`.
@@ -478,6 +486,96 @@ internal final class StringTag: ValueTag<String> {
 }
 
 //===----------------------------------===//
+// MARK: - ByteArrayTag -
+//===----------------------------------===//
+
+/// This class represents tag of `[Int8]`.
+///
+/// ### Serialize structure
+///
+/// | tag_id | length (4 bytes) | data...(1byte...) |
+@usableFromInline
+internal final class ByteArrayTag: ValueTag<[Int8]> {
+    
+    @inlinable
+    @inline(__always)
+    final override func tagID() -> TagID { .byteArray }
+
+    @usableFromInline
+    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
+        try dos.write(UInt32(value.count))
+        
+        try value.forEach{
+            try dos.write($0)
+        }
+    }
+    
+    @usableFromInline
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        let length = try dis.uInt32()
+        var _value = [Int8]()
+        
+        for _ in 0..<length {
+            _value.append(try dis.int8())
+        }
+        
+        self.value = _value
+    }
+}
+
+//===----------------------------------===//
+// MARK: - CompoundTag -
+//===----------------------------------===//
+
+/// This class represents tag of `[Int64]`.
+///
+/// ### Serialize structure
+///
+/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
+@usableFromInline
+internal final class CompoundTag: ValueTag<[String: Tag]> {
+    
+    internal subscript(_ name:String) -> Tag? {
+        set { value[name] = newValue }
+        get { return value[name] }
+    }
+    
+    @inlinable
+    final override func tagID() -> TagID { .compound }
+        
+    @usableFromInline
+    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
+        for (key, value) in value {
+            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+        }
+        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
+    }
+    
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        self.value = [:]
+        
+        var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
+        var name = try dis.string()
+        
+        while true {
+            let tag = TagFactory.fromID(id: id)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+            
+            value[name] = tag
+            
+            id = try dis.uInt8()
+            if id == 0 { /// Read until End tag.
+                break
+            }
+            name = try dis.string()
+        }
+    }
+}
+
+//===----------------------------------===//
 // MARK: - ListTag -
 //===----------------------------------===//
 
@@ -532,58 +630,6 @@ internal final class ListTag: ValueTag<[Tag]> {
             try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             
             self.value.append(tag)
-        }
-    }
-}
-
-//===----------------------------------===//
-// MARK: - CompoundTag -
-//===----------------------------------===//
-
-/// This class represents tag of `[Int64]`.
-///
-/// ### Serialize structure
-///
-/// | tag_id | (| name(StringTag) | value(ValueTag) |)... | EndTag |
-@usableFromInline
-internal final class CompoundTag: ValueTag<[String: Tag]> {
-    
-    internal subscript(_ name:String) -> Tag? {
-        set { value[name] = newValue }
-        get { return value[name] }
-    }
-    
-    @inlinable
-    final override func tagID() -> TagID { .compound }
-        
-    @usableFromInline
-    final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (key, value) in value {
-            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
-        }
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
-    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
-        self.value = [:]
-        
-        var id = try dis.uInt8()
-        if id == 0 { /// Empty CompoundTag
-            return
-        }
-        var name = try dis.string()
-        
-        while true {
-            let tag = TagFactory.fromID(id: id)
-            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-            
-            value[name] = tag
-            
-            id = try dis.uInt8()
-            if id == 0 { /// Read until End tag.
-                break
-            }
-            name = try dis.string()
         }
     }
 }
