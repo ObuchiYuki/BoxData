@@ -787,7 +787,7 @@ fileprivate struct _BoxDecodingStorage {
     // MARK: Properties
     /// The container stack.
     /// Elements may be any one of the Box types
-    private(set) fileprivate var containers: [Any] = []
+    private(set) fileprivate var containers: [Tag] = []
 
     // MARK: - Initialization
     
@@ -800,12 +800,12 @@ fileprivate struct _BoxDecodingStorage {
         return self.containers.count
     }
 
-    fileprivate var topContainer: Any {
+    fileprivate var topContainer: Tag {
         precondition(!self.containers.isEmpty, "Empty container stack.")
         return self.containers.last!
     }
 
-    fileprivate mutating func push(container: __owned Any) {
+    fileprivate mutating func push(container: __owned Tag) {
         self.containers.append(container)
     }
 
@@ -825,7 +825,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
     private let decoder: _BoxDecoder
 
     /// A reference to the container we're reading from.
-    private let container: [String : Any]
+    private let container: [String : Tag]
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -858,7 +858,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
             throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.decoder.codingPath, debugDescription: "No value associated with key \(_errorDescription(of: key))."))
         }
 
-        return entry is NSNull
+        return entry is EndTag
     }
 
     public func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
@@ -1096,7 +1096,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
                                                                   debugDescription: "Cannot get \(KeyedDecodingContainer<NestedKey>.self) -- no value found for key \(_errorDescription(of: key))"))
         }
 
-        guard let dictionary = value as? [String : Any] else {
+        guard let dictionary = value as? CompoundTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [String : Any].self, reality: value)
         }
 
@@ -1114,7 +1114,7 @@ fileprivate struct _BoxKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCont
                                                                   debugDescription: "Cannot get UnkeyedDecodingContainer -- no value found for key \(_errorDescription(of: key))"))
         }
 
-        guard let array = value as? [Any] else {
+        guard let array = value as? ListTag else {
             throw DecodingError._typeMismatch(at: self.codingPath, expectation: [Any].self, reality: value)
         }
 
@@ -1145,7 +1145,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
     private let decoder: _BoxDecoder
 
     /// A reference to the container we're reading from.
-    private let container: [Any]
+    private let container: ListTag
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -1155,7 +1155,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
 
     // MARK: - Initialization
     /// Initializes `self` by referencing the given decoder and container.
-    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: [Any]) {
+    fileprivate init(referencing decoder: _BoxDecoder, wrapping container: ListTag) {
         self.decoder = decoder
         self.container = container
         self.codingPath = decoder.codingPath
@@ -1164,7 +1164,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
 
     // MARK: - UnkeyedDecodingContainer Methods
     public var count: Int? {
-        return self.container.count
+        return self.container.value.count
     }
 
     public var isAtEnd: Bool {
@@ -1176,7 +1176,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
             throw DecodingError.valueNotFound(Any?.self, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Unkeyed container is at end."))
         }
 
-        if self.container[self.currentIndex] is NSNull {
+        if self.container.value[self.currentIndex] is EndTag {
             self.currentIndex += 1
             return true
         } else {
@@ -1192,7 +1192,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Bool.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Bool.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1208,7 +1208,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Int.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Int.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1224,7 +1224,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Int8.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Int8.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1240,7 +1240,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Int16.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Int16.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1256,7 +1256,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Int32.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Int32.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1272,7 +1272,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Int64.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Int64.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1288,7 +1288,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: UInt.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: UInt.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1304,7 +1304,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: UInt8.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: UInt8.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1320,7 +1320,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: UInt16.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: UInt16.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1336,7 +1336,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: UInt32.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: UInt32.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1352,7 +1352,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: UInt64.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: UInt64.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1368,7 +1368,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Float.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Float.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1384,7 +1384,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: Double.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: Double.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1400,7 +1400,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: String.self) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: String.self) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1416,7 +1416,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
         self.decoder.codingPath.append(_BoxKey(index: self.currentIndex))
         defer { self.decoder.codingPath.removeLast() }
 
-        guard let decoded = try self.decoder.unbox(self.container[self.currentIndex], as: type) else {
+        guard let decoded = try self.decoder.unbox(self.container.value[self.currentIndex], as: type) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_BoxKey(index: self.currentIndex)], debugDescription: "Expected \(type) but found null instead."))
         }
 
@@ -1434,7 +1434,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get nested keyed container -- unkeyed container is at end."))
         }
 
-        let value = self.container[self.currentIndex]
+        let value = self.container.value[self.currentIndex]
         guard !(value is NSNull) else {
             throw DecodingError.valueNotFound(KeyedDecodingContainer<NestedKey>.self,
                                               DecodingError.Context(codingPath: self.codingPath,
@@ -1460,7 +1460,7 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get nested keyed container -- unkeyed container is at end."))
         }
 
-        let value = self.container[self.currentIndex]
+        let value = self.container.value[self.currentIndex]
         guard !(value is NSNull) else {
             throw DecodingError.valueNotFound(UnkeyedDecodingContainer.self,
                                               DecodingError.Context(codingPath: self.codingPath,
@@ -1485,11 +1485,352 @@ fileprivate struct _BoxUnkeyedDecodingContainer : UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get superDecoder() -- unkeyed container is at end."))
         }
 
-        let value = self.container[self.currentIndex]
+        let value = self.container.value[self.currentIndex]
         self.currentIndex += 1
         return _BoxDecoder(referencing: value, at: self.decoder.codingPath)
     }
 }
+
+extension _BoxDecoder : SingleValueDecodingContainer {
+    // MARK: SingleValueDecodingContainer Methods
+    
+    private func expectNonNull<T>(_ type: T.Type) throws {
+        guard !self.decodeNil() else {
+            throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected \(type) but found null value instead."))
+        }
+    }
+
+    public func decodeNil() -> Bool {
+        return self.storage.topContainer is EndTag
+    }
+
+    public func decode(_ type: Bool.Type) throws -> Bool {
+        try expectNonNull(Bool.self)
+        return try self.unbox(self.storage.topContainer, as: Bool.self)!
+    }
+
+    public func decode(_ type: Int.Type) throws -> Int {
+        try expectNonNull(Int.self)
+        return try self.unbox(self.storage.topContainer, as: Int.self)!
+    }
+
+    public func decode(_ type: Int8.Type) throws -> Int8 {
+        try expectNonNull(Int8.self)
+        return try self.unbox(self.storage.topContainer, as: Int8.self)!
+    }
+
+    public func decode(_ type: Int16.Type) throws -> Int16 {
+        try expectNonNull(Int16.self)
+        return try self.unbox(self.storage.topContainer, as: Int16.self)!
+    }
+
+    public func decode(_ type: Int32.Type) throws -> Int32 {
+        try expectNonNull(Int32.self)
+        return try self.unbox(self.storage.topContainer, as: Int32.self)!
+    }
+
+    public func decode(_ type: Int64.Type) throws -> Int64 {
+        try expectNonNull(Int64.self)
+        return try self.unbox(self.storage.topContainer, as: Int64.self)!
+    }
+
+    public func decode(_ type: UInt.Type) throws -> UInt {
+        try expectNonNull(UInt.self)
+        return try self.unbox(self.storage.topContainer, as: UInt.self)!
+    }
+
+    public func decode(_ type: UInt8.Type) throws -> UInt8 {
+        try expectNonNull(UInt8.self)
+        return try self.unbox(self.storage.topContainer, as: UInt8.self)!
+    }
+
+    public func decode(_ type: UInt16.Type) throws -> UInt16 {
+        try expectNonNull(UInt16.self)
+        return try self.unbox(self.storage.topContainer, as: UInt16.self)!
+    }
+
+    public func decode(_ type: UInt32.Type) throws -> UInt32 {
+        try expectNonNull(UInt32.self)
+        return try self.unbox(self.storage.topContainer, as: UInt32.self)!
+    }
+
+    public func decode(_ type: UInt64.Type) throws -> UInt64 {
+        try expectNonNull(UInt64.self)
+        return try self.unbox(self.storage.topContainer, as: UInt64.self)!
+    }
+
+    public func decode(_ type: Float.Type) throws -> Float {
+        try expectNonNull(Float.self)
+        return try self.unbox(self.storage.topContainer, as: Float.self)!
+    }
+
+    public func decode(_ type: Double.Type) throws -> Double {
+        try expectNonNull(Double.self)
+        return try self.unbox(self.storage.topContainer, as: Double.self)!
+    }
+
+    public func decode(_ type: String.Type) throws -> String {
+        try expectNonNull(String.self)
+        return try self.unbox(self.storage.topContainer, as: String.self)!
+    }
+
+    public func decode<T : Decodable>(_ type: T.Type) throws -> T {
+        try expectNonNull(type)
+        return try self.unbox(self.storage.topContainer, as: type)!
+    }
+}
+
+// MARK: - Concrete Value Representations
+
+
+extension _BoxDecoder {
+    fileprivate func unbox(_ value: Tag, as type: Bool.Type) throws -> Bool? {
+        guard !(value is EndTag) else { return nil }
+
+        if let number = value as? ByteTag {
+            return number.bool
+        }
+
+        throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Int.Type) throws -> Int? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? SwiftIntTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+        
+        return Int(number.value)
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Int8.Type) throws -> Int8? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? ByteTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Int16.Type) throws -> Int16? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? ShortTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Int32.Type) throws -> Int32? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? IntTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Int64.Type) throws -> Int64? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? LongTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: UInt.Type) throws -> UInt? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? SwiftIntTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        let uint = UInt(bitPattern: Int(number.value))
+        return uint
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: UInt8.Type) throws -> UInt8? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? ByteTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        let uint = UInt8(bitPattern: number.value)
+        return uint
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: UInt16.Type) throws -> UInt16? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? ShortTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        let uint = UInt16(bitPattern: number.value)
+        return uint
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: UInt32.Type) throws -> UInt32? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? IntTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        let uint = UInt32(bitPattern: number.value)
+        return uint
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: UInt64.Type) throws -> UInt64? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? LongTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        let uint = UInt64(bitPattern: number.value)
+        return uint
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Float.Type) throws -> Float? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? FloatTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Double.Type) throws -> Double? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let number = value as? DoubleTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return number.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: String.Type) throws -> String? {
+        guard !(value is EndTag) else { return nil }
+
+        guard let string = value as? StringTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+
+        return string.value
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Date.Type) throws -> Date? {
+        guard !(value is EndTag) else { return nil }
+        
+        let double = try self.unbox(value, as: Double.self)!
+        return Date(timeIntervalSince1970: double)
+    }
+    
+    fileprivate func unbox(_ value: Tag, as type: Data.Type) throws -> Data? {
+        guard !(value is EndTag) else { return nil }
+        
+        guard let list = value as? ListTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+        
+        let elements = list.value
+            .compactMap({$0 as? ByteTag})
+            .map({$0.value!})
+            .map{UInt8(bitPattern: $0)}
+        
+        return Data.init(elements)
+    }
+    
+    fileprivate func unbox<T>(_ value: Tag, as type: _BoxStringDictionaryDecodableMarker.Type) throws -> T? {
+        guard !(value is EndTag) else { return nil }
+
+        var result = [String : Any]()
+        guard let dict = value as? CompoundTag else {
+            throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+        }
+        let elementType = type.elementType
+        for (key, value) in dict.value {
+            let key = key
+            self.codingPath.append(_BoxKey(stringValue: key)!)
+            defer { self.codingPath.removeLast() }
+
+            result[key] = try unbox_(value, as: elementType)
+        }
+
+        return result as? T
+    }
+    
+    fileprivate func unbox<T : Decodable>(_ value: Tag, as type: T.Type) throws -> T? {
+        return try unbox_(value, as: type) as? T
+    }
+    
+    fileprivate func unbox_(_ value: Tag, as type: Decodable.Type) throws -> Any? {
+        if type == Date.self || type == NSDate.self {
+            return try self.unbox(value, as: Date.self)
+        } else if type == Data.self || type == NSData.self {
+            return try self.unbox(value, as: Data.self)
+        } else if type == URL.self || type == NSURL.self {
+            guard let urlString = try self.unbox(value, as: String.self) else {
+                return nil
+            }
+
+            guard let url = URL(string: urlString) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath,
+                                                                        debugDescription: "Invalid URL string."))
+            }
+            return url
+        } else if type == Decimal.self || type == NSDecimalNumber.self {
+            return try self.unbox(value, as: Decimal.self)
+        } else if let stringKeyedDictType = type as? _BoxStringDictionaryDecodableMarker.Type {
+            return try self.unbox(value, as: stringKeyedDictType)
+        } else {
+            self.storage.push(container: value)
+            defer { self.storage.popContainer() }
+            return try type.init(from: self)
+        }
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Shared Key Types
+//===----------------------------------------------------------------------===//
+fileprivate struct _BoxKey : CodingKey {
+    public var stringValue: String
+    public var intValue: Int?
+
+    public init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
+
+    public init?(intValue: Int) {
+        self.stringValue = "\(intValue)"
+        self.intValue = intValue
+    }
+
+    public init(stringValue: String, intValue: Int?) {
+        self.stringValue = stringValue
+        self.intValue = intValue
+    }
+
+    fileprivate init(index: Int) {
+        self.stringValue = "Index \(index)"
+        self.intValue = index
+    }
+
+    fileprivate static let `super` = _BoxKey(stringValue: "super")!
+}
+
 
 //===----------------------------------------------------------------------===//
 // Box Serialization
