@@ -114,8 +114,10 @@ internal class Tag {
  
     /// serialize data with name. for component
     final func serialize(into dos:DataWriteStream, named name:String, maxDepth: Int) throws {
-        let id = tagID()
+        try dos.write(UInt8(102)) // 'B'
+        try dos.write(UInt8(1))   // version
         
+        let id = tagID()
         try dos.write(id.rawValue)
         
         if (id != .end) {
@@ -127,6 +129,9 @@ internal class Tag {
 
     /// deserialize input.
     static func deserialize(from dis: DataReadStream, maxDepth:Int) throws -> Tag {
+        precondition((try dis.uInt8()) == 102, "This file is not BoxData format.")
+        precondition((try dis.uInt8()) == 1, "This BoxData format file is not version 1.0.")
+        
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
         
