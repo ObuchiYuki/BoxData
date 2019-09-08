@@ -1819,18 +1819,18 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     static func boxObject(with data: Data) throws -> Tag {
-        let stream = DataReadStream(data: data)
+        let stream = BoxDataReadStream(data: data)
         
         return try Tag.deserialize(from: stream)
     }
     
     static func data(withBoxTag boxTag: Tag) throws -> Data {
-        let stream = DataWriteStream()
+        let stream = BoxDataWriteStream()
         
         try boxTag.serialize(into: stream)
         
         guard let data = stream.data else {
-            throw DataStreamError.writeError
+            throw BoxDataStreamError.writeError
         }
         
         return data

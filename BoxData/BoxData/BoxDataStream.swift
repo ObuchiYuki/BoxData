@@ -12,14 +12,14 @@
 import Foundation
 
 /// Error from DataStream
-enum DataStreamError: Error {
+enum BoxDataStreamError: Error {
     case readError
     case writeError
 }
 
 
 @usableFromInline
-internal class DataReadStream {
+internal class BoxDataReadStream {
 
     private var inputStream: InputStream
     private let bytes: Int
@@ -50,7 +50,7 @@ internal class DataReadStream {
         let bufferPointer = UnsafeMutablePointer<UInt8>(&buffer)
         if self.inputStream.read(bufferPointer, maxLength: valueSize) != valueSize {
             
-            throw DataStreamError.readError
+            throw BoxDataStreamError.readError
         }
         bufferPointer.withMemoryRebound(to: T.self, capacity: 1) {
             valuePointer.pointee = $0.pointee
@@ -107,7 +107,7 @@ internal class DataReadStream {
         var buffer = [UInt8](repeating: 0, count: count)
         if self.inputStream.read(&buffer, maxLength: count) != count {
             
-            throw DataStreamError.readError
+            throw BoxDataStreamError.readError
         }
         offset += count
         return Data(buffer)
@@ -117,7 +117,7 @@ internal class DataReadStream {
         let count = try uInt8()
         
         guard let string = String(bytes: try self.data(count: Int(count)), encoding: .utf8) else {
-            throw DataStreamError.readError
+            throw BoxDataStreamError.readError
         }
         
         return string
@@ -131,7 +131,7 @@ internal class DataReadStream {
 }
 
 @usableFromInline
-internal class DataWriteStream {
+internal class BoxDataWriteStream {
 
     private var outputStream: OutputStream
 
@@ -159,7 +159,7 @@ internal class DataWriteStream {
         }
             
         if result < 0 {
-            throw DataStreamError.writeError
+            throw BoxDataStreamError.writeError
         }
     }
 
@@ -206,7 +206,7 @@ internal class DataWriteStream {
         
         if bytesWritten != data.count {
             
-            throw DataStreamError.writeError
+            throw BoxDataStreamError.writeError
         }
     }
     
