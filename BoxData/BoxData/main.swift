@@ -11,6 +11,13 @@ import Foundation
 struct Person: Codable {
     let age:UInt8?
     let name:String
+    
+    let id:[ID]
+    
+    struct ID: Codable {
+        let name:String
+        let number:Int
+    }
 }
 
 do {
@@ -19,7 +26,12 @@ do {
     
     let decoder = BoxDecoder()
     
-    let alice = Person(age: nil, name: "Alice")
+    let alice = Person(age: nil, name: "Alice", id: [
+        .init(name: "A", number: 1),
+        .init(name: "B", number: 2),
+        .init(name: "C", number: 3),
+        .init(name: "D", number: 4),
+    ])
     
     let data = try encoder.encode(alice)
     
