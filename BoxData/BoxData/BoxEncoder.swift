@@ -197,6 +197,26 @@ extension _BoxEncoder {
     }
 }
 
+fileprivate struct _BoxKey : CodingKey {
+  var stringValue: String
+  var intValue: Int?
+
+  init?(stringValue: String) {
+    self.stringValue = stringValue
+    self.intValue = nil
+  }
+
+  init?(intValue: Int) {
+    self.stringValue = "\(intValue)"
+    self.intValue = intValue
+  }
+
+  init(index: Int) {
+    self.stringValue = "Index \(index)"
+    self.intValue = index
+  }
+}
+
 // MARK: - Encoding Containers
 
 
@@ -331,7 +351,7 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     }
     
     mutating func superEncoder() -> Encoder {
-        return __BoxReferencingEncoder(referencing: self.encoder, key: _JSONKey.super, convertedKey: _JSONKey.super, wrapping: self.container)
+        return __BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey.super, convertedKey: _BoxKey.super, wrapping: self.container)
 
     }
     
@@ -354,7 +374,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
 
     /// The number of elements encoded into the container.
     public var count: Int {
-        return self.container.count
+        return self.container.value.count
     }
 
     // MARK: - Initialization
@@ -366,7 +386,7 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
     }
 
     // MARK: - UnkeyedEncodingContainer Methods
-    public mutating func encodeNil()             throws { self.container.add(NSNull()) }
+    public mutating func encodeNil()             throws { self.container.add(EndTag.shared) }
     public mutating func encode(_ value: Bool)   throws { self.container.add(self.encoder.box(value)) }
     public mutating func encode(_ value: Int)    throws { self.container.add(self.encoder.box(value)) }
     public mutating func encode(_ value: Int8)   throws { self.container.add(self.encoder.box(value)) }
@@ -382,46 +402,46 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
 
     public mutating func encode(_ value: Float)  throws {
         // Since the float may be invalid and throw, the coding path needs to contain this key.
-        self.encoder.codingPath.append(_JSONKey(index: self.count))
+        self.encoder.codingPath.append(_BoxKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
-        self.container.add(try self.encoder.box(value))
+        self.container.add(self.encoder.box(value))
     }
 
     public mutating func encode(_ value: Double) throws {
         // Since the double may be invalid and throw, the coding path needs to contain this key.
-        self.encoder.codingPath.append(_JSONKey(index: self.count))
+        self.encoder.codingPath.append(_BoxKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
-        self.container.add(try self.encoder.box(value))
+        self.container.add(self.encoder.box(value))
     }
 
     public mutating func encode<T : Encodable>(_ value: T) throws {
-        self.encoder.codingPath.append(_JSONKey(index: self.count))
+        self.encoder.codingPath.append(_BoxKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
         self.container.add(try self.encoder.box(value))
     }
 
     public mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
-        self.codingPath.append(_JSONKey(index: self.count))
+        self.codingPath.append(_BoxKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
-        let dictionary = NSMutableDictionary()
+        let dictionary = CompoundTag(value: [:])
         self.container.add(dictionary)
 
-        let container = _JSONKeyedEncodingContainer<NestedKey>(referencing: self.encoder, codingPath: self.codingPath, wrapping: dictionary)
+        let container = _BoxKeyedEncodingContainer<NestedKey>(referencing: self.encoder, codingPath: self.codingPath, wrapping: dictionary)
         return KeyedEncodingContainer(container)
     }
 
     public mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        self.codingPath.append(_JSONKey(index: self.count))
+        self.codingPath.append(_BoxKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
-        let array = NSMutableArray()
+        let array = ListTag(value: [])
         self.container.add(array)
-        return _JSONUnkeyedEncodingContainer(referencing: self.encoder, codingPath: self.codingPath, wrapping: array)
+        return _BoxUnkeyedEncodingContainer(referencing: self.encoder, codingPath: self.codingPath, wrapping: array)
     }
 
     public mutating func superEncoder() -> Encoder {
-        return __JSONReferencingEncoder(referencing: self.encoder, at: self.container.count, wrapping: self.container)
+        return __BoxReferencingEncoder(referencing: self.encoder, at: self.container.count, wrapping: self.container)
     }
 }
 
