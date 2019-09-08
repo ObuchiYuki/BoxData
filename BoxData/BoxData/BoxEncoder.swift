@@ -59,7 +59,7 @@ public class BoxEncoder {
             return try _BoxSerialization.data(withBoxTag: topLevel)
         } catch {
             throw EncodingError.invalidValue(value,
-            EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to JSON.", underlyingError: error))
+            EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to Box.", underlyingError: error))
         }
     }
 }
@@ -198,23 +198,23 @@ extension _BoxEncoder {
 }
 
 fileprivate struct _BoxKey : CodingKey {
-  var stringValue: String
-  var intValue: Int?
+    var stringValue: String
+    var intValue: Int?
 
-  init?(stringValue: String) {
-    self.stringValue = stringValue
-    self.intValue = nil
-  }
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
 
-  init?(intValue: Int) {
-    self.stringValue = "\(intValue)"
-    self.intValue = intValue
-  }
+    init?(intValue: Int) {
+        self.stringValue = "\(intValue)"
+        self.intValue = intValue
+    }
 
-  init(index: Int) {
-    self.stringValue = "Index \(index)"
-    self.intValue = index
-  }
+    init(index: Int) {
+        self.stringValue = "Index \(index)"
+        self.intValue = index
+    }
 }
 
 // MARK: - Encoding Containers
@@ -351,12 +351,11 @@ fileprivate struct _BoxKeyedEncodingContainer<K : CodingKey> : KeyedEncodingCont
     }
     
     mutating func superEncoder() -> Encoder {
-        return _BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey.super, convertedKey: _BoxKey.super, wrapping: self.container)
-
+        return _BoxReferencingEncoder(referencing: self.encoder, key: _BoxKey(index: 0), wrapping: self.container)
     }
     
     mutating func superEncoder(forKey key: K) -> Encoder {
-        return _BoxReferencingEncoder(referencing: self.encoder, key: key, convertedKey: key, wrapping: self.container)
+        return _BoxReferencingEncoder(referencing: self.encoder, key: key, wrapping: self.container)
     }
     
 }
@@ -417,7 +416,12 @@ fileprivate struct _BoxUnkeyedEncodingContainer : UnkeyedEncodingContainer {
     public mutating func encode<T : Encodable>(_ value: T) throws {
         self.encoder.codingPath.append(_BoxKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
-        self.container.add(try self.encoder.box(value))
+        guard let tag = try self.encoder.box_(value as Encodable) else {
+            throw EncodingError.invalidValue(value,
+            EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given Encodable value"))
+             
+        }
+        self.container.add(tag)
     }
 
     public mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
@@ -520,8 +524,7 @@ fileprivate class _BoxReferencingEncoder : _BoxEncoder {
     }
 
     /// Initializes `self` by referencing the given dictionary container in the given encoder.
-    fileprivate init(referencing encoder: _BoxEncoder,
-                     key: CodingKey, convertedKey: __shared CodingKey, wrapping dictionary: CompoundTag) {
+    fileprivate init(referencing encoder: _BoxEncoder, key: CodingKey, wrapping dictionary: CompoundTag) {
         self.encoder = encoder
         self.reference = .dictionary(dictionary, convertedKey.stringValue)
         super.init(codingPath: encoder.codingPath)
