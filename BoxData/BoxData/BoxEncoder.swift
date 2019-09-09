@@ -1821,6 +1821,32 @@ fileprivate struct _BoxKey : CodingKey {
 
 
 internal class _BoxSerialization {
+    
+    /// data[2] is for save options.
+    ///
+    /// 1bit - isCompressed
+    /// 1bit - useStructureCache
+    /// ... blank
+    private static func unpackOption(_ flags:UInt8) -> (isCompressed: Bool,useStructureCache: Bool) {
+        let isCompressed =      (flags & 0b1000_0000) != 0
+        let useStructureCache = (flags & 0b0100_0000) != 0
+        
+        return (isCompressed, useStructureCache)
+    }
+    
+    private static func packOption(isCompressed: Bool,useStructureCache: Bool) -> UInt8 {
+        var flags:UInt8 = 0
+        
+        if isCompressed {
+            flags = flags | 0b1000_0000
+        }
+        if useStructureCache {
+            flags = flags | 0b0100_0000
+        }
+        
+        return flags
+    }
+    
     static func boxObject(with data: Data) throws -> Tag {
         /// Check if this file is box data format
         guard data[0] == 0x42 else {
@@ -1831,7 +1857,9 @@ internal class _BoxSerialization {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is Box version 1.0 file."))
         }
         
-        let isCompressed = data[2] != 0
+        let options = data[2]
+        
+        let (isCompressed, useStructureCache) = unpackOption(options)
                 
         var _data:Data = data[3...]
         
@@ -1841,7 +1869,7 @@ internal class _BoxSerialization {
         
         let stream = BoxDataReadStream(data: _data)
         
-        return try Tag.deserialize(from: stream)
+        return try Tag.deserialize(from: stream, useStructureCache: useStructureCache)
     }
     
     static func data(withBoxTag boxTag: Tag, useCompression: Bool, useStructureCache: Bool) throws -> Data {
@@ -1860,7 +1888,7 @@ internal class _BoxSerialization {
         let header = Data([
             UInt8(0x42),                   // 'B'
             UInt8(1),                      // version
-            UInt8(useCompression ? 1 : 0), // compressioned
+            packOption(isCompressed: useCompression, useStructureCache: useStructureCache), // options
         ])
         
         return header + data
