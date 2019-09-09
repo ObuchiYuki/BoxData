@@ -710,7 +710,8 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
             for (key, value) in value.sorted(by: {$0.key < $1.key}) {
                 try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
             }
-            EndTag.shared.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            
+            try EndTag.shared.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
     
