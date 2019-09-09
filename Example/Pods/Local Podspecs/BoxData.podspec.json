@@ -1,0 +1,22 @@
+{
+  "name": "BoxData",
+  "version": "0.1.0",
+  "summary": "A short description of BoxData.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ObuchiYuki/BoxData",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "ObuchiYuki": "yukibochi1@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/ObuchiYuki/BoxData.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "BoxData/Classes/**/*"
+}
