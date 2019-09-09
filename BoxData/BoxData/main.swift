@@ -24,12 +24,15 @@ do {
     let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
     let people = Array.init(repeating: alice, count: 10000)
     
-    let encoder = BoxEncoder()
-    let decoder = BoxDecoder()
+    //let encoder = BoxEncoder()
+    //let decoder = BoxDecoder()
+    
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
     
     let data = try encoder.encode(people)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/person.box2", contents: data)
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/person.json", contents: data)
     
     let decoded = try decoder.decode(Array<Person>.self, from: data)
     
