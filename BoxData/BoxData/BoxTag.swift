@@ -107,8 +107,6 @@ internal class Tag {
     /// This method must be called from outside as root object.
     @usableFromInline
     final func serialize(into dos:BoxDataWriteStream, maxDepth:Int = Tag.defaultMaxDepth) throws {
-        try dos.write(UInt8(0x42)) // 'B'
-        try dos.write(UInt8(1))   // version
         
         try _serialize(into: dos, named: "", maxDepth: maxDepth)
     }
