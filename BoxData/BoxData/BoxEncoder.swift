@@ -1834,7 +1834,7 @@ internal class _BoxSerialization {
         var _data:Data = data[3...]
         
         if isCompressed {
-            _data = try _data.gunzipped().gunzipped()
+            _data = try _data.gunzipped()
         }
         
         let stream = BoxDataReadStream(data: _data)
@@ -1852,7 +1852,7 @@ internal class _BoxSerialization {
         }
         
         if useCompression {
-            data = try data.gzipped().gzipped()
+            data = try data.gzipped()
         }
         
         let header = Data([

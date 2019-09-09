@@ -24,7 +24,6 @@ do {
     let region = Region()
     
     let encoder = BoxEncoder()
-    encoder.useCompression = false
     let decoder = BoxDecoder()
     
     let data = try encoder.encode(region)
