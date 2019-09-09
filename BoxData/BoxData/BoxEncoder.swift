@@ -81,7 +81,7 @@ public class BoxEncoder {
     /// Initializes `self` with default strategies.
     public init() {}
     
-    public var useStructureTag:Bool = true
+    public var useStructureCache:Bool = true
     public var useCompression:Bool = true
     
     // MARK: - Encoding Values
@@ -96,7 +96,7 @@ public class BoxEncoder {
         }
         
         do {
-            return try _BoxSerialization.data(withBoxTag: topLevel, useCompression: useCompression)
+            return try _BoxSerialization.data(withBoxTag: topLevel, useCompression: useCompression, useStructureCache: useStructureCache)
         } catch {
             throw EncodingError.invalidValue(value,
             EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to Box.", underlyingError: error))
