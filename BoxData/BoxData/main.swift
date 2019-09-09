@@ -16,12 +16,13 @@ struct Person:Codable {
 
 do {
     let start = Date()
-    let alice = Array(repeating: Person(name: "Alice", age: UInt32.random(in: 0...UInt32.max)), count: 100000)
+    
+    let alices = (0..<100000).map{ Person(name: "Alice", age: UInt32.random(in: 0...UInt32.max)) }
     
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
     
-    let data = try encoder.encode(alice)
+    let data = try encoder.encode(alices)
         
     FileManager.default.createFile(atPath:"/Users/yuki/Desktop/region.json", contents: data)
     
