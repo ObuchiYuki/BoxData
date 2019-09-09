@@ -553,7 +553,7 @@ internal final class ListTag: ValueTag<[Tag]> {
         let tagId = valuez.tagID()
         try dos.write(tagId.rawValue)
         
-        if tagId == .compound { // FixCompoundのみ特例処理
+        if Tag.useStructureCache && tagId == .compound { // FixCompoundのみ特例処理
             
             try serializeFixCompound(into: dos, fixCompound: valuez as! CompoundTag, maxDepth: maxDepth)
             
@@ -573,7 +573,7 @@ internal final class ListTag: ValueTag<[Tag]> {
         
         let typeId = try dis.uInt8()
         
-        if typeId == TagID.compound.rawValue { // FixCompoundのみ特例処理
+        if Tag.useStructureCache && typeId == TagID.compound.rawValue { // FixCompoundのみ特例処理
             
             try deserializeFixCompound(from: dis, size:size, maxDepth: maxDepth)
             
