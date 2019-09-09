@@ -136,7 +136,7 @@ internal class Tag {
         let tag = TagFactory.fromID(id: id)
         
         if (id != 0) {
-            try tag.deserializeValue(from: dis, maxDepth: maxDepth);
+            try tag.deserializeValue(from: dis, maxDepth: maxDepth)
         }
         
         return tag
@@ -556,14 +556,8 @@ internal final class ListTag: ValueTag<[Tag]> {
         let tagId = valuez.tagID()
         try dos.write(tagId.rawValue)
         
-        if tagId == .compound { // FixCompoundのみ特例処理
-            
-            try serializeFixCompound(into: dos, fixCompound: valuez as! CompoundTag, maxDepth: maxDepth)
-            
-        }else{
-            for element in value {
-                try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
-            }
+        for element in value {
+            try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
         
     }
@@ -576,93 +570,12 @@ internal final class ListTag: ValueTag<[Tag]> {
         
         let typeId = try dis.uInt8()
         
-        if typeId == TagID.compound.rawValue { // FixCompoundのみ特例処理
-            
-            try deserializeFixCompound(from: dis, size:size, maxDepth: maxDepth)
-            
-        } else {
-            for _ in 0..<size {
-                
-                let tag = TagFactory.fromID(id: typeId)
-                try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-                
-                self.value.append(tag)
-            }
-        }
-    }
-    
-    // MARK: FixCompound serialize
-    
-    private final func serializeFixCompound(into dos: BoxDataWriteStream, fixCompound:CompoundTag , maxDepth: Int) throws {
-        try fixCompound.serializeDataStructure(into: dos, maxDepth: maxDepth)
-        
-        for element in value {
-            try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
-        }
-    }
-
-    private struct _FixCompoundStructure {
-        var children = [(String, Any)]()
-        
-        mutating func appendChild(_ tagID: UInt8, for name:String) {
-            children.append((name, tagID))
-        }
-        mutating func appendChild(_ structure: _FixCompoundStructure, for name:String) {
-            children.append((name, structure))
-        }
-    }
-    private final func deserializeFixCompoundStructure(from dis: BoxDataReadStream, maxDepth: Int) throws -> _FixCompoundStructure {
-        var structure = _FixCompoundStructure()
-        
-        var id = try dis.uInt8()
-        if id == 0 { return structure }
-        var name = try dis.string()
-        
-        if id == TagID.compound.rawValue {
-            structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
-        }else{
-            structure.appendChild(id, for: name)
-        }
-                
-        while true {
-            id = try dis.uInt8()
-            if id == 0 { return structure }
-            name = try dis.string()
-            
-            if id == TagID.compound.rawValue {
-                structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
-            }else{
-                structure.appendChild(id, for: name)
-            }
-        }
-    }
-    
-    private final func _deserializeFixCompound(
-        from dis: BoxDataReadStream, structure: _FixCompoundStructure, into dict: inout [String: Tag], maxDepth: Int
-    ) throws {
-        for (key, st) in structure.children {
-            if let tagID = st as? UInt8 {
-                let tag = TagFactory.fromID(id: tagID)
-                try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
-                
-                dict[key] = tag
-            }else if let str = st as? _FixCompoundStructure {
-                var _dict = [String: Tag]()
-                try _deserializeFixCompound(from: dis, structure: str, into: &_dict, maxDepth: decrementMaxDepth(maxDepth))
-                
-                dict[key] = CompoundTag(value: _dict)
-            }
-        }
-    }
-    private final func deserializeFixCompound(from dis: BoxDataReadStream, size: UInt32, maxDepth: Int) throws {
-        let structure = try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth)
-        
         for _ in 0..<size {
-            var dict = [String: Tag]()
-            
-            try _deserializeFixCompound(from: dis, structure: structure, into: &dict, maxDepth: maxDepth)
-            
-            self.value.append(CompoundTag(value: dict))
+                
+            let tag = TagFactory.fromID(id: typeId)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+                
+            self.value.append(tag)
         }
     }
 }
@@ -686,24 +599,7 @@ internal final class ListTag: ValueTag<[Tag]> {
 ///
 /// | tag_id | value(Value)... |
 @usableFromInline
-internal final class CompoundTag: ValueTag<[String: Tag]> {
-    
-    final func serializeDataStructure(into dos: BoxDataWriteStream, maxDepth:Int) throws {
-        
-        for (key, value) in value.sorted(by: {$0.key < $1.key}) {
-            let id = value.tagID()
-            
-            try dos.write(id.rawValue)
-            try dos.write(key)
-            
-            if id == .compound {
-                try (value as! CompoundTag).serializeDataStructure(into: dos, maxDepth: decrementMaxDepth(maxDepth))
-            }
-        }
-        
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
+internal final class CompoundTag: ValueTag<[String: Tag]> {    
     internal subscript(_ name:String) -> Tag? {
         set { value[name] = newValue }
         get { return value[name] }
@@ -716,6 +612,29 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
         for (_, value) in value.sorted(by: {$0.key < $1.key}) {
             try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+        }
+    }
+    
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        self.value = [:]
+        
+        var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
+        var name = try dis.string()
+        
+        while true {
+            let tag = TagFactory.fromID(id: id)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+            
+            value[name] = tag
+            
+            id = try dis.uInt8()
+            if id == 0 { /// Read until End tag.
+                break
+            }
+            name = try dis.string()
         }
     }
 }

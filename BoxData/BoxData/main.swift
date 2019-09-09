@@ -22,23 +22,32 @@ struct Person: Codable {
 
 do {
 
+    let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
+    let bob = Person(age: 22, name: "Bob", birth: .init(name: "America", id: 12))
+    let people = Array(repeating: alice, count: 10000) + Array(repeating: bob, count: 10000)
+    
     let encoder = BoxEncoder()
     
-    let people = [
-        Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12)),
-        Person(age: 22, name: "Bob", birth: .init(name: "America", id: 12)),
-    ]
+    // ================================================== //
+    let start = Date()
     
     let data = try encoder.encode(people)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.box2", contents: data)
+    
+    // box      0.192
+    // box2     0.177
+    // json     0.258
+    // plist    0.33
+    // ================================================== //
     
     let decoder = BoxDecoder()
     
     let decoded = try decoder.decode(Array<Person>.self, from: data)
     
-    //print(decoded)
+    print(decoded)
     
+    print(Date().timeIntervalSince(start))
 }catch {
     print(error)
 }
