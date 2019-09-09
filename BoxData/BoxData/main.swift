@@ -8,36 +8,39 @@
 
 import Foundation
 
-struct Person: Codable {
-    let age:UInt8
-    let name:String
-    
-    let birth:Country
-    
-    struct Country:Codable {
-        let name:String
-        let id:UInt16
-    }
+struct Region: Codable {
+    let blocks =
+        Array(repeating: Array.init(repeating: Array.init(repeating: Section(), count: 32), count: 10), count: 32)
+}
+struct Section: Codable {
+    let anchor: UInt16 = 0
+    let fill: UInt16 = 0
+    let fillAnchor: UInt16 = 0
+    let data: UInt8 = 0
 }
 
 do {
-    let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
-    let people = Array.init(repeating: alice, count: 10000)
+    let region = Region()
     
-    //let encoder = BoxEncoder()
-    //let decoder = BoxDecoder()
+    let encoder = BoxEncoder()
+    let decoder = BoxDecoder()
     
-    let encoder = JSONEncoder()
-    let decoder = JSONDecoder()
+    let data = try encoder.encode(region)
+        
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/region.box", contents: data)
     
-    let data = try encoder.encode(people)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/person.json", contents: data)
+    let decoded = try decoder.decode(Region.self, from: data)
     
-    let decoded = try decoder.decode(Array<Person>.self, from: data)
+    print(decoded)
     
-    print(decoded[0])
     
+    // Type    Time     File Size
+    //
+    // plist   2.07     5.4 MB
+    // box2    2.28     145 B
+    // json    2.91     6.1 MB
+
 }catch {
     print(error)
 }
