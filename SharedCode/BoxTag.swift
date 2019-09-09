@@ -302,7 +302,9 @@ internal final class ByteTag: ValueTag<Int8> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .byte }
+    final override func tagID() -> TagID {
+        return .byte
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -329,7 +331,9 @@ internal final class ShortTag: ValueTag<Int16> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .short }
+    final override func tagID() -> TagID {
+        return .short
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
