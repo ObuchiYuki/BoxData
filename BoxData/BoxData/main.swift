@@ -21,21 +21,31 @@ struct Person: Codable {
 }
 
 do {
-    // Encode   Time        File size
-    // 
-    // box      0.177       800B
-    // plist    0.192       640KB
-    // json     0.251       1.2MB
+    let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/person.box2"))
     
-    // Decode   Time
-    //
-    // json     0.307
-    // box      0.302
-    // plist    0.247
+    let decoder = BoxDecoder()
+    let person = try decoder.decode(Array<Person>.self, from: data)
+    
+    print(person)
+    
+    
     
 }catch {
     print(error)
 }
+
+// Encode   Time        File size
+//
+// box      0.177       800B
+// plist    0.192       640KB
+// json     0.251       1.2MB
+
+// Decode   Time
+//
+// json     0.307
+// box      0.302
+// plist    0.247
+
 
 
 
@@ -46,6 +56,14 @@ do {
  
  //
  
+ let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
+ 
+ let person = Array.init(repeating: alice, count: 100000)
+ let encoder = BoxEncoder()
+ 
+ let data = try encoder.encode(person)
+ 
+ FileManager.default.createFile(atPath:"/Users/yuki/Desktop/person.box2", contents: data)
  
  // Decode
  // box      0.282

@@ -1824,16 +1824,19 @@ internal class _BoxSerialization {
         guard data[0] == 0x42 else {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is not valied Box data format."))
         }
+        guard data[1] == 0x01 else {
+            throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is Box version 1.0 file."))
+        }
         
+        let isCompressed = data[2] != 0
+                
+        var _data:Data = data[3...]
         
+        if isCompressed {
+            _data = try data.gunzipped().gunzipped()
+        }
         
-        
-        
-        let _data:Data
-        
-        _data = try data.gunzipped()
-        
-        
+        let stream = BoxDataReadStream(data: _data)
         
         return try Tag.deserialize(from: stream)
     }
@@ -1848,7 +1851,7 @@ internal class _BoxSerialization {
         }
         
         if useCompression {
-            data = try data.gzipped()
+            data = try data.gzipped().gzipped()
         }
         
         let header = Data([
