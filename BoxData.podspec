@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'BoxData'
-  s.version          = '0.1.0'
+  s.version          = '0.0.1'
   s.summary          = 'A light weight Codable Data format library.'
 
 # This description is used to generate tags and improve search results.
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'BoxData/Classes/**/*'
+  s.source_files = 'BoxData/**/*'
   
   # s.resource_bundles = {
   #   'BoxData' => ['BoxData/Assets/*.png']

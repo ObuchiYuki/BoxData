@@ -85,10 +85,10 @@
 		B17CEF5ECE9BA91DC07E7208AECB567F /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84243F27013EA0DDCC1CB6AD6EAD91D /* Filter.swift */; };
 		B27E49D917F91C34DCA9FA3136CDBDB9 /* BoxData-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 969DFF0522ADB550FC9180D8C496121F /* BoxData-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5491A88571862A1B914E6BE3CFCA5BD /* QuickSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9A346D98B0DC1E98C9BD90DB9E7C8B /* QuickSpec.m */; };
-		B62E516223265D6A0046DF50 /* BoxGZip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E515E23265D6A0046DF50 /* BoxGZip.swift */; };
-		B62E516323265D6A0046DF50 /* BoxTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E515F23265D6A0046DF50 /* BoxTag.swift */; };
-		B62E516423265D6A0046DF50 /* BoxEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E516023265D6A0046DF50 /* BoxEncoder.swift */; };
-		B62E516523265D6A0046DF50 /* BoxDataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E516123265D6A0046DF50 /* BoxDataStream.swift */; };
+		B62E516A232660A10046DF50 /* BoxDataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5166232660A10046DF50 /* BoxDataStream.swift */; };
+		B62E516B232660A20046DF50 /* BoxGZip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5167232660A10046DF50 /* BoxGZip.swift */; };
+		B62E516C232660A20046DF50 /* BoxTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5168232660A10046DF50 /* BoxTag.swift */; };
+		B62E516D232660A20046DF50 /* BoxEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5169232660A10046DF50 /* BoxEncoder.swift */; };
 		B662FB934B08450530A1A521489732B3 /* FailureMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3AA67C0B7A432D01F3FC5387642D92 /* FailureMessage.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		B7A0119D88C1DF43AFD25FB3A0B6E842 /* Expectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA94B60D479C265B1331DBE4A228479 /* Expectation.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		BAEAB2ADD34955EE77CBA4B43994B6F7 /* NMBExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C5BEAAE8914809F8E940AC4BE8F110 /* NMBExpectation.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
@@ -262,10 +262,10 @@
 		B23E211F523F54258CE395EA1A96C9AC /* Quick-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Quick-prefix.pch"; sourceTree = "<group>"; };
 		B2966518FBD8326423AE6C2466C726E5 /* MatcherFunc.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MatcherFunc.swift; path = Sources/Nimble/Matchers/MatcherFunc.swift; sourceTree = "<group>"; };
 		B32AA6C3C093C2A4897DA2FA0C18D75E /* Pods_BoxData_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoxData_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B62E515E23265D6A0046DF50 /* BoxGZip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxGZip.swift; sourceTree = "<group>"; };
-		B62E515F23265D6A0046DF50 /* BoxTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxTag.swift; sourceTree = "<group>"; };
-		B62E516023265D6A0046DF50 /* BoxEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxEncoder.swift; sourceTree = "<group>"; };
-		B62E516123265D6A0046DF50 /* BoxDataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxDataStream.swift; sourceTree = "<group>"; };
+		B62E5166232660A10046DF50 /* BoxDataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxDataStream.swift; path = BoxData/Classes/BoxDataStream.swift; sourceTree = "<group>"; };
+		B62E5167232660A10046DF50 /* BoxGZip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxGZip.swift; path = BoxData/Classes/BoxGZip.swift; sourceTree = "<group>"; };
+		B62E5168232660A10046DF50 /* BoxTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxTag.swift; path = BoxData/Classes/BoxTag.swift; sourceTree = "<group>"; };
+		B62E5169232660A10046DF50 /* BoxEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxEncoder.swift; path = BoxData/Classes/BoxEncoder.swift; sourceTree = "<group>"; };
 		B6BE27754B894DED8661C69D0015FDE2 /* Pods-BoxData_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BoxData_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		B7133AF219976234362402003D5B4548 /* ErrorUtility.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ErrorUtility.swift; path = Sources/Quick/ErrorUtility.swift; sourceTree = "<group>"; };
 		B82DA1821BE7722BE372D7CF2E242109 /* Behavior.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Behavior.swift; path = Sources/Quick/Behavior.swift; sourceTree = "<group>"; };
@@ -574,10 +574,10 @@
 		7950D3B18C0680FB4033CB3DDACD8C18 /* BoxData */ = {
 			isa = PBXGroup;
 			children = (
-				B62E516123265D6A0046DF50 /* BoxDataStream.swift */,
-				B62E516023265D6A0046DF50 /* BoxEncoder.swift */,
-				B62E515E23265D6A0046DF50 /* BoxGZip.swift */,
-				B62E515F23265D6A0046DF50 /* BoxTag.swift */,
+				B62E5166232660A10046DF50 /* BoxDataStream.swift */,
+				B62E5169232660A10046DF50 /* BoxEncoder.swift */,
+				B62E5167232660A10046DF50 /* BoxGZip.swift */,
+				B62E5168232660A10046DF50 /* BoxTag.swift */,
 				789071B415F23BCE7D1C910883BBF9FB /* Pod */,
 				98F565D9E94D946900C9E352D734A70F /* Support Files */,
 			);
@@ -808,6 +808,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1100;
+				TargetAttributes = {
+					D9DA56ABFFD4A8C38AD831A90FE8CDA3 = {
+						LastSwiftMigration = 1100;
+					};
+				};
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -991,11 +996,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B62E516323265D6A0046DF50 /* BoxTag.swift in Sources */,
-				B62E516523265D6A0046DF50 /* BoxDataStream.swift in Sources */,
+				B62E516C232660A20046DF50 /* BoxTag.swift in Sources */,
 				BCB6D03366E9471A75227E917CDF9E6B /* BoxData-dummy.m in Sources */,
-				B62E516223265D6A0046DF50 /* BoxGZip.swift in Sources */,
-				B62E516423265D6A0046DF50 /* BoxEncoder.swift in Sources */,
+				B62E516A232660A10046DF50 /* BoxDataStream.swift in Sources */,
+				B62E516B232660A20046DF50 /* BoxGZip.swift in Sources */,
+				B62E516D232660A20046DF50 /* BoxEncoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1127,6 +1132,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 021E328A2FB9548822F56DB7D5D6E83C /* BoxData.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1383,6 +1389,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 021E328A2FB9548822F56DB7D5D6E83C /* BoxData.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1403,6 +1410,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
