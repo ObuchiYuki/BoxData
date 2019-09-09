@@ -125,11 +125,6 @@ internal class Tag {
 
     /// deserialize input.
     static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth) throws -> Tag {
-        let filetag = try dis.uInt8()
-        precondition(filetag == 0x42, "This file is not BoxData format.")
-        let version = try dis.uInt8()
-        precondition(version == 1, "This BoxData format file is not version 1.0.")
-        
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
         

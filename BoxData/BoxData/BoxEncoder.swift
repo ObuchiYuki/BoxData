@@ -1833,7 +1833,7 @@ internal class _BoxSerialization {
         var _data:Data = data[3...]
         
         if isCompressed {
-            _data = try data.gunzipped().gunzipped()
+            _data = try _data.gunzipped().gunzipped()
         }
         
         let stream = BoxDataReadStream(data: _data)

@@ -21,14 +21,19 @@ struct Person: Codable {
 }
 
 do {
-    let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/person.box2"))
+    let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
+    let people = Array.init(repeating: alice, count: 10000)
     
+    let encoder = BoxEncoder()
     let decoder = BoxDecoder()
-    let person = try decoder.decode(Array<Person>.self, from: data)
     
-    print(person)
+    let data = try encoder.encode(people)
     
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/person.box2", contents: data)
     
+    let decoded = try decoder.decode(Array<Person>.self, from: data)
+    
+    print(decoded[0])
     
 }catch {
     print(error)
@@ -56,7 +61,7 @@ do {
  
  //
  
- let alice = Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12))
+ 
  
  let person = Array.init(repeating: alice, count: 100000)
  let encoder = BoxEncoder()
