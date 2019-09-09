@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
 
   s.source_files = 'BoxData/Classes/**/*'
+  s.swift_versions = "4.0"
   
   # s.resource_bundles = {
   #   'BoxData' => ['BoxData/Assets/*.png']
