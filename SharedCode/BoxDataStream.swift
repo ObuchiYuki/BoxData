@@ -201,6 +201,7 @@ internal class BoxDataWriteStream {
         var bytesWritten = 0
         
         withUnsafeBytes(of: data, {
+            
             bytesWritten = outputStream.write($0.bindMemory(to: UInt8.self).baseAddress!, maxLength: data.count)
         })
         
