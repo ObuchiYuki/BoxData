@@ -108,7 +108,8 @@ internal class Tag {
     
     /// This method must be called from outside as root object.
     @usableFromInline
-    final func serialize(into dos:BoxDataWriteStream, maxDepth:Int = Tag.defaultMaxDepth) throws {
+    final func serialize(into dos:BoxDataWriteStream, maxDepth:Int = Tag.defaultMaxDepth, useStructureCache:Bool) throws {
+        Tag.useStructureCache = useStructureCache
         
         try _serialize(into: dos, named: "", maxDepth: maxDepth)
     }
@@ -126,8 +127,7 @@ internal class Tag {
     }
 
     /// deserialize input.
-    static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth, useStructureCache:Bool) throws -> Tag {
-        Tag.useStructureCache = useStructureCache
+    static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth) throws -> Tag {
         
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
