@@ -20,9 +20,11 @@ struct Section: Codable {
 }
 
 do {
+    let start = Date()
     let region = Region()
     
     let encoder = BoxEncoder()
+    encoder.useCompression = false
     let decoder = BoxDecoder()
     
     let data = try encoder.encode(region)
@@ -32,7 +34,12 @@ do {
     
     let decoded = try decoder.decode(Region.self, from: data)
     
-    print(decoded)
+    print(Date().timeIntervalSince(start), "s")
+    
+    
+    // speed   0.057    84  KB
+    // size    0.071    183 B
+    
     
     
     // Type    Time     File Size

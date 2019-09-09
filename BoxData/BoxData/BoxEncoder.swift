@@ -81,6 +81,7 @@ public class BoxEncoder {
     /// Initializes `self` with default strategies.
     public init() {}
     
+    public var useStructureTag:Bool = true
     public var useCompression:Bool = true
     
     // MARK: - Encoding Values
