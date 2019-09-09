@@ -36,7 +36,7 @@ do {
     
     let data = try encoder.encode(people)
     
-    print("Only \(data.count) bytes !!!! for 10000 people.")
+    print("Only \(data.count) bytes !!!! (I think 137 bytes.) for 10000 people.")
     
     // MARK: - Decode
     
