@@ -1819,9 +1819,7 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     static func boxObject(with data: Data) throws -> Tag {
-        let stream = BoxDataReadStream(data: try data)
-        
-        FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.box_raw", contents: try data.gunzipped())
+        let stream = BoxDataReadStream(data: try data.gunzipped())
         
         return try Tag.deserialize(from: stream)
     }
@@ -1835,6 +1833,6 @@ internal class _BoxSerialization {
             throw BoxDataStreamError.writeError
         }
         
-        return try data
+        return try data.gzipped()
     }
 }

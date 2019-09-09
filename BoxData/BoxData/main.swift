@@ -35,19 +35,13 @@ do {
     
     FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.box2", contents: data)
     
-    // box      0.192
-    // box2     0.177
-    // json     0.258
-    // plist    0.33
-    // ================================================== //
-    
-    let decoder = BoxDecoder()
-    
-    let decoded = try decoder.decode(Array<Person>.self, from: data)
-    
-    print(decoded)
-    
     print(Date().timeIntervalSince(start))
+    // box      0.192      100KB
+    // box2     0.177      700B
+    // box3     0.2        29 KB
+    // json     0.258      1.2MB
+    // plist    0.33       60KB
+    // ================================================== //
 }catch {
     print(error)
 }
