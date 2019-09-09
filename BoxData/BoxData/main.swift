@@ -29,19 +29,16 @@ do {
     let encoder = BoxEncoder()
     
     // ================================================== //
-    let start = Date()
     
     let data = try encoder.encode(people)
     
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.box2", contents: data)
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.box", contents: data)
     
-    print(Date().timeIntervalSince(start))
-    // box      0.192      100KB
-    // box2     0.177      700B
-    // box3     0.2        29 KB
-    // json     0.258      1.2MB
-    // plist    0.33       60KB
-    // ================================================== //
+    // Encode
+    // box      0.177       800B
+    // plist    0.192       640KB
+    // json     0.251       1.2MB
+    
 }catch {
     print(error)
 }
@@ -49,6 +46,29 @@ do {
 
 
 /**
+ 
+
+ // ================================================== //
+ 
+ //let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
+ 
+ let decoder = JSONDecoder()
+ 
+ let start = Date()
+ 
+ let decoded = try decoder.decode(Array<Person>.self, from: data)
+ 
+ print(Date().timeIntervalSince(start))
+ 
+ // Decode
+ // box      0.282
+ // plist    0.26
+ // json     0.227
+ 
+ print(decoded[0])
+ 
+ 
+ 
  
  let alice_ = try decoder.decode(Person.self, from: data)
  
@@ -63,7 +83,7 @@ do {
  
  
  
- let data = try Data(contentsOf: URL(fileURLWithPath: "/Users/yuki/Desktop/main.tp"))
+ 
  
  let stream = DataReadStream(data: data)
  
