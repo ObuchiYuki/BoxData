@@ -387,7 +387,9 @@ internal final class LongTag: ValueTag<Int64> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .long }
+    final override func tagID() -> TagID {
+        return .long
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -414,7 +416,9 @@ internal final class FloatTag: ValueTag<Float> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .float }
+    final override func tagID() -> TagID {
+        return .float
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -441,7 +445,9 @@ internal final class DoubleTag: ValueTag<Double> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .double }
+    final override func tagID() -> TagID {
+        return.double
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -469,7 +475,9 @@ internal final class StringTag: ValueTag<String> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .string }
+    final override func tagID() -> TagID {
+        return .string
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -496,7 +504,9 @@ internal final class ByteArrayTag: ValueTag<[Int8]> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .byteArray }
+    final override func tagID() -> TagID {
+        return .byteArray
+    }
 
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
@@ -547,7 +557,9 @@ internal final class ListTag: ValueTag<[Tag]> {
     
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .list }
+    final override func tagID() -> TagID {
+        return .list
+    }
     
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
         try dos.write(UInt32(value.count))
@@ -702,7 +714,9 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     }
     
     @inlinable
-    final override func tagID() -> TagID { .compound }
+    final override func tagID() -> TagID {
+        return .compound
+    }
         
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
