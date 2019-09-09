@@ -200,9 +200,9 @@ internal class BoxDataWriteStream {
     func write(_ data: Data) throws {
         var bytesWritten = 0
         
-        data.withUnsafeBytes {
-            bytesWritten = outputStream.write($0, maxLength: data.count)
-        }
+        withUnsafeBytes(of: data, {
+            bytesWritten = outputStream.write($0.bindMemory(to: UInt8.self).baseAddress!, maxLength: data.count)
+        })
         
         if bytesWritten != data.count {
             
