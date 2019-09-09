@@ -95,7 +95,7 @@ public class BoxEncoder {
         }
         
         do {
-            return try _BoxSerialization.data(withBoxTag: topLevel)
+            return try _BoxSerialization.data(withBoxTag: topLevel, useCompression: useCompression)
         } catch {
             throw EncodingError.invalidValue(value,
             EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to Box.", underlyingError: error))
