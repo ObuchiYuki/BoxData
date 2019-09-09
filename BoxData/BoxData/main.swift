@@ -10,30 +10,27 @@ import Foundation
 
 struct Person:Codable {
     let name:String
-    let age:Int
+    let age:UInt32
 }
     
 
 do {
     let start = Date()
-    let alice = Array(repeating: Person(name: "Alice", age: 16), count: 100000)
+    let alice = Array(repeating: Person(name: "Alice", age: UInt32.random(in: 0...UInt32.max)), count: 100000)
     
-    let encoder = BoxEncoder()
-    
-    encoder.useStructureCache = true
-    encoder.useCompression = true
-    
-    let decoder = BoxDecoder()
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
     
     let data = try encoder.encode(alice)
         
-    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/region.box_2", contents: data)
+    FileManager.default.createFile(atPath:"/Users/yuki/Desktop/region.json", contents: data)
     
     
     let decoded = try decoder.decode(Array<Person>.self, from: data)
     
     print(Date().timeIntervalSince(start), "s")
     
+    print(decoded[0])
     
     // speed   0.057    84  KB
     // size    0.071    183 B
