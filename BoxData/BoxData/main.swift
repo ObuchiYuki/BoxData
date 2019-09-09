@@ -11,6 +11,13 @@ import Foundation
 struct Person: Codable {
     let age:UInt8
     let name:String
+    
+    let birth:Country
+    
+    struct Country:Codable {
+        let name:String
+        let id:UInt16
+    }
 }
 
 do {
@@ -18,14 +25,19 @@ do {
     let encoder = BoxEncoder()
     
     let people = [
-        Person(age: 16, name: "Alice"),
-        Person(age: 22, name: "Bob"),
+        Person(age: 16, name: "Alice", birth: .init(name: "America", id: 12)),
+        Person(age: 22, name: "Bob", birth: .init(name: "America", id: 12)),
     ]
     
     let data = try encoder.encode(people)
     
     FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
     
+    let decoder = BoxDecoder()
+    
+    let decoded = try decoder.decode(Array<Person>.self, from: data)
+    
+    //print(decoded)
     
 }catch {
     print(error)
@@ -35,11 +47,10 @@ do {
 
 /**
  
-let decoder = BoxDecoder()
  let alice_ = try decoder.decode(Person.self, from: data)
  
  print(alice_)
-  
+ 
  
  FileManager.default.createFile(atPath:"/Users/yuki/Desktop/main.tp", contents: data)
  
