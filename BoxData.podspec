@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'BoxData/**/*'
+  s.source_files = 'BoxData/Classes/**/*'
   
   # s.resource_bundles = {
   #   'BoxData' => ['BoxData/Assets/*.png']
