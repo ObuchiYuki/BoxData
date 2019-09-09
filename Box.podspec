@@ -7,7 +7,9 @@ Pod::Spec.new do |spec|
   spec.license      = "MIT"
   spec.author             = { "yuki" => "yukibochi1@gmail.com" }
   spec.source       = { :git => "https://github.com/ObuchiYuki/BoxData.git", :tag => "#{spec.version}" }
-  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-  spec.exclude_files = "Classes/Exclude"
+  spec.source_files  = "Box≤/**/*.{swift}"
+  #spec.exclude_files = "AMColorPickerViewController/**/*.{xib,png}"
+  spec.swift_version = "5.1"
+
 
 end
