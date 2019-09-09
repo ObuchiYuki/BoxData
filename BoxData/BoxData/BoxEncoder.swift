@@ -1844,10 +1844,10 @@ internal class _BoxSerialization {
         return try Tag.deserialize(from: stream)
     }
     
-    static func data(withBoxTag boxTag: Tag, useCompression: Bool) throws -> Data {
+    static func data(withBoxTag boxTag: Tag, useCompression: Bool, useStructureCache: Bool) throws -> Data {
         let stream = BoxDataWriteStream()
         
-        try boxTag.serialize(into: stream)
+        try boxTag.serialize(into: stream, useStructureCache: useStructureCache)
         
         guard var data = stream.data else {
             throw BoxDataStreamError.writeError
