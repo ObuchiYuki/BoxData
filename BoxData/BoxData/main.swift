@@ -8,33 +8,33 @@
 
 import Foundation
 
-struct Region: Codable {
-    let blocks =
-        Array(repeating: Array.init(repeating: Array.init(repeating: Section(), count: 32), count: 10), count: 32)
+struct Person:Codable {
+    let name:String
+    let age:UInt8
 }
-struct Section: Codable {
-    let anchor: UInt16 = 0
-    let fill: UInt16 = 0
-    let fillAnchor: UInt16 = 0
-    let data: UInt8 = 0
-}
+    
 
 do {
     let start = Date()
-    let region = Region()
+    let alice = Person(name: "Alice", age: 16)
     
     let encoder = BoxEncoder()
+    
+    encoder.useStructureCache = false
+    encoder.useCompression = false
+    
     let decoder = BoxDecoder()
     
-    let data = try encoder.encode(region)
+    let data = try encoder.encode(alice)
         
     FileManager.default.createFile(atPath:"/Users/yuki/Desktop/region.box", contents: data)
     
     
-    let decoded = try decoder.decode(Region.self, from: data)
+    let decoded = try decoder.decode(Person.self, from: data)
     
     print(Date().timeIntervalSince(start), "s")
     
+    print(decoded)
     
     // speed   0.057    84  KB
     // size    0.071    183 B

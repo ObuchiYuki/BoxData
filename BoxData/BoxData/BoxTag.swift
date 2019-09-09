@@ -702,8 +702,15 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        for (_, value) in value.sorted(by: {$0.key < $1.key}) {
-            try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+        if Tag.useStructureCache {
+            for (_, value) in value.sorted(by: {$0.key < $1.key}) {
+                try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            }
+        }else{
+            for (key, value) in value.sorted(by: {$0.key < $1.key}) {
+                try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+            }
+            EndTag.shared.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
     
