@@ -81,6 +81,8 @@ public class BoxEncoder {
     /// Initializes `self` with default strategies.
     public init() {}
     
+    public var useCompression:Bool = true
+    
     // MARK: - Encoding Values
     
     /// Encodes the given top-level value and returns its Box representation.
@@ -683,6 +685,8 @@ public class BoxDecoder {
     
     /// Initializes `self` with default strategies.
     public init() {}
+    
+    public var isCompressed = true
     
     // MARK: - Decoding Values
     
@@ -1818,13 +1822,21 @@ fileprivate struct _BoxKey : CodingKey {
 
 
 internal class _BoxSerialization {
-    static func boxObject(with data: Data) throws -> Tag {
-        let stream = BoxDataReadStream(data: try data.gunzipped())
+    static func boxObject(with data: Data, isCompressed:Bool) throws -> Tag {
+        let _data:Data
+        
+        if isCompressed {
+            _data = try data.gunzipped()
+        } else {
+            _data = data
+        }
+        
+        let stream = BoxDataReadStream(data: _data)
         
         return try Tag.deserialize(from: stream)
     }
     
-    static func data(withBoxTag boxTag: Tag) throws -> Data {
+    static func data(withBoxTag boxTag: Tag, useCompression: Bool) throws -> Data {
         let stream = BoxDataWriteStream()
         
         try boxTag.serialize(into: stream)
@@ -1833,6 +1845,10 @@ internal class _BoxSerialization {
             throw BoxDataStreamError.writeError
         }
         
-        return try data.gzipped()
+        if useCompression {
+            return try data.gzipped()
+        }else{
+            return data
+        }
     }
 }
