@@ -127,7 +127,7 @@ internal class Tag {
     static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth) throws -> Tag {
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
-        print(id)
+
         if (id != 0) {
             try tag.deserializeValue(from: dis, maxDepth: maxDepth);
         }
@@ -712,5 +712,27 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         }
     }
     
+    final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
+        self.value = [:]
+        
+        var id = try dis.uInt8()
+        if id == 0 { /// Empty CompoundTag
+            return
+        }
+        var name = try dis.string()
+        
+        while true {
+            let tag = TagFactory.fromID(id: id)
+            try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+            
+            value[name] = tag
+            
+            id = try dis.uInt8()
+            if id == 0 { /// Read until End tag.
+                break
+            }
+            name = try dis.string()
+        }
+    }
     
 }
