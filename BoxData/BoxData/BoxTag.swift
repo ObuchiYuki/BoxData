@@ -94,6 +94,8 @@ internal class Tag {
         fatalError("Subclass of Tag must implement tagID().")
     }
     
+    fileprivate static var useStructureCache:Bool = true
+    
     // MARK: - Methods -
     
     ///
@@ -124,7 +126,9 @@ internal class Tag {
     }
 
     /// deserialize input.
-    static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth) throws -> Tag {
+    static internal func deserialize(from dis: BoxDataReadStream, maxDepth:Int = Tag.defaultMaxDepth, useStructureCache:Bool) throws -> Tag {
+        Tag.useStructureCache = useStructureCache
+        
         let id = try dis.uInt8()
         let tag = TagFactory.fromID(id: id)
 

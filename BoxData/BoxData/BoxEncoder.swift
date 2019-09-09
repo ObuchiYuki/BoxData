@@ -1822,9 +1822,11 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     static func boxObject(with data: Data) throws -> Tag {
+        /// Check if this file is box data format
         guard data[0] == 0x42 else {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is not valied Box data format."))
         }
+        // Check box data version is 1.0
         guard data[1] == 0x01 else {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is Box version 1.0 file."))
         }
@@ -1834,7 +1836,7 @@ internal class _BoxSerialization {
         var _data:Data = data[3...]
         
         if isCompressed {
-            _data = try _data.gunzipped()
+            _data = try _data.gunzipped().gunzipped()
         }
         
         let stream = BoxDataReadStream(data: _data)
@@ -1852,7 +1854,7 @@ internal class _BoxSerialization {
         }
         
         if useCompression {
-            data = try data.gzipped()
+            data = try data.gzipped().gzipped()
         }
         
         let header = Data([
