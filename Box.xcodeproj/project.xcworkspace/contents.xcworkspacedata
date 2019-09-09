@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/yuki/Developer/Git/NBT/BoxData.xcodeproj">
+      location = "self:Box.xcodeproj">
    </FileRef>
 </Workspace>

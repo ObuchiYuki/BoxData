@@ -14,8 +14,12 @@ import Foundation
 /// Determine `Int` type based on running environment.
 #if (arch(i386) || arch(arm)) // 32bit
 typealias SwiftIntTag = IntTag
+typealias SwiftInt = Int32
+typealias SwiftUInt = UInt32
 #else // 64bit
 typealias SwiftIntTag = LongTag
+typealias SwiftInt = Int64
+typealias SwiftUInt = UInt64
 #endif
 
 /// A marker protocol used to determine whether a value is a `String`-keyed `Dictionary`
@@ -186,12 +190,12 @@ fileprivate class _BoxEncoder: Encoder {
 extension _BoxEncoder {
     /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
     fileprivate func box(_ value: Bool)   -> Tag { return ByteTag       (flag: value) }
-    fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag   (value: Int64(value)) }
+    fileprivate func box(_ value: Int)    -> Tag { return SwiftIntTag   (value: SwiftInt(value)) }
     fileprivate func box(_ value: Int8)   -> Tag { return ByteTag       (value: value) }
     fileprivate func box(_ value: Int16)  -> Tag { return ShortTag      (value: value) }
     fileprivate func box(_ value: Int32)  -> Tag { return IntTag        (value: value) }
     fileprivate func box(_ value: Int64)  -> Tag { return LongTag       (value: value) }
-    fileprivate func box(_ value: UInt)   -> Tag { return SwiftIntTag   (value: Int64(bitPattern: UInt64(value))) }
+    fileprivate func box(_ value: UInt)   -> Tag { return SwiftIntTag   (value: SwiftInt(bitPattern: SwiftUInt(value))) }
     fileprivate func box(_ value: UInt8)  -> Tag { return ByteTag       (value: Int8 (bitPattern: value)) }
     fileprivate func box(_ value: UInt16) -> Tag { return ShortTag      (value: Int16(bitPattern: value)) }
     fileprivate func box(_ value: UInt32) -> Tag { return IntTag        (value: Int32(bitPattern: value)) }
