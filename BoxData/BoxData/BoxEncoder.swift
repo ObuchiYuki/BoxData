@@ -1822,8 +1822,10 @@ fileprivate struct _BoxKey : CodingKey {
 internal class _BoxSerialization {
     static func boxObject(with data: Data) throws -> Tag {
         guard data[0] == 0x42 else {
-            throw DecodingError
+            throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is not valied Box data format."))
         }
+        
+        
         
         
         
