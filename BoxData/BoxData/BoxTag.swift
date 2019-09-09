@@ -600,10 +600,70 @@ internal final class ListTag: ValueTag<[Tag]> {
             try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
+
+    private struct _FixCompoundStructure {
+        var children = [(String, Any)]()
+        
+        mutating func appendChild(_ tagID: UInt8, for name:String) {
+            children.append((name, tagID))
+        }
+        mutating func appendChild(_ structure: _FixCompoundStructure, for name:String) {
+            children.append((name, structure))
+        }
+    }
+    private final func deserializeFixCompoundStructure(from dis: BoxDataReadStream, maxDepth: Int) throws -> _FixCompoundStructure {
+        var structure = _FixCompoundStructure()
+        
+        var id = try dis.uInt8()
+        if id == 0 { return structure }
+        var name = try dis.string()
+        
+        if id == TagID.compound.rawValue {
+            structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
+        }else{
+            structure.appendChild(id, for: name)
+        }
+                
+        while true {
+            id = try dis.uInt8()
+            if id == 0 { return structure }
+            name = try dis.string()
+            
+            if id == TagID.compound.rawValue {
+                structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
+            }else{
+                structure.appendChild(id, for: name)
+            }
+        }
+    }
     
+    private final func _deserializeFixCompound(
+        from dis: BoxDataReadStream, structure: _FixCompoundStructure, into dict: inout [String: Tag], maxDepth: Int
+    ) throws {
+        for (key, st) in structure.children {
+            if let tagID = st as? UInt8 {
+                let tag = TagFactory.fromID(id: tagID)
+                try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
+                
+                dict[key] = tag
+            }else if let str = st as? _FixCompoundStructure {
+                var _dict = [String: Tag]()
+                try _deserializeFixCompound(from: dis, structure: str, into: &_dict, maxDepth: decrementMaxDepth(maxDepth))
+                
+                dict[key] = CompoundTag(value: _dict)
+            }
+        }
+    }
     private final func deserializeFixCompound(from dis: BoxDataReadStream, size: UInt32, maxDepth: Int) throws {
+        let structure = try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth)
         
-        
+        for _ in 0..<size {
+            var dict = [String: Tag]()
+            
+            try _deserializeFixCompound(from: dis, structure: structure, into: &dict, maxDepth: maxDepth)
+            
+            self.value.append(CompoundTag(value: dict))
+        }
     }
 }
 
