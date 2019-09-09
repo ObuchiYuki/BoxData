@@ -360,7 +360,9 @@ internal final class IntTag: ValueTag<Int32> {
 
     @inlinable
     @inline(__always)
-    final override func tagID() -> TagID { .int }
+    final override func tagID() -> TagID {
+        return .int
+    }
     
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
