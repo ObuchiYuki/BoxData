@@ -34,25 +34,25 @@ import Foundation
 #endif
 
 /// Compression level whose rawValue is based on the zlib's constants.
-public struct CompressionLevel: RawRepresentable {
+internal struct CompressionLevel: RawRepresentable {
     
     /// Compression level in the range of `0` (no compression) to `9` (maximum compression).
-    public let rawValue: Int32
+    let rawValue: Int32
     
-    public static let noCompression = CompressionLevel(Z_NO_COMPRESSION)
-    public static let bestSpeed = CompressionLevel(Z_BEST_SPEED)
-    public static let bestCompression = CompressionLevel(Z_BEST_COMPRESSION)
+    static let noCompression = CompressionLevel(Z_NO_COMPRESSION)
+    static let bestSpeed = CompressionLevel(Z_BEST_SPEED)
+    static let bestCompression = CompressionLevel(Z_BEST_COMPRESSION)
     
-    public static let defaultCompression = CompressionLevel(Z_DEFAULT_COMPRESSION)
+    static let defaultCompression = CompressionLevel(Z_DEFAULT_COMPRESSION)
     
     
-    public init(rawValue: Int32) {
+    init(rawValue: Int32) {
         
         self.rawValue = rawValue
     }
     
     
-    public init(_ rawValue: Int32) {
+    init(_ rawValue: Int32) {
         
         self.rawValue = rawValue
     }
@@ -61,10 +61,10 @@ public struct CompressionLevel: RawRepresentable {
 
 
 /// Errors on gzipping/gunzipping based on the zlib error codes.
-public struct GzipError: Swift.Error {
+internal struct GzipError: Swift.Error {
     // cf. http://www.zlib.net/manual.html
     
-    public enum Kind: Equatable {
+    internal enum Kind: Equatable {
         /// The stream structure was inconsistent.
         ///
         /// - underlying zlib error: `Z_STREAM_ERROR` (-2)
@@ -98,10 +98,10 @@ public struct GzipError: Swift.Error {
     }
     
     /// Error kind.
-    public let kind: Kind
+    let kind: Kind
     
     /// Returned message by zlib.
-    public let message: String
+    let message: String
     
     
     internal init(code: Int32, msg: UnsafePointer<CChar>?) {
@@ -132,7 +132,7 @@ public struct GzipError: Swift.Error {
     }
     
     
-    public var localizedDescription: String {
+    var localizedDescription: String {
         
         return self.message
     }
@@ -143,7 +143,7 @@ public struct GzipError: Swift.Error {
 extension Data {
     
     /// Whether the receiver is compressed in gzip format.
-    public var isGzipped: Bool {
+    internal var isGzipped: Bool {
         
         return self.starts(with: [0x1f, 0x8b])  // check magic number
     }
@@ -155,7 +155,7 @@ extension Data {
     /// - Parameter level: Compression level.
     /// - Returns: Gzip-compressed `Data` object.
     /// - Throws: `GzipError`
-    public func gzipped(level: CompressionLevel = .defaultCompression) throws -> Data {
+    internal func gzipped(level: CompressionLevel = .defaultCompression) throws -> Data {
         
         guard !self.isEmpty else {
             return Data()
@@ -217,7 +217,7 @@ extension Data {
     ///
     /// - Returns: Gzip-decompressed `Data` object.
     /// - Throws: `GzipError`
-    public func gunzipped() throws -> Data {
+    internal func gunzipped() throws -> Data {
         
         guard !self.isEmpty else {
             return Data()
