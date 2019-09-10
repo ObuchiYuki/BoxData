@@ -10,3 +10,7 @@ target 'BoxData_Example' do
     pod 'Nimble', '~> 7.0'
   end
 end
+
+target 'BoxData_macOS_Example' do
+  pod 'BoxData', :path => '../'
+end

@@ -1,8 +1,7 @@
 {
   "name": "BoxData",
-  "version": "0.1.0",
-  "summary": "A short description of BoxData.",
-  "description": "TODO: Add long description of the pod here.",
+  "version": "0.0.3",
+  "summary": "A light weight Codable Data format library.",
   "homepage": "https://github.com/ObuchiYuki/BoxData",
   "license": {
     "type": "MIT",
@@ -13,10 +12,13 @@
   },
   "source": {
     "git": "https://github.com/ObuchiYuki/BoxData.git",
-    "tag": "0.1.0"
+    "tag": "0.0.3"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "10.0",
+    "osx": "10.12"
   },
-  "source_files": "BoxData/Classes/**/*"
+  "source_files": "BoxData/Classes/**/*",
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
 }

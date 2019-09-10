@@ -1,0 +1,6 @@
+framework module BoxData {
+  umbrella header "BoxData-iOS-umbrella.h"
+
+  export *
+  module * { export * }
+}

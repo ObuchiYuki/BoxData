@@ -1,5 +1,5 @@
 framework module BoxData {
-  umbrella header "BoxData-umbrella.h"
+  umbrella header "BoxData-macOS-umbrella.h"
 
   export *
   module * { export * }
