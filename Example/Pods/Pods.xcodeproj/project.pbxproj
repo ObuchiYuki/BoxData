@@ -89,6 +89,7 @@
 		B62E516B232660A20046DF50 /* BoxGZip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5167232660A10046DF50 /* BoxGZip.swift */; };
 		B62E516C232660A20046DF50 /* BoxTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5168232660A10046DF50 /* BoxTag.swift */; };
 		B62E516D232660A20046DF50 /* BoxEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62E5169232660A10046DF50 /* BoxEncoder.swift */; };
+		B65248842327357300F48E18 /* BoxData_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = B65248822327357300F48E18 /* BoxData_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B662FB934B08450530A1A521489732B3 /* FailureMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3AA67C0B7A432D01F3FC5387642D92 /* FailureMessage.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		B7A0119D88C1DF43AFD25FB3A0B6E842 /* Expectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA94B60D479C265B1331DBE4A228479 /* Expectation.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
 		BAEAB2ADD34955EE77CBA4B43994B6F7 /* NMBExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C5BEAAE8914809F8E940AC4BE8F110 /* NMBExpectation.swift */; settings = {COMPILER_FLAGS = "-DPRODUCT_NAME=Nimble/Nimble"; }; };
@@ -266,6 +267,9 @@
 		B62E5167232660A10046DF50 /* BoxGZip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxGZip.swift; path = BoxData/Classes/BoxGZip.swift; sourceTree = "<group>"; };
 		B62E5168232660A10046DF50 /* BoxTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxTag.swift; path = BoxData/Classes/BoxTag.swift; sourceTree = "<group>"; };
 		B62E5169232660A10046DF50 /* BoxEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoxEncoder.swift; path = BoxData/Classes/BoxEncoder.swift; sourceTree = "<group>"; };
+		B65248802327357300F48E18 /* BoxData_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BoxData_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B65248822327357300F48E18 /* BoxData_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoxData_macOS.h; sourceTree = "<group>"; };
+		B65248832327357300F48E18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6BE27754B894DED8661C69D0015FDE2 /* Pods-BoxData_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BoxData_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		B7133AF219976234362402003D5B4548 /* ErrorUtility.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ErrorUtility.swift; path = Sources/Quick/ErrorUtility.swift; sourceTree = "<group>"; };
 		B82DA1821BE7722BE372D7CF2E242109 /* Behavior.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Behavior.swift; path = Sources/Quick/Behavior.swift; sourceTree = "<group>"; };
@@ -350,6 +354,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B652487D2327357300F48E18 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9CA72D313B3579962FA0B0E7ED4EA34 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -369,6 +380,7 @@
 				37F6579EF8358BFBD8CDFA9562FF5600 /* Pods_BoxData_Example.framework */,
 				B32AA6C3C093C2A4897DA2FA0C18D75E /* Pods_BoxData_Tests.framework */,
 				0D631E9908483F9525A6B3F36F16CC61 /* Quick.framework */,
+				B65248802327357300F48E18 /* BoxData_macOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -633,11 +645,21 @@
 			path = "Target Support Files/Pods-BoxData_Example";
 			sourceTree = "<group>";
 		};
+		B65248812327357300F48E18 /* BoxData macOS */ = {
+			isa = PBXGroup;
+			children = (
+				B65248822327357300F48E18 /* BoxData_macOS.h */,
+				B65248832327357300F48E18 /* Info.plist */,
+			);
+			path = "BoxData macOS";
+			sourceTree = "<group>";
+		};
 		CF1408CF629C7361332E53B88F7BD30C = {
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				2865E706B986A5F17A0C42732B9C47EA /* Development Pods */,
+				B65248812327357300F48E18 /* BoxData macOS */,
 				1628BF05B4CAFDCC3549A101F5A10A17 /* Frameworks */,
 				1980ADCBADE1EE797C54B038399DA45E /* Pods */,
 				0BFC43967DEB7D5E90F448DAD703893D /* Products */,
@@ -695,6 +717,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B652487B2327357300F48E18 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B65248842327357300F48E18 /* BoxData_macOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EE57825B888D2BE9B991982D0DE8562E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -741,6 +771,24 @@
 			name = "Pods-BoxData_Example";
 			productName = "Pods-BoxData_Example";
 			productReference = 37F6579EF8358BFBD8CDFA9562FF5600 /* Pods_BoxData_Example.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B652487F2327357300F48E18 /* BoxData macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B65248852327357300F48E18 /* Build configuration list for PBXNativeTarget "BoxData macOS" */;
+			buildPhases = (
+				B652487B2327357300F48E18 /* Headers */,
+				B652487C2327357300F48E18 /* Sources */,
+				B652487D2327357300F48E18 /* Frameworks */,
+				B652487E2327357300F48E18 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BoxData macOS";
+			productName = "BoxData macOS";
+			productReference = B65248802327357300F48E18 /* BoxData_macOS.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C82891EAB7293DBEE916B21F57E8474D /* Quick */ = {
@@ -809,6 +857,11 @@
 				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1100;
 				TargetAttributes = {
+					B652487F2327357300F48E18 = {
+						CreatedOnToolsVersion = 11.0;
+						DevelopmentTeam = 4NN4TCPLE3;
+						ProvisioningStyle = Automatic;
+					};
 					D9DA56ABFFD4A8C38AD831A90FE8CDA3 = {
 						LastSwiftMigration = 1100;
 					};
@@ -831,6 +884,7 @@
 				B084295E5E59C281364F58C1643F1A4B /* Pods-BoxData_Example */,
 				F5D3EF2DE7574EDFBB15E8660946818B /* Pods-BoxData_Tests */,
 				C82891EAB7293DBEE916B21F57E8474D /* Quick */,
+				B652487F2327357300F48E18 /* BoxData macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -851,6 +905,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8B81BD53EC2C31F24F616871D21EF5F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B652487E2327357300F48E18 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -920,6 +981,13 @@
 				2A94FACEA07096DDE05ACF58491DD963 /* World+DSL.swift in Sources */,
 				F0EC1E8DF64700838C1BC79AFEC93A1C /* World.swift in Sources */,
 				2A95AD48CE160CCC59957E4F91EEC9B9 /* XCTestSuite+QuickTestSuiteBuilder.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B652487C2327357300F48E18 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1152,6 +1220,7 @@
 				PRODUCT_NAME = BoxData;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1288,6 +1357,60 @@
 			};
 			name = Release;
 		};
+		B65248862327357300F48E18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4NN4TCPLE3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "BoxData macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuki.BoxData-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		B65248872327357300F48E18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4NN4TCPLE3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "BoxData macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yuki.BoxData-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		B8BCBD0110C2658BB5DAADB9B7D97B92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1409,6 +1532,7 @@
 				PRODUCT_NAME = BoxData;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -1536,6 +1660,15 @@
 			buildConfigurations = (
 				09AA15C0974378962734873DD9F38475 /* Debug */,
 				714AEEB13A75E240A3F81386C114D61E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B65248852327357300F48E18 /* Build configuration list for PBXNativeTarget "BoxData macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B65248862327357300F48E18 /* Debug */,
+				B65248872327357300F48E18 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
