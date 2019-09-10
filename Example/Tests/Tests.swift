@@ -13,8 +13,42 @@ struct Region: Codable {
     }
 }
 
+struct Person: Codable {
+  let name: String
+  let age: UInt8
+  let birth:Conutry
+  
+    struct Conutry: Codable {
+    let name: String
+    let id: UInt8
+  }
+}
+
 
 class TableOfContentsSpec: XCTestCase {
+    
+    func testReadme() {
+        let alice = Person(name: "Alice", age: 16, birth: .init(name: "UK"     , id: 12))
+        let bob   = Person(name: "Bob"  , age: 22, birth: .init(name: "America", id: 14))
+        
+        /// 10000 data
+        let people = Array(repeating: alice, count: 5000) + Array(repeating: bob, count: 5000)
+        
+        do {
+            let data = try BoxEncoder().encode(people)
+            
+            print(data)
+            
+            let decoded = try BoxDecoder.decode(Array<Person>.self,from:  data)
+            
+            print(decoded[0])
+            
+        } catch {
+            print(error)
+        }
+        
+        
+    }
     
     func testMain() {
         let air = Region.Section(anchor: 0, fill: 0, fillAnchor: 0, data: 0)
