@@ -613,7 +613,7 @@ internal final class ListTag: ValueTag<[Tag]> {
         try fixCompound.serializeDataStructure(into: dos, maxDepth: maxDepth)
         
         for element in value {
-            try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            try (element as! CompoundTag).serializeValueFromList(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
     
@@ -719,19 +719,20 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     final override func tagID() -> TagID {
         return .compound
     }
-        
+    
     @usableFromInline
     final override func serializeValue(into dos: BoxDataWriteStream, maxDepth: Int) throws {
-        if Tag.useStructureCache {
-            for (_, value) in value.sorted(by: {$0.key < $1.key}) {
-                try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
-            }
-        }else{
-            for (key, value) in value.sorted(by: {$0.key < $1.key}) {
-                try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
-            }
-            
-            try EndTag.shared.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+        for (key, value) in value.sorted(by: {$0.key < $1.key}) {
+            try value._serialize(into: dos, named: key, maxDepth: decrementMaxDepth(maxDepth))
+        }
+        
+        try EndTag.shared.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+    }
+    
+    @usableFromInline
+    final func serializeValueFromList(into dos: BoxDataWriteStream, maxDepth: Int) throws {
+        for (_, value) in value.sorted(by: {$0.key < $1.key}) {
+            try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
         }
     }
     
