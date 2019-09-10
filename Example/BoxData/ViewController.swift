@@ -32,12 +32,14 @@ class ViewController: UIViewController {
                 
         // MARK: - Coders
         let encoder = BoxEncoder()
+        encoder.useCompression = false
+        encoder.useStructureCache = false
         let decoder = BoxDecoder()
         
         do {
             let data = try encoder.encode(region)
             
-            print("Just only \(data.count)bytes!!!!!")  // I think 143 bytes
+            print("Just only \(data.count)bytes!!!!!")
             
             let decoded = try decoder.decode(Region.self, from: data)
             
