@@ -581,7 +581,6 @@ internal final class ListTag: ValueTag<[Tag]> {
                 try element.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
             }
         }
-        
     }
     
     final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
