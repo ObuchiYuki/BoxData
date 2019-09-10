@@ -744,7 +744,6 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         for (key, st) in structure.children {
             if let tagID = st as? UInt8 {
                 let tag = TagFactory.fromID(id: tagID)
-                print(tagID, dict)
                 try tag.deserializeValue(from: dis, maxDepth: maxDepth - 1)
                 
                 dict[key] = tag
