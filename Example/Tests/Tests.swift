@@ -2,49 +2,32 @@
 
 import Quick
 import Nimble
-import BoxData
+@testable import BoxData
 
 class TableOfContentsSpec: QuickSpec {
-    override func spec() {
-        describe("these will fail") {
-
-            it("can do maths") {
-                expect(1) == 2
-            }
-
-            it("can read") {
-                expect("number") == "string"
-            }
-
-            it("will eventually fail") {
-                expect("time").toEventually( equal("done") )
-            }
-            
-            context("these will pass") {
-
-                it("can do maths") {
-                    expect(23) == 23
-                }
-
-                it("can read") {
-                    expect("🐮") == "🐮"
-                }
-
-                it("will eventually pass") {
-                    var time = "passing"
-
-                    DispatchQueue.main.async {
-                        time = "done"
-                    }
-
-                    waitUntil { done in
-                        Thread.sleep(forTimeInterval: 0.5)
-                        expect(time) == "done"
-
-                        done()
-                    }
-                }
-            }
+    // MARK: - Codable Data
+    struct Region: Codable {
+        let sections:[[[Section]]]
+        
+        struct Section: Codable {
+            let anchor: UInt16
+            let fill: UInt16
+            let fillAnchor: UInt16
+            let data: UInt8
         }
+    }
+    
+    private func createData() -> Region {
+        let air = Region.Section(anchor: 0, fill: 0, fillAnchor: 0, data: 0)
+        
+        Region(sections:
+        )
+    }
+    
+    func testNormal() {
+        let encoder = BoxEncoder()
+        let decoder = BoxDecoder()
+        
+        
     }
 }
