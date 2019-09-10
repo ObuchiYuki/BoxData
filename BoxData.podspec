@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'BoxData'
-  s.version          = '0.0.2.1'
+  s.version          = '0.0.2.2'
   s.summary          = 'A light weight Codable Data format library.'
   s.homepage         = 'https://github.com/ObuchiYuki/BoxData'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
