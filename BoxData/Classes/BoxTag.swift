@@ -573,7 +573,6 @@ internal final class ListTag: ValueTag<[Tag]> {
         try dos.write(tagId.rawValue)
         
         if Tag.useStructureCache && tagId == .compound { // FixCompoundのみ特例処理
-            
             try serializeFixCompound(into: dos, fixCompound: valuez as! CompoundTag, maxDepth: maxDepth)
             
         }else{
@@ -731,7 +730,11 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     @usableFromInline
     final func serializeValueFromList(into dos: BoxDataWriteStream, maxDepth: Int) throws {
         for (_, value) in value.sorted(by: {$0.key < $1.key}) {
-            try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            if let value = value as? CompoundTag {
+                try value.serializeValueFromList(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            }else{
+                try value.serializeValue(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            }
         }
     }
     
@@ -741,6 +744,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         for (key, st) in structure.children {
             if let tagID = st as? UInt8 {
                 let tag = TagFactory.fromID(id: tagID)
+                print(tagID, dict)
                 try tag.deserializeValue(from: dis, maxDepth: maxDepth - 1)
                 
                 dict[key] = tag

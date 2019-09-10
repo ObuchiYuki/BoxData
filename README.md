@@ -8,9 +8,9 @@ BoxData is a lightweight byte format data serialization library. With Box, you c
 
 You can use `BoxEncoder` and `BoxDecoder` like `JSONEncoder` or `PropertyListEncoder`.
 
-## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+
+## Example
 
 ```swift
 import BoxData
@@ -27,15 +27,30 @@ struct Person: Codable {
   }
 }
 
-// Data
-let alice = 
-
-
-let encoder = BoxEncoder()
-let decoder = BoxDecoder()
-
-
+// Prepare Data
+let alice = Person(name: "Alice", age: 16, birth: .init(name: "UK"     , id: 12))
+let bob   = Person(name: "Bob"  , age: 22, birth: .init(name: "America", id: 14))
+        
+/// 10000 data !!!
+let people = Array(repeating: alice, count: 5000) + Array(repeating: bob, count: 5000)
+        
+do {
+	let data = try BoxEncoder().encode(people)
+            
+	print(data) // Just only 144 bytes !!!!!
+            
+	let decoded = try BoxDecoder().decode(Array<Person>.self, from: data)
+            
+	print(decoded[0].name) // "Alice"
+            
+} catch {
+	print(error)
+}
 ```
+
+To run the example project, clone the repo, and run `pod install` from the Example directory first.
+
+
 
 
 

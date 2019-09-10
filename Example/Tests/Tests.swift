@@ -37,7 +37,7 @@ class TableOfContentsSpec: XCTestCase {
         do {
             let data = try BoxEncoder().encode(people)
             
-            print(data)
+            print(data) // Just only 144 bytes !!!!!
             
             let decoded = try BoxDecoder().decode(Array<Person>.self, from: data)
             
