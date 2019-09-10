@@ -10,15 +10,14 @@ import UIKit
 import BoxData
 
 // MARK: - Codable Data
-struct Person: Codable {
-    let name:String
-    let age:UInt8
+struct Region: Codable {
+    let sections:[[[Section]]]
     
-    let birth:Country
-    
-    struct Country: Codable {
-        let name:String
-        let id:UInt32
+    struct Section: Codable {
+        let anchor: UInt16
+        let fill: UInt16
+        let fillAnchor: UInt16
+        let data: UInt8
     }
 }
 
@@ -28,30 +27,25 @@ class ViewController: UIViewController {
         super.viewDidLoad()
             
         // MARK: - Prepare Data
-        let alice = Person(name: "Alice", age: 16, birth: .init(name: "UK"     , id: 12))
-        let bob =   Person(name: "Bob"  , age: 22, birth: .init(name: "America", id: 42))
-        
-        let people = Array(repeating: alice, count: 5000) + Array(repeating: bob, count: 5000)
-        
+        let air = Region.Section(anchor: 0, fill: 0, fillAnchor: 0, data: 0)
+        let region = Region(sections: Array(repeating: Array(repeating: Array(repeating: air, count: 100), count: 5), count: 100))
+                
         // MARK: - Coders
         let encoder = BoxEncoder()
         let decoder = BoxDecoder()
         
         do {
-            let data = try encoder.encode(people)
+            let data = try encoder.encode(region)
             
             print("Just only \(data.count)bytes!!!!!")  // I think 143 bytes
             
-            let decoded = try decoder.decode(Array<Person>.self, from: data)
+            let decoded = try decoder.decode(Region.self, from: data)
             
-            print(decoded[0   ]) // Alice
-            print(decoded[5000]) // Bob
+            print(decoded.sections[0][0][0])
             
         } catch {
             print(error)
         }
-        
-        
     }
 }
 
