@@ -39,7 +39,7 @@ class TableOfContentsSpec: XCTestCase {
             
             print(data)
             
-            let decoded = try BoxDecoder.decode(Array<Person>.self,from:  data)
+            let decoded = try BoxDecoder().decode(Array<Person>.self, from: data)
             
             print(decoded[0])
             
