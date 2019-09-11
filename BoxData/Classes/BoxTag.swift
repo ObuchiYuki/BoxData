@@ -39,7 +39,8 @@ enum TagID: UInt8 {
 @usableFromInline
 final internal class TagFactory {
     
-    @usableFromInline
+    @inlinable
+    @inline(__always)
     static func idFromType<T: Tag>(_ type:T.Type) -> TagID {
         if T.self == EndTag.self         {return .end}
         if T.self == ByteTag.self        {return .byte}
@@ -56,7 +57,8 @@ final internal class TagFactory {
         fatalError("Not matching tag")
     }
     
-    @usableFromInline
+    @inlinable
+    @inline(__always)
     static func fromID(id: UInt8) throws -> Tag {
         guard let tag = TagID(rawValue: id) else {
             throw DecodingError.dataCorrupted(
@@ -294,16 +296,22 @@ final internal class EndTag: Tag {
 internal final class ByteTag: ValueTag<Int8> {
     
     /// Initirize ByteTag with Bool value.
+    @inlinable
+    @inline(__always)
     internal init(flag: Bool) {
         super.init(value: flag ? 1 : 0)
     }
     
     /// Initirize ByteTag with Int8 value.
+    @inlinable
+    @inline(__always)
     internal override init(value: Int8?) {
         super.init(value: value)
     }
     
     /// Bool representation of Int8.
+    @inlinable
+    @inline(__always)
     internal var bool: Bool {
         return value != 0
     }
