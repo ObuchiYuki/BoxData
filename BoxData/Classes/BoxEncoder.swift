@@ -1843,21 +1843,22 @@ internal class _BoxSerialization {
     private static func unpackOption(_ flags:UInt8) -> (compressedLevel: Int,useStructureCache: Bool) {
         let useStructureCache = (flags & structureCacheByte) != 0
         
-        let compressedLevel: Int = 0
+        var compressedLevel: Int = 0
+        
         if (flags & compressedLevel1) != 0 {
             compressedLevel = 1
         }
         if (flags & compressedLevel2) != 0 {
-            compressedLevel = 1
+            compressedLevel = 2
         }
         if (flags & compressedLevel3) != 0 {
-            compressedLevel = 1
+            compressedLevel = 3
         }
         if (flags & compressedLevel4) != 0 {
-            compressedLevel = 1
+            compressedLevel = 4
         }
         
-        return (isCompressed, useStructureCache)
+        return (compressedLevel, useStructureCache)
     }
     
     /// This method unpack option from byte.
