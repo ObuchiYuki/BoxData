@@ -89,7 +89,10 @@ public class BoxEncoder {
     public init() {}
     
     public var useStructureCache:Bool = true
-    public var useCompression:Bool = true
+    
+    /// the level of compression.
+    /// from 0 - 6. default is 4
+    public var compressionLevel:UInt8 = 4
     
     // MARK: - Encoding Values
     
@@ -103,7 +106,8 @@ public class BoxEncoder {
         }
         
         do {
-            return try _BoxSerialization.data(withBoxTag: topLevel, useCompression: useCompression, useStructureCache: useStructureCache)
+            return try _BoxSerialization
+                .data(withBoxTag: topLevel, compressionLevel: compressionLevel, useStructureCache: useStructureCache)
         } catch {
             throw EncodingError.invalidValue(value,
             EncodingError.Context(codingPath: [], debugDescription: "Unable to encode the given top-level value to Box.", underlyingError: error))
@@ -1890,10 +1894,10 @@ internal class _BoxSerialization {
         switch compressionLevel {
         case 1: data = try data.gzipped(level: .bestSpeed)
         case 2: data = try data.gzipped(level: .bestCompression)
-        case 3: data = try data.gzipped(level: .bestCompression)
-        case 4: data = try data.gzipped(level: .bestCompression)
-        case 5: data = try data.gzipped(level: .bestCompression)
-        case 6: data = try data.gzipped(level: .bestCompression)
+        case 3: data = try data.gzipped(level: .bestCompression).gzipped(level: .bestSpeed)
+        case 4: data = try data.gzipped(level: .bestCompression).gzipped(level: .bestCompression)
+        case 5: data = try data.gzipped(level: .bestCompression).gzipped(level: .bestCompression).gzipped(level: .bestSpeed)
+        case 6: data = try data.gzipped(level: .bestCompression).gzipped(level: .bestCompression).gzipped(level: .bestCompression)
         default: break
         }
         
