@@ -32,7 +32,6 @@ class ViewController: UIViewController {
                 
         // MARK: - Coders
         let encoder = BoxEncoder()
-        encoder.useCompression = false
         encoder.useStructureCache = false
         let decoder = BoxDecoder()
         

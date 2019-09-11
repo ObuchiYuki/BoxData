@@ -27,6 +27,26 @@ struct Person: Codable {
 
 class TableOfContentsSpec: XCTestCase {
     
+
+    func testCompression() {
+        let air = Region.Section(anchor: 0, fill: 0, fillAnchor: 0, data: 0)
+        let testData = Region(sections: Array(repeating: Array(repeating: Array(repeating: air, count: 100), count: 5), count: 100) )
+        
+        let encoder = BoxEncoder()
+        let decoder = BoxDecoder()
+        
+        do {
+            for i in 0...6 {
+                encoder.compressionLevel = UInt8(i)
+                let data = try encoder.encode(testData)
+                let decoded = try decoder.decode(Region.self, from: data)
+                XCTAssertEqual(decoded.sections[0][0][0], air)
+            }
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+    
     func testReadme() {
         let alice = Person(name: "Alice", age: 16, birth: .init(name: "UK"     , id: 12))
         let bob   = Person(name: "Bob"  , age: 22, birth: .init(name: "America", id: 14))
@@ -56,7 +76,7 @@ class TableOfContentsSpec: XCTestCase {
         
         // MARK: - Coders
         let encoder = BoxEncoder()
-        encoder.useCompression = false
+        encoder.compressionLevel = 0
         let decoder = BoxDecoder()
         
         do {
@@ -84,7 +104,7 @@ class TableOfContentsSpec: XCTestCase {
         let testData = Region(sections: Array(repeating: Array(repeating: Array(repeating: air, count: 100), count: 5), count: 100) )
         
         let encoder = BoxEncoder()
-        encoder.useCompression = false
+        encoder.compressionLevel = 1
         encoder.useStructureCache = false
         let decoder = BoxDecoder()
         
@@ -107,7 +127,7 @@ class TableOfContentsSpec: XCTestCase {
         let testData = Region(sections: Array(repeating: Array(repeating: Array(repeating: air, count: 100), count: 5), count: 100) )
         
         let encoder = BoxEncoder()
-        encoder.useCompression = false
+        encoder.compressionLevel = 1
         let decoder = BoxDecoder()
         
         do {
