@@ -1852,7 +1852,7 @@ internal class _BoxSerialization {
         guard data[0] == 0x42 else {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is not valied Box data format."))
         }
-        // Check box data version is 1.0
+        // Check if box data version is 1.0
         guard data[1] == 0x01 else {
             throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "This file is Box version 1.0 file."))
         }
@@ -1878,7 +1878,7 @@ internal class _BoxSerialization {
         return try Tag.deserialize(from: stream, useStructureCache: useStructureCache)
     }
     
-    static func data(withBoxTag boxTag: Tag, useCompression: Bool, useStructureCache: Bool) throws -> Data {
+    static func data(withBoxTag boxTag: Tag, compressionLevel: UInt8, useStructureCache: Bool) throws -> Data {
         let stream = BoxDataWriteStream()
         
         try boxTag.serialize(into: stream, useStructureCache: useStructureCache)
@@ -1887,14 +1887,20 @@ internal class _BoxSerialization {
             throw BoxDataStreamError.writeError
         }
         
-        if useCompression {
-            data = try data.gzipped().gzipped()
+        switch compressionLevel {
+        case 1: data = try data.gzipped(level: .bestSpeed)
+        case 2: data = try data.gzipped(level: .bestCompression)
+        case 3: data = try data.gzipped(level: .bestCompression)
+        case 4: data = try data.gzipped(level: .bestCompression)
+        case 5: data = try data.gzipped(level: .bestCompression)
+        case 6: data = try data.gzipped(level: .bestCompression)
+        default: break
         }
         
         let header = Data([
             UInt8(0x42),                   // 'B'
             UInt8(1),                      // version
-            packOption(isCompressed: useCompression, useStructureCache: useStructureCache), // options
+            packOption(compressedLevel: compressionLevel, useStructureCache: useStructureCache), // options
         ])
         
         return header + data
