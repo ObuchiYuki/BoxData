@@ -1829,26 +1829,28 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     
+    static let structureCacheByte:  UInt8 = 0b0000_0001
+    static let compressedLevel1:    UInt8 = 0b0000_0010
+    static let compressedLevel2:    UInt8 = 0b0000_0100
+    static let compressedLevel3:    UInt8 = 0b0000_1000
+    
     /// data[2] is for save options.
     ///
     /// 1bit - isCompressed
     /// 1bit - useStructureCache
     /// ... blank
     private static func unpackOption(_ flags:UInt8) -> (isCompressed: Bool,useStructureCache: Bool) {
-        let isCompressed =      (flags & 0b1000_0000) != 0
-        let useStructureCache = (flags & 0b0100_0000) != 0
+        let useStructureCache = (flags & structureCacheByte) != 0
         
         return (isCompressed, useStructureCache)
     }
     
+    /// This method unpack option from byte.
     private static func packOption(isCompressed: Bool,useStructureCache: Bool) -> UInt8 {
         var flags:UInt8 = 0
         
-        if isCompressed {
-            flags = flags | 0b1000_0000
-        }
         if useStructureCache {
-            flags = flags | 0b0100_0000
+            flags = flags | structureCacheByte
         }
         
         return flags
