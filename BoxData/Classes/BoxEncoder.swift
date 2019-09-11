@@ -1843,7 +1843,7 @@ internal class _BoxSerialization {
     private static func unpackOption(_ flags:UInt8) -> (compressedLevel: UInt8,useStructureCache: Bool) {
         let useStructureCache = (flags & structureCacheByte) != 0
         
-        var compressedLevel: Int = 0
+        var compressedLevel: UInt8 = 0
         
         if (flags & compressedLevel1) != 0 {
             compressedLevel = 1
@@ -1892,12 +1892,18 @@ internal class _BoxSerialization {
         
         let options = data[2]
         
-        let (isCompressed, useStructureCache) = unpackOption(options)
+        let (compressedLevel, useStructureCache) = unpackOption(options)
                 
         var _data:Data = data[3...]
         
-        if isCompressed {
-            _data = try _data.gunzipped().gunzipped()
+        switch compressedLevel {
+        case 1: _data = try _data.gunzipped()
+        case 2: _data = try _data.gunzipped()
+        case 3: _data = try _data.gunzipped().gunzipped()
+        case 4: _data = try _data.gunzipped().gunzipped()
+        case 5: _data = try _data.gunzipped().gunzipped().gunzipped()
+        case 6: _data = try _data.gunzipped().gunzipped().gunzipped()
+        default: break
         }
         
         let stream = BoxDataReadStream(data: _data)
