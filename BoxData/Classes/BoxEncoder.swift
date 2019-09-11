@@ -1829,11 +1829,20 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     
+    /// whether use structure cache.
     static let structureCacheByte:  UInt8 = 0b0000_0001
+    /// compression level 1
     static let compressedLevel1:    UInt8 = 0b0000_0010
+    /// compression level 2
     static let compressedLevel2:    UInt8 = 0b0000_0100
+    /// compression level 3
     static let compressedLevel3:    UInt8 = 0b0000_1000
+    /// compression level 4
     static let compressedLevel4:    UInt8 = 0b0000_1000
+    /// compression level 5
+    static let compressedLevel5:    UInt8 = 0b0001_0000
+    /// compression level 6
+    static let compressedLevel6:    UInt8 = 0b0010_0000
     
     /// data[2] is for save options.
     ///
