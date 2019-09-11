@@ -729,7 +729,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         }
     }
     
-    // MARK: - compound structure
+    // MARK: - Structure serialization
     
     fileprivate static func deserializeFixCompoundStructure(from dis: BoxDataReadStream, maxDepth: Int) throws -> _FixCompoundStructure {
         var structure = _FixCompoundStructure()
