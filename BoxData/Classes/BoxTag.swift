@@ -754,6 +754,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         }
     }
     
+    /// deserialize `FixCompound` with structure.
     fileprivate static func deserializeFixCompound(
         from dis: BoxDataReadStream, structure: _FixCompoundStructure, into dict: inout [String: Tag], maxDepth: Int
     ) throws {
@@ -772,6 +773,8 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         }
     }
     
+    /// deserialize `FixCompound` without structure.
+    /// add all value to tag and name.
     final override func deserializeValue(from dis: BoxDataReadStream, maxDepth: Int) throws {
         self.value = [:]
         
