@@ -685,50 +685,6 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         get { return value[name] }
     }
     
-    // MARK: - compound structure
-    
-    fileprivate static func deserializeFixCompoundStructure(from dis: BoxDataReadStream, maxDepth: Int) throws -> _FixCompoundStructure {
-        var structure = _FixCompoundStructure()
-        
-        var id = try dis.uInt8()
-        if id == 0 { return structure }
-        var name = try dis.string()
-        
-        if id == TagID.compound.rawValue {
-            structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
-        }else{
-            structure.appendChild(id, for: name)
-        }
-                
-        while true {
-            id = try dis.uInt8()
-            if id == 0 { return structure }
-            name = try dis.string()
-            
-            if id == TagID.compound.rawValue {
-                structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
-            }else{
-                structure.appendChild(id, for: name)
-            }
-        }
-    }
-    
-    final func serializeDataStructure(into dos: BoxDataWriteStream, maxDepth:Int) throws {
-        
-        for (key, value) in value.sorted(by: {$0.key < $1.key}) {
-            let id = value.tagID()
-            
-            try dos.write(id.rawValue)
-            try dos.write(key)
-            
-            if id == .compound {
-                try (value as! CompoundTag).serializeDataStructure(into: dos, maxDepth: decrementMaxDepth(maxDepth))
-            }
-        }
-        
-        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
-    }
-    
     @inlinable
     final override func tagID() -> TagID {
         return .compound
@@ -771,6 +727,50 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
                 dict[key] = CompoundTag(value: _dict)
             }
         }
+    }
+    
+    // MARK: - compound structure
+    
+    fileprivate static func deserializeFixCompoundStructure(from dis: BoxDataReadStream, maxDepth: Int) throws -> _FixCompoundStructure {
+        var structure = _FixCompoundStructure()
+        
+        var id = try dis.uInt8()
+        if id == 0 { return structure }
+        var name = try dis.string()
+        
+        if id == TagID.compound.rawValue {
+            structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
+        }else{
+            structure.appendChild(id, for: name)
+        }
+                
+        while true {
+            id = try dis.uInt8()
+            if id == 0 { return structure }
+            name = try dis.string()
+            
+            if id == TagID.compound.rawValue {
+                structure.appendChild(try deserializeFixCompoundStructure(from: dis, maxDepth: maxDepth), for: name)
+            }else{
+                structure.appendChild(id, for: name)
+            }
+        }
+    }
+    
+    fileprivate final func serializeDataStructure(into dos: BoxDataWriteStream, maxDepth:Int) throws {
+        
+        for (key, value) in value.sorted(by: {$0.key < $1.key}) {
+            let id = value.tagID()
+            
+            try dos.write(id.rawValue)
+            try dos.write(key)
+            
+            if id == .compound {
+                try (value as! CompoundTag).serializeDataStructure(into: dos, maxDepth: decrementMaxDepth(maxDepth))
+            }
+        }
+        
+        try EndTag.shared.serializeValue(into: dos, maxDepth: maxDepth)
     }
     
     /// deserialize `FixCompound` without structure.
