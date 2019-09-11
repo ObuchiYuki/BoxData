@@ -648,7 +648,11 @@ internal final class ListTag: ValueTag<[Tag]> {
 
 // MARK: - _FixCompoundStructure -
 
+/// This class represents `FixCompound` structure.
 private struct _FixCompoundStructure {
+    
+    /// (name: UInt8 (tagID)) or
+    /// (name: _FixCompoundStructure (child))
     var children = [(String, Any)]()
     
     mutating func appendChild(_ tagID: UInt8, for name:String) {
