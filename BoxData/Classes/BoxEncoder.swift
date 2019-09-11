@@ -1829,6 +1829,7 @@ fileprivate struct _BoxKey : CodingKey {
 
 internal class _BoxSerialization {
     
+    // MARK:  - Option Flags -
     /// whether use structure cache.
     static let structureCacheByte:  UInt8 = 0b0000_0001
     /// compression level 1
@@ -1844,50 +1845,7 @@ internal class _BoxSerialization {
     /// compression level 6
     static let compressedLevel6:    UInt8 = 0b0010_0000
     
-    /// data[2] is for save options.
-    ///
-    /// 1bit - isCompressed
-    /// 1bit - useStructureCache
-    /// ... blank
-    private static func unpackOption(_ flags:UInt8) -> (compressedLevel: UInt8,useStructureCache: Bool) {
-        let useStructureCache = (flags & structureCacheByte) != 0
-        
-        var compressedLevel: UInt8 = 0
-        
-        if (flags & compressedLevel1) != 0 {
-            compressedLevel = 1
-        }
-        if (flags & compressedLevel2) != 0 {
-            compressedLevel = 2
-        }
-        if (flags & compressedLevel3) != 0 {
-            compressedLevel = 3
-        }
-        if (flags & compressedLevel4) != 0 {
-            compressedLevel = 4
-        }
-        
-        return (compressedLevel, useStructureCache)
-    }
-    
-    /// This method unpack option from byte.
-    private static func packOption(compressedLevel: UInt8,useStructureCache: Bool) -> UInt8 {
-        var flags:UInt8 = 0
-        
-        if useStructureCache {
-            flags = flags | structureCacheByte
-        }
-        
-        switch compressedLevel {
-        case 1:flags = flags | compressedLevel1
-        case 2:flags = flags | compressedLevel2
-        case 3:flags = flags | compressedLevel3
-        case 4:flags = flags | compressedLevel4
-        default: break
-        }
-        
-        return flags
-    }
+    // MARK:  - Methods -
     
     static func boxObject(with data: Data) throws -> Tag {
         /// Check if this file is box data format
@@ -1940,5 +1898,52 @@ internal class _BoxSerialization {
         ])
         
         return header + data
+    }
+    
+    // MARK:  - Private Methods -
+    
+    /// data[2] is for save options.
+    ///
+    /// 1bit - isCompressed
+    /// 1bit - useStructureCache
+    /// ... blank
+    private static func unpackOption(_ flags:UInt8) -> (compressedLevel: UInt8,useStructureCache: Bool) {
+        let useStructureCache = (flags & structureCacheByte) != 0
+        
+        var compressedLevel: UInt8 = 0
+        
+        if (flags & compressedLevel1) != 0 {
+            compressedLevel = 1
+        }
+        if (flags & compressedLevel2) != 0 {
+            compressedLevel = 2
+        }
+        if (flags & compressedLevel3) != 0 {
+            compressedLevel = 3
+        }
+        if (flags & compressedLevel4) != 0 {
+            compressedLevel = 4
+        }
+        
+        return (compressedLevel, useStructureCache)
+    }
+    
+    /// This method unpack option from byte.
+    private static func packOption(compressedLevel: UInt8,useStructureCache: Bool) -> UInt8 {
+        var flags:UInt8 = 0
+        
+        if useStructureCache {
+            flags = flags | structureCacheByte
+        }
+        
+        switch compressedLevel {
+        case 1:flags = flags | compressedLevel1
+        case 2:flags = flags | compressedLevel2
+        case 3:flags = flags | compressedLevel3
+        case 4:flags = flags | compressedLevel4
+        default: break
+        }
+        
+        return flags
     }
 }
