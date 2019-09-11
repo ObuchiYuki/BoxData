@@ -12,11 +12,14 @@
 import Foundation
 
 /// Determine `Int` type based on running environment.
-#if (arch(i386) || arch(arm)) // 32bit
+#if (arch(i386) || arch(arm))
+/// 32bit
 typealias SwiftIntTag = IntTag
 typealias SwiftInt = Int32
 typealias SwiftUInt = UInt32
-#else // 64bit
+
+#else
+/// 64bit
 typealias SwiftIntTag = LongTag
 typealias SwiftInt = Int64
 typealias SwiftUInt = UInt64
