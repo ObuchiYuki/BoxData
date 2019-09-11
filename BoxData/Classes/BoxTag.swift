@@ -38,6 +38,8 @@ enum TagID: UInt8 {
 //===----------------------------------------------------------------------===//
 @usableFromInline
 final internal class TagFactory {
+    
+    @usableFromInline
     static func idFromType<T: Tag>(_ type:T.Type) -> TagID {
         if T.self == EndTag.self         {return .end}
         if T.self == ByteTag.self        {return .byte}
@@ -54,8 +56,14 @@ final internal class TagFactory {
         fatalError("Not matching tag")
     }
     
-    static func fromID(id: UInt8) -> Tag {
-        switch TagID(rawValue: id)! {
+    @usableFromInline
+    static func fromID(id: UInt8) throws -> Tag {
+        guard let tag = TagID(rawValue: id) else {
+            throw DecodingError.dataCorrupted(
+                .init(codingPath: [], debugDescription: "Tag for id \(id) cannot be decoded.")
+            )
+        }
+        switch tag {
         case .end:          return EndTag.shared
         case .byte:         return ByteTag(value: nil)
         case .short:        return ShortTag(value: nil)
@@ -131,7 +139,7 @@ internal class Tag {
         Tag.useStructureCache = useStructureCache
         
         let id = try dis.uInt8()
-        let tag = TagFactory.fromID(id: id)
+        let tag = try TagFactory.fromID(id: id)
 
         if (id != 0) {
             try tag.deserializeValue(from: dis, maxDepth: maxDepth);
@@ -597,7 +605,7 @@ internal final class ListTag: ValueTag<[Tag]> {
         } else {
             for _ in 0..<size {
                 
-                let tag = TagFactory.fromID(id: typeId)
+                let tag = try TagFactory.fromID(id: typeId)
                 try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
                 
                 self.value.append(tag)
@@ -743,7 +751,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
     ) throws {
         for (key, st) in structure.children {
             if let tagID = st as? UInt8 {
-                let tag = TagFactory.fromID(id: tagID)
+                let tag = try TagFactory.fromID(id: tagID)
                 try tag.deserializeValue(from: dis, maxDepth: maxDepth - 1)
                 
                 dict[key] = tag
@@ -766,7 +774,7 @@ internal final class CompoundTag: ValueTag<[String: Tag]> {
         var name = try dis.string()
         
         while true {
-            let tag = TagFactory.fromID(id: id)
+            let tag = try TagFactory.fromID(id: id)
             try tag.deserializeValue(from: dis, maxDepth: decrementMaxDepth(maxDepth))
             
             value[name] = tag
