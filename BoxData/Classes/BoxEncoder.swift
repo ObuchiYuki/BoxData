@@ -1833,14 +1833,29 @@ internal class _BoxSerialization {
     static let compressedLevel1:    UInt8 = 0b0000_0010
     static let compressedLevel2:    UInt8 = 0b0000_0100
     static let compressedLevel3:    UInt8 = 0b0000_1000
+    static let compressedLevel4:    UInt8 = 0b0000_1000
     
     /// data[2] is for save options.
     ///
     /// 1bit - isCompressed
     /// 1bit - useStructureCache
     /// ... blank
-    private static func unpackOption(_ flags:UInt8) -> (isCompressed: Bool,useStructureCache: Bool) {
+    private static func unpackOption(_ flags:UInt8) -> (compressedLevel: Int,useStructureCache: Bool) {
         let useStructureCache = (flags & structureCacheByte) != 0
+        
+        let compressedLevel: Int = 0
+        if (flags & compressedLevel1) != 0 {
+            compressedLevel = 1
+        }
+        if (flags & compressedLevel2) != 0 {
+            compressedLevel = 1
+        }
+        if (flags & compressedLevel3) != 0 {
+            compressedLevel = 1
+        }
+        if (flags & compressedLevel4) != 0 {
+            compressedLevel = 1
+        }
         
         return (isCompressed, useStructureCache)
     }
