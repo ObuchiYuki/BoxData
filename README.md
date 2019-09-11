@@ -1,6 +1,6 @@
 # BoxData
 
-[![Version](https://img.shields.io/cocoapods/v/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData)[![License](https://img.shields.io/cocoapods/l/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData)[![Platform](https://img.shields.io/cocoapods/p/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData)
+[![Version](https://img.shields.io/cocoapods/v/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData) [![License](https://img.shields.io/cocoapods/l/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData) [![Platform](https://img.shields.io/cocoapods/p/BoxData.svg?style=flat)](https://cocoapods.org/pods/BoxData)
 
 
 
@@ -81,7 +81,7 @@ let encoder = BoxEncoder()
 
 // set before encode
 encoder.useStructureCache = true / false
-encoder.useCompression = true / false
+encoder.compressionLevel = 0...6
 ```
 
 
